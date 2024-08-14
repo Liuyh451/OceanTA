@@ -309,8 +309,8 @@ class ConvLSTM(nn.Module):
         Parameters
         ----------
         input_tensor: 5-D Tensor either of shape (t, b, c, h, w) or (b, t, c, h, w)
-        hidden_state: todo
-            None. todo implement stateful
+        hidden_state:
+
         Returns
         -------
         last_state_list, layer_output
@@ -498,9 +498,11 @@ def fold_tensor(tensor, output_size, kernel_size):
     Returns:
         (N, *, C, H=n_h*k_h, W=n_w*k_w)
     """
+    #todo planB 改为56是否更好
     tensor = tensor.reshape(-1, 50, 3, 25)
     T = tensor.size(2)
     tensor = tensor.permute(0, 2, 3, 1)  # (N, T, C_, S)
+    #todo planB
     tensor = tensor.reshape(tensor.size(0), T, 25,
                             5, 10)
     tensor = tensor.float()
@@ -685,6 +687,7 @@ class Trainer:
             sst_pred = self.test(dataloader)
             # nino_true = torch.from_numpy(dataset.target_nino).float().to(self.device)
             sst_true = torch.from_numpy(dataset.target_sst).float().to(self.device)
+            # sst_true = torch.from_numpy(dataset.target_sst).double().to(self.device)
             # sc = self.score(nino_pred, nino_true)
             loss_sst = self.loss_sst(sst_pred, sst_true).item()
             # loss_nino = self.loss_nino(nino_pred, nino_true).item()
