@@ -8,7 +8,7 @@ import numpy as np
 使用新方式读取数据，避免重复打开文件
 """
 file_path = '/home/hy4080/redos/subset_file/'
-# todo 这样写可以减少重复打开文件
+# 这样写可以减少重复打开文件
 def load_all_nc_data(path, start_year, end_year):
     data_dict = {}
     current_date = datetime(start_year, 1, 1)
@@ -343,7 +343,6 @@ test_true[np.isnan(test_true)] = 0
 
 rmse = []
 corr = []
-test_pred.shape[0]
 for i in range(test_pred.shape[0]):
     predict_result = test_pred[i]
     #print(predict_result)
@@ -369,67 +368,9 @@ for i in range(test_pred.shape[0]):
 RMSE = np.sum(rmse) / len(rmse)
 CORR = np.sum(corr) / len(corr)
 
-print(RMSE)
-print(CORR)
-
-from sklearn.metrics import mean_absolute_error
-
-
-def loss(data_mask, depth, test_pred, test_true):
-    test_preds = np.array(test_pred, copy=True)
-    test_trues = np.array(test_true, copy=True)
-
-
-    test_preds = np.squeeze(test_preds)
-    test_trues = np.squeeze(test_trues)
-
-    test_preds[np.isnan(test_preds)] = 0
-    test_trues[np.isnan(test_trues)] = 0
-    mask = data_mask
-    print(mask.shape,test_preds.shape, test_trues.shape)
-    #     mask = np.squeeze(mask)
-    mask = mask[0]
-    mask=np.transpose(mask)
-
-    total = mask.shape[0] * mask.shape[1]
-    total_nan = len(mask[np.isnan(mask)])
-    total_real = total - total_nan
-    #     print('Total NaN:',total_nan)#统计数据中的nan值
-    #     print('Total Real:',total_real)#统计数据中的nan值
-    #     #nan：0 values ：1
-    mask[~np.isnan(mask)] = 1
-    mask[np.isnan(mask)] = 0
-    rmse = []
-    rmse_temp = []
-    nrmse = []
-    nrmse_temp = []
-    mae = []
-    mae_temp = []
-    for i in range(0, test_preds.shape[0]):
-        final_temp = mask * test_preds[i]
-        test_temp = mask * test_trues[i]
-        # np.sum((y_actual - y_predicted) ** 2)
-        sse = np.sum((test_temp - final_temp) ** 2)
-        mse_temp = sse / total_real
-        rmse_temp = np.sqrt(mse_temp)
-        nrmse_temp = rmse_temp / np.mean(test_temp)
-        rmse.append(rmse_temp)
-        nrmse.append(nrmse_temp)
-        mae_temp = mean_absolute_error(test_temp, final_temp) * total / total_real
-
-        mae.append(mae_temp)
-    #     print('NAN:',len(test_pred[np.isnan(test_pred)]))
-    #     print('TEST NANMIN',np.nanmin(test_pred))
-    #     print('TEST MIN',test_pred.min())
-    # print(str(depth)+'层')
-    RMSE = np.sum(rmse) / len(rmse)
-    MAE = np.sum(mae) / len(mae)
-    NRMSE = np.sum(nrmse) / len(nrmse)
-    # NRMSE = nrmse
-    print(str(depth) + '层:' + 'NRMSE RESULT:\n', NRMSE)
-
-    #     print('MAE RESULT:\n',MAE)
-
-    return NRMSE
+print("RMSE:",RMSE)
+print("CORR",CORR)
+from utils import  loss
+#todo 注意mask是否变化是否要改
 nrmse = loss(data_mask_t, 1, test_pred, test_true)
 

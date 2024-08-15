@@ -767,6 +767,9 @@ class cmip_dataset(Dataset):
     def __getitem__(self, idx):
         return self.input_sst[idx], self.target_sst[idx]
 
+from sklearn.metrics import mean_absolute_error
+
+
 def loss(data_mask, depth, test_pred, test_true):
     test_preds = np.array(test_pred, copy=True)
     test_trues = np.array(test_true, copy=True)
@@ -821,5 +824,4 @@ def loss(data_mask, depth, test_pred, test_true):
     print(str(depth) + '层:' + 'NRMSE RESULT:\n', NRMSE)
 
     #     print('MAE RESULT:\n',MAE)
-
     return NRMSE

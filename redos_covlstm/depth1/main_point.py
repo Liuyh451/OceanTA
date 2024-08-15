@@ -2,11 +2,65 @@ import numpy as np
 import netCDF4 as nc
 import xarray as xr
 from datetime import datetime, timedelta
+#todo 用点进行训练
 """"
-使用新方式读取数据，避免重复打开文件
+找一些点，比如3个，那么在构造训练集时，应该从这个点纵深进行，取这个点1-24层的数据，构成训练集，测试集同理
 """
 
-# 这样写可以减少重复打开文件
+# 打开 NetCDF 数据集
+ds = xr.open_dataset('subset_file_3.nc')
+"""
+给zeta补深度
+"""
+zeta = ds['zeta']
+
+# 创建新的深度坐标，24层深度
+new_depth = np.arange(24)
+
+# 获取 zeta 的形状（假设它是2D：lat, lon）
+lat_dim, lon_dim = zeta.shape
+
+# 创建新的 zeta 数据数组，并初始化为 0
+new_zeta_data = np.zeros((24, lat_dim, lon_dim))  # 新的 zeta 数据，24层深度
+
+# 将原来的 zeta 数据放入新的数组中的第一层
+new_zeta_data[0, :, :] = zeta.values
+
+# 创建新的 zeta DataArray，并添加深度维度
+new_zeta = xr.DataArray(
+    data=new_zeta_data,
+    dims=['lv', 'lat', 'lon'],  # 新增 'lv' 维度，并保留原有纬度和经度
+    coords={'lv': new_depth, 'lat': zeta.coords['lat'], 'lon': zeta.coords['lon']}
+)
+
+# 将新的 zeta 数据加入原数据集
+ds['zeta'] = new_zeta
+
+# 检查结果
+print(ds['zeta'][22])
+
+# 定义三个点的经纬度
+points = {
+    'a': {'lon': 113.5, 'lat': 14.2},
+    'b': {'lon': 114.0, 'lat': 15.0},
+    'c': {'lon': 115.2, 'lat': 14.8}
+}
+
+# 提取24层深度剖面数据
+profiles = {}
+
+for point_name, coords in points.items():
+    profiles[point_name] = ds.sel(lon=coords['lon'], lat=coords['lat'], method='nearest')
+
+# 打印或保存提取的数据
+# for point_name, profile in profiles.items():
+#     print(f"Profile data for point {point_name}:")
+#     print(profile)
+
+
+
+# 使用新方式读取数据，避免重复打开文件
+#todo 1.加载数据 2.形状 3.特征图大小
 def load_all_nc_data(path, start_year, end_year):
     data_dict = {}
     data_dict_Jan={}
@@ -335,7 +389,7 @@ test_true = test_true.cpu().numpy()
 
 test_pred = unscaler(np.array(test_pred),test_min,test_scale)
 test_true = unscaler(np.array(test_true),test_min,test_scale)
-# 应该不用加，推测是用来加新数据的
+#todo 应该不用加，推测是用来加新数据的
 
 # test_pred = add('temp', 1, test_pred)
 # test_true = add('temp', 1, test_true)
@@ -364,7 +418,7 @@ for i in range(test_pred.shape[0]):
     predict_result = test_pred[i]
     #print(predict_result)
     true_result = test_true[i]
-    total = predict_result.shape[0] * predict_result.shape[1] 
+    total = predict_result.shape[0] * predict_result.shape[1]
     print(total)
     sse = np.sum((true_result - predict_result) ** 2)
     print(sse)
