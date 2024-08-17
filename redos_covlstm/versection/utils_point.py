@@ -84,56 +84,51 @@ configs.ssr_decay_rate = 3.e-6
 configs.plot_dpi = 600
 
 class covlstmformer(nn.Module):
+    #todo 这个函数大改了
     def __init__(self, configs):
         super().__init__()
         self.configs = configs
-        self.d_model = 25
+        self.d_model = 2
         self.device = configs.device
-        # 5,输入通道数（或输入特征图的通道数）。通常对应于输入数据的深度。
-        # 8：输出通道数（或输出特征图的通道数）。表示卷积操作后输出的特征图的深度。
-        # 3：卷积核的大小，通常表示一个 3x3 的卷积核（filter）。
-        # 5：步幅（stride）
-        self.cov1 = Cov(5, 8, 3, 5)
-        self.cov2 = Cov(5, 8, 3, 5)
-        # 两个编码器
+        # 假设新的卷积核大小为 (3, 1) 和步幅为 1
+        #输入: 一个大小为 (N, 5, H_in, W_in) 的张量，其中 N 是批量大小，H_in 和 W_in 是输入特征图的高度和宽度。
+        #一个大小为 (N, 8, H_out, W_out) 的张量，其中 H_out 和 W_out 是卷积操作后的输出特征图的高度和宽度。计算 H_out 和 W_out 的公式如下
+        #H_out = (H_in - kernel_size[0] + 2 * padding) // stride + 1
+        #W_out = (W_in - kernel_size[1] + 2 * padding) // stride + 1
+        #由于 padding 默认为 0 和 stride = 1，公式简化为：
+        #H_out = H_in - 3 + 1 = H_in - 2
+        #W_out = W_in - 1 + 1 = W_in
+        self.cov1 = Cov(5, 8, (3, 1), 1)
+        self.cov2 = Cov(5, 8, (3, 1), 1)
+
+        # 两个编码器，不改变张量大小
         self.encode1 = EncoderLayer(self.d_model, 1, configs.dim_feedforward, configs.dropout)
         self.encode2 = EncoderLayer(self.d_model, 1, configs.dim_feedforward, configs.dropout)
-        self.cov_last = Cov_last(5, 8, 3, 1)
+        # 最后的卷积层，卷积核大小为 (3, 1) 和步幅为 1
+        self.cov_last = Cov_last(5, 8, (3, 1), 1)
 
     def forward(self, x):
-        """
-        原始形状: torch.Size([16, 3, 5, 28, 52])
-        0 torch.Size([16, 3, 5, 28, 52])
-        1 torch.Size([16, 250, 3, 25])
-        2 torch.Size([16, 250, 3, 25])
-        3 torch.Size([16, 3, 5, 28, 52])
-        4 torch.Size([16, 250, 3, 25])
-        5 torch.Size([16, 250, 3, 25])
-        6 torch.Size([16, 3, 5, 28, 52])
-        7 torch.Size([16, 1, 28, 52])
-        """
-        print("原始形状:", x.shape)
+        # 初始后张量为torch.Size([16, 3, 5, 24, 1])
         resdual1 = self.cov1(x)
-        print("0", resdual1.shape)  #
-        # 将特征图按 (5, 5) 大小的块展开或重新排列
-        resdual1 = unfold_StackOverChannel(resdual1, (5, 5))
-        print("1", resdual1.shape)
+        print("0", resdual1.shape) #torch.Size([16, 3, 5, 24, 1])
+        resdual1 = unfold_StackOverChannel(resdual1, (3, 1))
+        print("1",resdual1.shape) #torch.Size([16, 8, 3, 3])
         x = resdual1
         # 跳跃连接操作
         x = resdual1 + self.encode1(x)
-        print("2", x.shape)  # ([16, 8, 3, 3])
+        print("2", x.shape) #([16, 8, 3, 3])
         # Debug: Print shape after first addition
         # 函数将特征图 x 折叠成 (60, 80) 尺寸，可能对应于输入尺寸的恢复
-        x = fold_tensor(x, (28, 52), (5, 5))
+        x = fold_tensor(x, (24, 1), (3, 1))
         print("3", x.shape)
         resdual2 = x + self.cov2(x)  # xiu gai 的地方在这
-        resdual2 = unfold_StackOverChannel(resdual2, (5, 5))
+        resdual2 = unfold_StackOverChannel(resdual2, (3, 1))
         x = resdual2
         print("4", x.shape)
         x = resdual2 + self.encode2(x)
         print("5", x.shape)
         # Debug: Print shape after second addition
-        x = fold_tensor(x, (28, 52), (5, 5))
+        x = fold_tensor(x, (24, 1), (3, 1))
         print("6", x.shape)
         x = self.cov_last(x)
         print("7", x.shape)
@@ -232,6 +227,7 @@ class ConvLSTMCell(nn.Module):
 
     def forward(self, input_tensor, cur_state):
         h_cur, c_cur = cur_state  # 每个timestamp包含两个状态张量：h和c
+
 
         combined = torch.cat([input_tensor, h_cur], dim=1)  # concatenate along channel axis # 把输入张量与h状态张量沿通道维度串联
 
@@ -487,6 +483,11 @@ def unfold_StackOverChannel(img, kernel_size):
     divide the original image to patches, then stack the grids in each patch along the channels
     Args:
         img (N, *, C, H, W): the last two dimensions must be the spatial dimension
+        N:批量大小 (Batch Size)
+        *：这是一个通配符，表示可能存在的任意数量的额外维度。通常在图像数据中，这些额外的维度可能代表时间步、序列长度或其他需要的维度
+        C：通道数 (Channels)，表示每个样本的特征图的数量。
+        H:高度 (Height)，表示每个特征图的高度。
+        W:宽度 (Width)，表示每个特征图的宽度。
         kernel_size: tuple of length 2
     Returns:
         output (N, *, C*H_k*N_k, H_output, W_output)
@@ -494,17 +495,64 @@ def unfold_StackOverChannel(img, kernel_size):
     T = img.size(1)
     n_dim = len(img.size())
     assert n_dim == 4 or n_dim == 5
-
+    #对高度（-2 维度）进行 unfold 操作，使用 kernel_size[0] = 3 和 step=3，例如img 形状为 (N, 8, 22, 1)，
+    #结果形状为 (N, 8, 8, 1, 3), 其中 8 是高度维度被划分的数量，3 是每个 patch 的高度
     pt = img.unfold(-2, size=kernel_size[0], step=kernel_size[0])
+    #对宽度（-2 维度）进行 unfold 操作，使用 kernel_size[1] = 1 和 step=1
+    #结果形状为 (N, 8, 8, 1, 3)，由于 kernel_size[1] 为 1，宽度不变，结果的 8 维度表示所有可能的宽度位置
     pt = pt.unfold(-2, size=kernel_size[1], step=kernel_size[1]).flatten(-2)  # (N, *, C, n0, n1, k0*k1)
+    #然后将这两个 unfold 操作的结果展平得到形状 (N, 8, 8, 3)
+    #调整维度顺序并展平部分维度
+    #结果形状为 (N, 8, 8, 1)
+    #调整维度顺序，将通道和最后的两个维度调整为(N, 8, 3, 8)，并展平部分维度
     if n_dim == 4:  # (N, C, H, W)
         pt = pt.permute(0, 1, 4, 2, 3).flatten(1, 2)
+        #4维图像，所以最终 reshape 和 permute 操作: (N, 1, 3, 22)
     elif n_dim == 5:  # (N, T, C, H, W)
         pt = pt.permute(0, 1, 2, 5, 3, 4).flatten(2, 3)
     assert pt.size(-3) == img.size(-3) * kernel_size[0] * kernel_size[1]
-    pt = pt.reshape(pt.size(0), T, 25, -1).permute(0, 3, 1, 2)
+    # pt = pt.reshape(pt.size(0), T, 25, -1).permute(0, 3, 1, 2)
+    #todo 测试
+    pt = pt.reshape(pt.size(0), T, kernel_size[0] * kernel_size[1], -1).permute(0, 3, 1, 2)
     return pt
 
+
+import torch
+import torch.nn.functional as F
+import torch
+
+
+def pad_tensor_batch(tensor, target_batch_size):
+    """
+    在 batch 维度上填充张量到目标大小。
+
+    Args:
+        tensor (torch.Tensor): 输入张量，形状为 (N, C, H, W)。
+        target_batch_size (int): 目标 batch 大小。
+
+    Returns:
+        torch.Tensor: 填充后的张量，形状为 (target_batch_size, C, H, W)。
+    """
+    # 获取当前 batch 大小
+    current_batch_size = tensor.size(0)
+
+    # 检查目标大小是否小于当前大小
+    if target_batch_size < current_batch_size:
+        raise ValueError("目标 batch 大小不能小于当前 batch 大小")
+
+    # 计算需要填充的数量
+    padding_needed = target_batch_size - current_batch_size
+
+    # 获取原始张量的设备
+    device = tensor.device
+
+    # 创建新的张量，填充值为0
+    padded_tensor = torch.zeros(target_batch_size, *tensor.size()[1:], device=device)
+
+    # 将原始张量复制到新的张量中
+    padded_tensor[:current_batch_size] = tensor
+
+    return padded_tensor
 
 def fold_tensor(tensor, output_size, kernel_size):
     """
@@ -517,13 +565,18 @@ def fold_tensor(tensor, output_size, kernel_size):
     Returns:
         (N, *, C, H=n_h*k_h, W=n_w*k_w)
     """
+    # 示例使用
+    target_batch_size = 20  # 目标 batch 大小
+    # padded_tensor = pad_tensor_batch(tensor, target_batch_size)
+
+    print("原始形状:", tensor.shape)
     #todo planB 改为56是否更好
-    tensor = tensor.reshape(-1, 50, 3, 25)
+    tensor = tensor.reshape(-1, 8, 3, 3)
     T = tensor.size(2)
     tensor = tensor.permute(0, 2, 3, 1)  # (N, T, C_, S)
     #todo planB
-    tensor = tensor.reshape(tensor.size(0), T, 25,
-                            5, 10)
+    tensor = tensor.reshape(tensor.size(0), T, 3,
+                            2, 4)
     tensor = tensor.float()
     n_dim = len(tensor.size())
     assert n_dim == 4 or n_dim == 5
@@ -531,7 +584,8 @@ def fold_tensor(tensor, output_size, kernel_size):
     folded = F.fold(f.flatten(-2), output_size=output_size, kernel_size=kernel_size, stride=kernel_size)
     if n_dim == 5:
         folded = folded.reshape(tensor.size(0), tensor.size(1), *folded.size()[1:])
-    return folded.reshape(-1, T, 5, 28, 52)
+    print("T___________",T)
+    return folded.reshape(-1, T, 5, 24, 1)
 
 
 def TimeAttention(query, key, value, mask=None, dropout=None):

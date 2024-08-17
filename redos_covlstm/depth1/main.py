@@ -178,11 +178,17 @@ def unscaler(data, data_min, data_scale):
 
 num_test=12
 #对数据进行归一化
+print("sta_train",end=' ')
 sta_train,_,_ = scaler(train_argo[:])
+print("ssa_train",end=' ')
 ssa_train,_,_  = scaler(train_sssa[:])
+print("ssha_train",end=' ')
 ssha_train,_,_ = scaler(train_ssha[:])
+print("sswu_train",end=' ')
 sswu_train,_,_ = scaler(train_sswu[:])
+print("sswv_train",end=' ')
 sswv_train,_,_ = scaler(train_sswv[:])
+print("train_train",end=' ')
 true_train,_,_ = scaler(label_argo[:])
 
 #用历年一月份数据作为验证集
@@ -243,10 +249,10 @@ configs.batch_size = 16
 #configs.lr = 0.001
 configs.weight_decay = 0
 configs.display_interval = 10
-configs.num_epochs = 100
+configs.num_epochs = 50
 #这是早停的耐心参数。即使模型在900个epoch内没有改善性能，训练仍会继续。如果在900个epoch内性能没有改善，训练将停止
 configs.early_stopping = True
-configs.patience = 100
+configs.patience = 50
 #禁用梯度裁剪（Gradient Clipping）。梯度裁剪用于防止梯度爆炸问题，但在这里未启用
 configs.gradient_clipping = False
 #设置梯度裁剪的阈值为1。如果梯度裁剪启用，梯度的最大值将被限制为1。不过在这种配置下，由于梯度裁剪被禁用，这个参数实际上不会生效
@@ -356,7 +362,8 @@ test_true = np.squeeze(test_true)
 cha = (test_true[0] - test_pred[0]) ** 2
 test_pred[np.isnan(test_pred)] = 0
 test_true[np.isnan(test_true)] = 0
-
+print("test_pred",test_pred[0, 0, :10])
+print("test_true",test_true[0, 0, :10])
 rmse = []
 corr = []
 test_pred.shape[0]

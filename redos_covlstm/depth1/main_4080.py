@@ -8,31 +8,37 @@ import numpy as np
 使用新方式读取数据，避免重复打开文件
 """
 file_path = '/home/hy4080/redos/subset_file/'
-# 这样写可以减少重复打开文件
 def load_all_nc_data(path, start_year, end_year):
     data_dict = {}
+    data_dict_Jan={}
     current_date = datetime(start_year, 1, 1)
     end_date = datetime(end_year + 1, 1, 1)
     while current_date < end_date:
         date_str = current_date.strftime('%Y%m%d')
-        nc_file = path + 'subset_' + date_str + '.nc'
+        nc_file = path + '/subset_' + date_str + '.nc'
         # 读取 NetCDF 文件
         dataset = xr.open_dataset(nc_file)
-
         for var_name in dataset.variables:
-            if var_name not in data_dict:
-                data_dict[var_name] = []
             data = dataset[var_name].values
             data[data == -32768.0] = np.nan  # 替换标记值
-            data_dict[var_name].append(data)
+            if current_date.month == 1:
+                if var_name not in data_dict_Jan:
+                    data_dict_Jan[var_name] = []  # 初始化为列表
+                # 处理1月份的数据
+                data_dict_Jan[var_name].append(data)
+            else:
+                if var_name not in data_dict:
+                    data_dict[var_name] = []  # 初始化为列表
+                # 处理其他月份的数据
+                data_dict[var_name].append(data)
 
         current_date += timedelta(days=1)
 
-    # 将列表转换为数组
+        # 将列表转换为数组
     for var_name in data_dict:
         data_dict[var_name] = np.array(data_dict[var_name])
-
-    return data_dict
+        data_dict_Jan[var_name] = np.array(data_dict_Jan[var_name])
+    return data_dict, data_dict_Jan
 def extract_layer_data(data_dict, var_type, depth):
     if var_type in data_dict:
         data = data_dict[var_type]
@@ -44,7 +50,7 @@ def extract_layer_data(data_dict, var_type, depth):
         return data_type
     else:
         raise ValueError(f"Variable '{var_type}' not found in data dictionary.")
-#创建数据集
+
 def create_dataset(data, time_step):
     dataX = []
     for i in range(data.shape[0] - time_step + 1):
@@ -65,19 +71,22 @@ def read_raw_data(var_type, depth, time_step, data_dict):
     # 转置维度
     X = X.transpose(0, 1, 4, 2, 3)
     Y = Y.transpose(0, 3, 1, 2)
-
     return X, Y, raw_data
-# 按类读取数据
-data_dict=load_all_nc_data(file_path,1992,2006)
+data_dict,data_dict_Jan=load_all_nc_data(file_path,1992,2006)
+#划分训练集
 train_sssa, _, _ = read_raw_data('s', 0, 3, data_dict)
 train_ssha, _, _ = read_raw_data('zeta', 0, 3, data_dict)
 train_sswu, _, _ = read_raw_data('u', 0, 3, data_dict)
 train_sswv, _, _ = read_raw_data('v', 0, 3, data_dict)
-train_argo, label_argo, data_mask_t = read_raw_data('t', 1, 3, data_dict)
-del data_dict  # 删除字典对象
-""""
-旧方法读取文件
-"""
+train_argo, label_argo, data_mask_t = read_raw_data('t', 3, 3, data_dict)
+#todo depth更改1和2
+#划分验证集
+test_sssa, _, _ = read_raw_data('s', 0, 3, data_dict_Jan)
+test_ssha, _, _ = read_raw_data('zeta', 0, 3, data_dict_Jan)
+test_sswu, _, _ = read_raw_data('u', 0, 3, data_dict_Jan)
+test_sswv, _, _ = read_raw_data('v', 0, 3, data_dict_Jan)
+test_argo, label_test_argo, _ = read_raw_data('t', 3, 3, data_dict_Jan)
+del data_dict,data_dict_Jan# 删除字典对象
 # def extract_nc_layer_data(path,type,depth,start_year, end_year):
 #     daily_data = []
 #     # 从指定年份的1月1日开始
@@ -163,29 +172,32 @@ def unscaler(data, data_min, data_scale):
     data_inv = (data * data_scale) + data_min
     return data_inv
 
-""""
 #对数据进行归一化
-"""
-num_test=500
-sta_train,_,_ = scaler(train_argo[:-num_test,:])
-ssa_train,_,_  = scaler(train_sssa[:-num_test,:])
-ssha_train,_,_ = scaler(train_ssha[:-num_test,:])
-sswu_train,_,_ = scaler(train_sswu[:-num_test,:])
-sswv_train,_,_ = scaler(train_sswv[:-num_test,:])
-true_train,_,_ = scaler(label_argo[:-num_test,:])
+print("sta_train",end=' ')
+sta_train,_,_ = scaler(train_argo[:])
+print("ssa_train",end=' ')
+ssa_train,_,_  = scaler(train_sssa[:])
+print("ssha_train",end=' ')
+ssha_train,_,_ = scaler(train_ssha[:])
+print("sswu_train",end=' ')
+sswu_train,_,_ = scaler(train_sswu[:])
+print("sswv_train",end=' ')
+sswv_train,_,_ = scaler(train_sswv[:])
+print("train_train",end=' ')
+true_train,_,_ = scaler(label_argo[:])
 
-#用倒数12个数据作为验证集
-sta_test,_,_ = scaler(train_argo[-num_test:])
-ssa_test,_,_  = scaler(train_sssa[-num_test:])
-ssha_test,_,_ = scaler(train_ssha[-num_test:])
-sswu_test,_,_ = scaler(train_sswu[-num_test:])
-sswv_test,_,_ = scaler(train_sswv[-num_test:])
+#用历年一月份数据作为验证集
+sta_test,_,_ = scaler(test_argo[:])
+ssa_test,_,_  = scaler(test_sssa[:])
+ssha_test,_,_ = scaler(test_ssha[:])
+sswu_test,_,_ = scaler(test_sswu[:])
+sswv_test,_,_ = scaler(test_sswv[:])
 
 #将多个不同类型的训练数据和测试数据沿着指定轴进行拼接，axis=2即增加特征的数量（即通道或变量的数量）
 sta_train = np.concatenate((sta_train,ssa_train,ssha_train,sswu_train,sswv_train),axis = 2 )
 sta_test = np.concatenate((sta_test,ssa_test,ssha_test,sswu_test,sswv_test),axis = 2)
 
-true_test,test_min,test_scale = scaler(label_argo[-num_test:])
+true_test,test_min,test_scale = scaler(label_test_argo[:])
 #true_test是归一化后的 label_argo 数据，对应于最后 12 个时间步的标签数据
 #test_min是 label_argo[-12:] 数据中的最小值，在归一化过程中用作偏移量。
 #test_scale是 label_argo[-12:] 数据的范围，即最大值与最小值的差值。在归一化过程中用于缩放数据
@@ -340,7 +352,8 @@ test_true = np.squeeze(test_true)
 cha = (test_true[0] - test_pred[0]) ** 2
 test_pred[np.isnan(test_pred)] = 0
 test_true[np.isnan(test_true)] = 0
-
+print("test_pred",test_pred[0, 0, :10])
+print("test_true",test_true[0, 0, :10])
 rmse = []
 corr = []
 for i in range(test_pred.shape[0]):
@@ -348,9 +361,9 @@ for i in range(test_pred.shape[0]):
     #print(predict_result)
     true_result = test_true[i]
     total = predict_result.shape[0] * predict_result.shape[1]
-    print(total)
+    # print(total)
     sse = np.sum((true_result - predict_result) ** 2)
-    print(sse)
+    print(i,"_sse:",sse)
     rmse_temp = np.sqrt(sse / total)
     '''
     if i == 0:
@@ -371,6 +384,6 @@ CORR = np.sum(corr) / len(corr)
 print("RMSE:",RMSE)
 print("CORR",CORR)
 from utils import  loss
-#todo 注意mask是否变化是否要改
-nrmse = loss(data_mask_t, 1, test_pred, test_true)
+#todo depth更改3
+nrmse = loss(data_mask_t, 3, test_pred, test_true)
 
