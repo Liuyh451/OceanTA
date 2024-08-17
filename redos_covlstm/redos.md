@@ -7,10 +7,19 @@
 从文件夹中提取相应的文件
 
 ```python
-for _ in range(31):  # 模拟从 "01" 自增到 "31"
-    number_str = increment_number(number_str)
-    num2=number_str
-    nc_file = 'E:/DataSet/redos/REDOS_1.0_1994/'+num1+'/REDOS_1.0_199401'+num2+'.nc/REDOS_1.0_199401'+num2+'.nc'
+#使用datetime可以方便的按日期获得文件名
+current_date = datetime(start_year, 1, 1)
+end_date = datetime(end_year + 1, 1, 1)
+while current_date < end_date:
+    date_str = current_date.strftime('%Y%m%d')
+    nc_file = path + '/subset_' + date_str + '.nc'
+    current_date += timedelta(days=1)
+    ......
+    #用字典保存数据，可以避免重复打开文件
+    data_dict[var_name].append(data)
+    for var_name in data_dict:
+        #从列表转为numpy
+        data_dict[var_name] = np.array(data_dict[var_name])
 ```
 
 ### 1.2 数据裁剪
@@ -25,7 +34,7 @@ subset_t = data['t'].sel(lon=slice(lon_min, lon_max), lat=slice(lat_min, lat_max
 
 问题起因：cuda内存溢出，只用十几天的数据，批次设置很低，也是一样，在4080跑也是溢出，问了师兄师姐得知没有进行裁剪，分辨率太高。
 
-### 1.3 重新绘制u，v图像
+### 1.3 对齐坐标
 
 由于u，v变量使用的是lonu和latu，和s，t等使用的lon，lat坐标不同，要对其进行重新绘制
 
@@ -88,7 +97,47 @@ data[data == -32768] = np.nan
 
 解决问题
 
+### 1.5 提取垂直剖面
+
+之前的都是按层进行提取，提取该层整个平面的数据，按时间维度整理为tensor
+
+现在需要提取一个点的24层垂直剖面
+
+#### 1. 给zeta补深度
+
+由于zeta是海高异常，所以没有深度，形状(lon,lat)，而s，t，u，v等变量是(lv,lon,lat)，所以要用0给它补深度
+
+```python
+# 创建新的 zeta 数据数组，并初始化为 0
+new_zeta_data = np.zeros((24, lat_dim, lon_dim))
+# 将原来的 zeta 数据放入新的数组中的第一层
+new_zeta_data[0, :, :] = zeta.values
+```
+
+#### 2. 提取点剖面
+
+在经纬网中提取一个点的数据，注意，虽然经过1.3的对齐坐标，但是坐标名没变，uv还是lonu(lonv)，s，t，zeta是lon
+
+```python
+profiles[var_name]r = ds[var_name].sel(lonu=lon, latu=lat, method='nearest')  #用于uv提取
+profiles[var_name] = ds[var_name].sel(lon=lon, lat=lat, method='nearest')     #用于stzeta提取
+```
+
+#### 3. 拓展维度
+
+由于网络的输入要求是五维张量(N, T, C, H, W)，提取完后只有高度H，没有W，所以给点补维度。这里已经经过了时间长度的提取，现在向量形状为（N, H）所以
+
+需要把它变为(N, H, 1)这里的1就是宽度W
+
+```python
+expanded_dict[key] = value.reshape(value.shape[0], value.shape[1], 1)
+```
+
 ## 2.网络
+
+大致画了一下，比较糙
+
+![image-20240818001637856](https://raw.githubusercontent.com/Liuyh451/PicRep/img/img/image-20240818001637856.png)
 
 ### 2.1 covlstmformer
 
@@ -178,3 +227,6 @@ size: (59, 28, 52) (12, 52, 28) (12, 52, 28)
 
 **total data epoch=800**
 
+### 4.2 层次总数据
+
+![img](https://raw.githubusercontent.com/Liuyh451/PicRep/img/img/809539b4b4370a4f0f07328e6363fae3.png)

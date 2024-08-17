@@ -7,131 +7,50 @@ import math
 from torch.utils.data import Dataset
 import torch.nn.functional as F
 from sklearn.metrics import mean_absolute_error
-class Configs:
-    def __init__(self):
-        pass
 
-
-configs = Configs()
-
-# trainer related
-configs.vtype = 't'
-# configs.depth = 11
-# configs.time_step = 1
-configs.n_cpu = 0
-# configs.device = torch.device('cpu')
-configs.device = torch.device('cuda:0')
-configs.batch_size_test = 4
-configs.batch_size = 2
-#configs.lr = 0.001
-configs.weight_decay = 0
-configs.display_interval = 10
-configs.num_epochs = 50
-#这是早停的耐心参数。即使模型在900个epoch内没有改善性能，训练仍会继续。如果在900个epoch内性能没有改善，训练将停止
-configs.early_stopping = True
-configs.patience = 50
-#禁用梯度裁剪（Gradient Clipping）。梯度裁剪用于防止梯度爆炸问题，但在这里未启用
-configs.gradient_clipping = False
-#设置梯度裁剪的阈值为1。如果梯度裁剪启用，梯度的最大值将被限制为1。不过在这种配置下，由于梯度裁剪被禁用，这个参数实际上不会生效
-configs.clipping_threshold = 1.
-
-# lr warmup
-#这是学习率预热的步数设置。在训练的前3000步内，学习率将逐渐从一个较小的值线性增加到预设的学习率。这种技术通常用于训练的初始阶段，以帮助模型更稳定地开始训练，减少初期的震荡。
-configs.warmup = 150
-
-# data related
-#这是输入数据的维度设置。这通常取决于你使用的数据的特征数或通道数
-configs.input_dim = 1 # 4 #这里应该是5吧 但是写的1我总感觉是5
-'''
-人家这个1是对的这个模型就是要保证输入通道和输出通道得一样
-默认为1
-'''
-configs.output_dim = 1
-#表示模型的输入序列长度为5，即模型在预测时会使用前5个时间步的数据作为输入
-configs.input_length = 5
-#表示模型的输出长度为1，即模型预测一个时间步的值。通常用于单步预测
-configs.output_length = 1
-#表示输入序列中的数据点之间的时间间隔为1。即数据是逐步连续的，没有跳跃
-configs.input_gap = 1
-#表示预测的时间偏移量为24。这可能意味着模型的目标是预测未来24个时间步后的数据点
-configs.pred_shift = 24
-#这个列表包含了一系列的深度值，这可能与模型的层次结构或者不同深度的输入特征相关联
-configs.depth = [5,6,11,16,20,25,30,34,36,38,40,42,44,46,48,50,51,52,53,54,55,57]
-#这个列表可能对应于不同深度的索引或层次级别。每个索引可能用于定位或选择特定深度的特征或数据
-configs.depthindex = [30,50, 100, 150, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900]
-
-# model
-#表示模型的维度即每个输入数据在模型中的表示为256维
-configs.d_model = 256
-#表示模型处理数据时的patch（小块）的大小为5×5。这通常用于图像或序列数据的分块处理
-configs.patch_size = (5,5)
-#表示嵌入的空间尺寸。这里12*16可能是表示最终嵌入的特征图的尺寸（例如视觉模型中的特征图大小）
-configs.emb_spatial_size = 12*16
-#表示多头注意力机制中的头数为4。多头注意力允许模型从不同的角度“看”数据，从而捕捉不同的关系
-configs.nheads = 4
-#表示前馈神经网络的维度用于增加模型的表达能力
-configs.dim_feedforward =512
-#表示在模型中使用的dropout率为0.3。Dropout是一种正则化技术，用于减少过拟合。
-configs.dropout = 0.3
-#表示编码器的层数为4。这意味着模型有4个堆叠的编码器层
-configs.num_encoder_layers = 4
-configs.num_decoder_layers = 4
-#这可能是学习率的衰减率（scheduler decay rate），用来控制模型训练过程中学习率的递减速度，以便在训练的后期进行更细致的优化
-configs.ssr_decay_rate = 3.e-6
-
-
-# plot 表示绘图的分辨率为600 DPI
-configs.plot_dpi = 600
 
 class covlstmformer(nn.Module):
-    #todo 这个函数大改了
     def __init__(self, configs):
         super().__init__()
         self.configs = configs
-        self.d_model = 2
+        self.d_model = 3
         self.device = configs.device
-        # 假设新的卷积核大小为 (3, 1) 和步幅为 1
-        #输入: 一个大小为 (N, 5, H_in, W_in) 的张量，其中 N 是批量大小，H_in 和 W_in 是输入特征图的高度和宽度。
-        #一个大小为 (N, 8, H_out, W_out) 的张量，其中 H_out 和 W_out 是卷积操作后的输出特征图的高度和宽度。计算 H_out 和 W_out 的公式如下
-        #H_out = (H_in - kernel_size[0] + 2 * padding) // stride + 1
-        #W_out = (W_in - kernel_size[1] + 2 * padding) // stride + 1
-        #由于 padding 默认为 0 和 stride = 1，公式简化为：
-        #H_out = H_in - 3 + 1 = H_in - 2
-        #W_out = W_in - 1 + 1 = W_in
-        self.cov1 = Cov(5, 8, (3, 1), 1)
-        self.cov2 = Cov(5, 8, (3, 1), 1)
-
+        # Cov(input_dim:输入特征维度，hidden_dim:隐藏层数,bn_dim:时间步长度，output_dim:输出特征维度)
+        # 输入特征维度猜测是风速，温度那几个，要保证输入和输出一致，卷积操作不改变张量形状
+        self.cov1 = Cov(5, 8, 3, 5)
+        self.cov2 = Cov(5, 8, 3, 5)
         # 两个编码器，不改变张量大小
         self.encode1 = EncoderLayer(self.d_model, 1, configs.dim_feedforward, configs.dropout)
         self.encode2 = EncoderLayer(self.d_model, 1, configs.dim_feedforward, configs.dropout)
         # 最后的卷积层，卷积核大小为 (3, 1) 和步幅为 1
-        self.cov_last = Cov_last(5, 8, (3, 1), 1)
+        self.cov_last = Cov_last(5, 8, 3, 1)
 
     def forward(self, x):
-        # 初始后张量为torch.Size([16, 3, 5, 24, 1])
-        resdual1 = self.cov1(x)
-        print("0", resdual1.shape) #torch.Size([16, 3, 5, 24, 1])
-        resdual1 = unfold_StackOverChannel(resdual1, (3, 1))
-        print("1",resdual1.shape) #torch.Size([16, 8, 3, 3])
+        """"
+        origin torch.Size([16, 3, 5, 24, 1])
+        0 torch.Size([16, 3, 5, 24, 1])
+        1 ([16, 40, 3, 3])
+        2 torch.Size([16, 40, 3, 3])
+        3 torch.Size([16, 3, 5, 24, 1])
+        4 torch.Size([16, 40, 3, 3])
+        5 torch.Size([16, 40, 3, 3])
+        6 torch.Size([16, 3, 5, 24, 1])
+        7 torch.Size([16, 5, 24, 1])
+        """
+        # todo 确定最优卷积大小目前是（3，1）
+        resdual1 = self.cov1(x)  # 0
+        resdual1 = unfold_StackOverChannel(resdual1, (3, 1))  # 1
         x = resdual1
         # 跳跃连接操作
-        x = resdual1 + self.encode1(x)
-        print("2", x.shape) #([16, 8, 3, 3])
-        # Debug: Print shape after first addition
+        x = resdual1 + self.encode1(x)  # 2
         # 函数将特征图 x 折叠成 (60, 80) 尺寸，可能对应于输入尺寸的恢复
-        x = fold_tensor(x, (24, 1), (3, 1))
-        print("3", x.shape)
+        x = fold_tensor(x, (24, 1), (3, 1))  # 3
         resdual2 = x + self.cov2(x)  # xiu gai 的地方在这
         resdual2 = unfold_StackOverChannel(resdual2, (3, 1))
-        x = resdual2
-        print("4", x.shape)
-        x = resdual2 + self.encode2(x)
-        print("5", x.shape)
-        # Debug: Print shape after second addition
-        x = fold_tensor(x, (24, 1), (3, 1))
-        print("6", x.shape)
-        x = self.cov_last(x)
-        print("7", x.shape)
+        x = resdual2  # 4
+        x = resdual2 + self.encode2(x)  # 5
+        x = fold_tensor(x, (24, 1), (3, 1))  # 6
+        x = self.cov_last(x)  # 7
         return x
 
 
@@ -227,7 +146,6 @@ class ConvLSTMCell(nn.Module):
 
     def forward(self, input_tensor, cur_state):
         h_cur, c_cur = cur_state  # 每个timestamp包含两个状态张量：h和c
-
 
         combined = torch.cat([input_tensor, h_cur], dim=1)  # concatenate along channel axis # 把输入张量与h状态张量沿通道维度串联
 
@@ -405,11 +323,12 @@ class ConvLSTM(nn.Module):
 
 
 class Cov(nn.Module):
+    # todo 卷积核1
     def __init__(self, intput_dim, hidden_dim, bn_dim, output_dim):  # bn_dim是时间步
         super().__init__()
         self.cov1 = ConvLSTM(input_dim=intput_dim,
                              hidden_dim=hidden_dim,
-                             kernel_size=(3, 3),
+                             kernel_size=(3, 1),
                              num_layers=1,
                              batch_first=True,
                              bias=True,
@@ -417,7 +336,7 @@ class Cov(nn.Module):
         self.bn1 = nn.BatchNorm3d(bn_dim)
         self.cov2 = ConvLSTM(input_dim=hidden_dim,
                              hidden_dim=hidden_dim,
-                             kernel_size=(3, 3),
+                             kernel_size=(3, 1),
                              num_layers=1,
                              batch_first=True,
                              bias=True,
@@ -425,7 +344,7 @@ class Cov(nn.Module):
         self.bn2 = nn.BatchNorm3d(bn_dim)
         self.cov3 = ConvLSTM(input_dim=hidden_dim,
                              hidden_dim=output_dim,
-                             kernel_size=(3, 3),
+                             kernel_size=(3, 1),
                              num_layers=1,
                              batch_first=True,
                              bias=True,
@@ -442,30 +361,34 @@ class Cov(nn.Module):
 
 
 class Cov_last(nn.Module):
+    # todo 卷积核2
     def __init__(self, intput_dim, hidden_dim, bn_dim, output_dim):  # bn_dim是时间步
         super().__init__()
         self.cov1 = ConvLSTM(input_dim=intput_dim,
                              hidden_dim=hidden_dim,
-                             kernel_size=(3, 3),
+                             kernel_size=(3, 1),
                              num_layers=1,
                              batch_first=True,
                              bias=True,
+
                              return_all_layers=True)
         self.bn1 = nn.BatchNorm3d(bn_dim)
         self.cov2 = ConvLSTM(input_dim=hidden_dim,
                              hidden_dim=hidden_dim,
-                             kernel_size=(3, 3),
+                             kernel_size=(3, 1),
                              num_layers=1,
                              batch_first=True,
                              bias=True,
+
                              return_all_layers=True)
         self.bn2 = nn.BatchNorm3d(bn_dim)
         self.cov3 = ConvLSTM(input_dim=hidden_dim,
                              hidden_dim=output_dim,
-                             kernel_size=(3, 3),
+                             kernel_size=(3, 1),
                              num_layers=1,
                              batch_first=True,
                              bias=True,
+
                              return_all_layers=True)
 
     def forward(self, x):
@@ -493,26 +416,20 @@ def unfold_StackOverChannel(img, kernel_size):
         output (N, *, C*H_k*N_k, H_output, W_output)
     """
     T = img.size(1)
-    n_dim = len(img.size())
+    n_dim = len(img.size())  # ndim=5
     assert n_dim == 4 or n_dim == 5
-    #对高度（-2 维度）进行 unfold 操作，使用 kernel_size[0] = 3 和 step=3，例如img 形状为 (N, 8, 22, 1)，
-    #结果形状为 (N, 8, 8, 1, 3), 其中 8 是高度维度被划分的数量，3 是每个 patch 的高度
+    # 对高度（-2 维度）进行 unfold 操作，使用 kernel_size[0] = 3 和 step=3
     pt = img.unfold(-2, size=kernel_size[0], step=kernel_size[0])
-    #对宽度（-2 维度）进行 unfold 操作，使用 kernel_size[1] = 1 和 step=1
-    #结果形状为 (N, 8, 8, 1, 3)，由于 kernel_size[1] 为 1，宽度不变，结果的 8 维度表示所有可能的宽度位置
+    # 对宽度（-2 维度）进行 unfold 操作，使用 kernel_size[1] = 1 和 step=1
     pt = pt.unfold(-2, size=kernel_size[1], step=kernel_size[1]).flatten(-2)  # (N, *, C, n0, n1, k0*k1)
-    #然后将这两个 unfold 操作的结果展平得到形状 (N, 8, 8, 3)
-    #调整维度顺序并展平部分维度
-    #结果形状为 (N, 8, 8, 1)
-    #调整维度顺序，将通道和最后的两个维度调整为(N, 8, 3, 8)，并展平部分维度
     if n_dim == 4:  # (N, C, H, W)
         pt = pt.permute(0, 1, 4, 2, 3).flatten(1, 2)
-        #4维图像，所以最终 reshape 和 permute 操作: (N, 1, 3, 22)
+        # 4维图像，所以最终 reshape 和 permute 操作: (N, 1, 3, 22)
     elif n_dim == 5:  # (N, T, C, H, W)
         pt = pt.permute(0, 1, 2, 5, 3, 4).flatten(2, 3)
+    # todo 测试，这几个到底什么意思
     assert pt.size(-3) == img.size(-3) * kernel_size[0] * kernel_size[1]
     # pt = pt.reshape(pt.size(0), T, 25, -1).permute(0, 3, 1, 2)
-    #todo 测试
     pt = pt.reshape(pt.size(0), T, kernel_size[0] * kernel_size[1], -1).permute(0, 3, 1, 2)
     return pt
 
@@ -554,6 +471,7 @@ def pad_tensor_batch(tensor, target_batch_size):
 
     return padded_tensor
 
+
 def fold_tensor(tensor, output_size, kernel_size):
     """
     reconstruct the image from its non-overlapping patches
@@ -565,16 +483,11 @@ def fold_tensor(tensor, output_size, kernel_size):
     Returns:
         (N, *, C, H=n_h*k_h, W=n_w*k_w)
     """
-    # 示例使用
-    target_batch_size = 20  # 目标 batch 大小
-    # padded_tensor = pad_tensor_batch(tensor, target_batch_size)
-
-    print("原始形状:", tensor.shape)
-    #todo planB 改为56是否更好
+    # todo fold_1
     tensor = tensor.reshape(-1, 8, 3, 3)
     T = tensor.size(2)
     tensor = tensor.permute(0, 2, 3, 1)  # (N, T, C_, S)
-    #todo planB
+    # todo fold_2
     tensor = tensor.reshape(tensor.size(0), T, 3,
                             2, 4)
     tensor = tensor.float()
@@ -584,7 +497,6 @@ def fold_tensor(tensor, output_size, kernel_size):
     folded = F.fold(f.flatten(-2), output_size=output_size, kernel_size=kernel_size, stride=kernel_size)
     if n_dim == 5:
         folded = folded.reshape(tensor.size(0), tensor.size(1), *folded.size()[1:])
-    print("T___________",T)
     return folded.reshape(-1, T, 5, 24, 1)
 
 
@@ -720,6 +632,8 @@ class Trainer:
         return rmse
 
     def train_once(self, input_sst, sst_true, ssr_ratio):
+        # todo 确认conf没错
+        configs = self.configs
         sst_pred = self.network(input_sst.float().to(self.device))
         self.opt.optimizer.zero_grad()
         loss_sst = self.loss_sst(sst_pred, sst_true.float().to(self.device))
@@ -822,23 +736,25 @@ class Trainer:
     def save_model(self, path):
         torch.save({'net': self.network.state_dict(),
                     'optimizer': self.opt.optimizer.state_dict()}, path)
+
+
 class cmip_dataset(Dataset):
-    def __init__(self, datax,datay):
+    def __init__(self, datax, datay):
         super().__init__()
 
         self.input_sst = datax
         self.target_sst = datay
 
-
     def GetDataShape(self):
         return {'sst input': self.input_sst.shape,
                 'sst target': self.target_sst.shape}
 
-    def __len__(self,):
+    def __len__(self, ):
         return self.input_sst.shape[0]
 
     def __getitem__(self, idx):
         return self.input_sst[idx], self.target_sst[idx]
+
 
 from sklearn.metrics import mean_absolute_error
 
@@ -847,17 +763,16 @@ def loss(data_mask, depth, test_pred, test_true):
     test_preds = np.array(test_pred, copy=True)
     test_trues = np.array(test_true, copy=True)
 
-
     test_preds = np.squeeze(test_preds)
     test_trues = np.squeeze(test_trues)
 
     test_preds[np.isnan(test_preds)] = 0
     test_trues[np.isnan(test_trues)] = 0
     mask = data_mask
-    print(mask.shape,test_preds.shape, test_trues.shape)
+    print(mask.shape, test_preds.shape, test_trues.shape)
     #     mask = np.squeeze(mask)
     mask = mask[0]
-    mask=np.transpose(mask)
+    mask = np.transpose(mask)
 
     total = mask.shape[0] * mask.shape[1]
     total_nan = len(mask[np.isnan(mask)])

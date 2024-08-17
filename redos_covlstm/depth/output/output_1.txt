@@ -1,0 +1,5566 @@
+data_max------ 6.4606247 data_min------ 3.4421616
+data_max------ 34.739117 data_min------ 34.454117
+data_max------ 1.2101825 data_min------ 0.20032829
+data_max------ 0.7397124755366551 data_min------ -0.7642830840910912
+data_max------ 0.7717955963733442 data_min------ -0.7592847307225364
+data_max------ 6.4606247 data_min------ 3.4421616
+data_max------ 6.2764654 data_min------ 4.078427
+data_max------ 34.66958 data_min------ 34.523735
+data_max------ 1.0038415 data_min------ 0.26180145
+data_max------ 0.7004372272146154 data_min------ -0.502835562164094
+data_max------ 0.6460565931072002 data_min------ -0.5948746110333665
+data_max------ 6.2764654 data_min------ 4.078427
+true_test.shape (370, 1, 28, 52) X_train.shape (4009, 3, 5, 28, 52)
+{'sst input': (4009, 3, 5, 28, 52), 'sst target': (4009, 1, 28, 52)}
+{'sst input': (370, 3, 5, 28, 52), 'sst target': (370, 1, 28, 52)}
+
+epoch: 1
+batch training loss: 0.50341, ssr: 1.00000, lr: 0.00000
+epoch eval loss:
+sst: 0.52
+eval score is improved from inf to 0.52369, saving model
+
+epoch: 2
+batch training loss: 0.43620, ssr: 0.99990, lr: 0.00002
+epoch eval loss:
+sst: 0.28
+eval score is improved from 0.52369 to 0.28231, saving model
+
+epoch: 3
+batch training loss: 0.28175, ssr: 0.99981, lr: 0.00004
+epoch eval loss:
+sst: 0.17
+eval score is improved from 0.28231 to 0.17493, saving model
+
+epoch: 4
+batch training loss: 0.17257, ssr: 0.99971, lr: 0.00005
+epoch eval loss:
+sst: 0.16
+eval score is improved from 0.17493 to 0.16224, saving model
+
+epoch: 5
+batch training loss: 0.15667, ssr: 0.99961, lr: 0.00007
+epoch eval loss:
+sst: 0.15
+eval score is improved from 0.16224 to 0.15352, saving model
+
+epoch: 6
+batch training loss: 0.13600, ssr: 0.99952, lr: 0.00009
+epoch eval loss:
+sst: 0.15
+eval score is improved from 0.15352 to 0.14559, saving model
+
+epoch: 7
+batch training loss: 0.12513, ssr: 0.99942, lr: 0.00011
+epoch eval loss:
+sst: 0.11
+eval score is improved from 0.14559 to 0.11476, saving model
+
+epoch: 8
+batch training loss: 0.10256, ssr: 0.99933, lr: 0.00013
+epoch eval loss:
+sst: 0.10
+eval score is improved from 0.11476 to 0.09845, saving model
+
+epoch: 9
+batch training loss: 0.08790, ssr: 0.99923, lr: 0.00014
+epoch eval loss:
+sst: 0.09
+eval score is improved from 0.09845 to 0.08880, saving model
+
+epoch: 10
+batch training loss: 0.08073, ssr: 0.99913, lr: 0.00016
+epoch eval loss:
+sst: 0.08
+eval score is improved from 0.08880 to 0.08384, saving model
+
+epoch: 11
+batch training loss: 0.07597, ssr: 0.99904, lr: 0.00018
+epoch eval loss:
+sst: 0.08
+eval score is improved from 0.08384 to 0.07966, saving model
+
+epoch: 12
+batch training loss: 0.07358, ssr: 0.99894, lr: 0.00020
+epoch eval loss:
+sst: 0.07
+eval score is improved from 0.07966 to 0.07233, saving model
+
+epoch: 13
+batch training loss: 0.06798, ssr: 0.99885, lr: 0.00022
+epoch eval loss:
+sst: 0.07
+eval score is improved from 0.07233 to 0.06873, saving model
+
+epoch: 14
+batch training loss: 0.05840, ssr: 0.99875, lr: 0.00023
+epoch eval loss:
+sst: 0.09
+eval score is not improved for 1 epoch
+
+epoch: 15
+batch training loss: 0.05502, ssr: 0.99865, lr: 0.00025
+epoch eval loss:
+sst: 0.05
+eval score is improved from 0.06873 to 0.05459, saving model
+
+epoch: 16
+batch training loss: 0.04353, ssr: 0.99856, lr: 0.00027
+epoch eval loss:
+sst: 0.06
+eval score is not improved for 1 epoch
+
+epoch: 17
+batch training loss: 0.04841, ssr: 0.99846, lr: 0.00029
+epoch eval loss:
+sst: 0.06
+eval score is not improved for 2 epoch
+
+epoch: 18
+batch training loss: 0.04211, ssr: 0.99837, lr: 0.00031
+epoch eval loss:
+sst: 0.08
+eval score is not improved for 3 epoch
+
+epoch: 19
+batch training loss: 0.04442, ssr: 0.99827, lr: 0.00032
+epoch eval loss:
+sst: 0.04
+eval score is improved from 0.05459 to 0.04292, saving model
+
+epoch: 20
+batch training loss: 0.03140, ssr: 0.99817, lr: 0.00034
+epoch eval loss:
+sst: 0.04
+eval score is improved from 0.04292 to 0.04080, saving model
+
+epoch: 21
+batch training loss: 0.03180, ssr: 0.99808, lr: 0.00036
+epoch eval loss:
+sst: 0.05
+eval score is not improved for 1 epoch
+
+epoch: 22
+batch training loss: 0.03121, ssr: 0.99798, lr: 0.00038
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 2 epoch
+
+epoch: 23
+batch training loss: 0.02991, ssr: 0.99789, lr: 0.00039
+epoch eval loss:
+sst: 0.04
+eval score is improved from 0.04080 to 0.03599, saving model
+
+epoch: 24
+batch training loss: 0.02639, ssr: 0.99779, lr: 0.00041
+epoch eval loss:
+sst: 0.04
+eval score is improved from 0.03599 to 0.03527, saving model
+
+epoch: 25
+batch training loss: 0.02592, ssr: 0.99769, lr: 0.00043
+epoch eval loss:
+sst: 0.05
+eval score is not improved for 1 epoch
+
+epoch: 26
+batch training loss: 0.02579, ssr: 0.99760, lr: 0.00045
+epoch eval loss:
+sst: 0.04
+eval score is improved from 0.03527 to 0.03519, saving model
+
+epoch: 27
+batch training loss: 0.02728, ssr: 0.99750, lr: 0.00047
+epoch eval loss:
+sst: 0.03
+eval score is improved from 0.03519 to 0.02898, saving model
+
+epoch: 28
+batch training loss: 0.02092, ssr: 0.99741, lr: 0.00048
+epoch eval loss:
+sst: 0.05
+eval score is not improved for 1 epoch
+
+epoch: 29
+batch training loss: 0.02497, ssr: 0.99731, lr: 0.00050
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 2 epoch
+
+epoch: 30
+batch training loss: 0.02113, ssr: 0.99721, lr: 0.00052
+epoch eval loss:
+sst: 0.05
+eval score is not improved for 3 epoch
+
+epoch: 31
+batch training loss: 0.03406, ssr: 0.99712, lr: 0.00054
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 4 epoch
+
+epoch: 32
+batch training loss: 0.02399, ssr: 0.99702, lr: 0.00056
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 5 epoch
+
+epoch: 33
+batch training loss: 0.02358, ssr: 0.99693, lr: 0.00057
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 6 epoch
+
+epoch: 34
+batch training loss: 0.01704, ssr: 0.99683, lr: 0.00059
+epoch eval loss:
+sst: 0.03
+eval score is improved from 0.02898 to 0.02751, saving model
+
+epoch: 35
+batch training loss: 0.01841, ssr: 0.99673, lr: 0.00061
+epoch eval loss:
+sst: 0.03
+eval score is improved from 0.02751 to 0.02616, saving model
+
+epoch: 36
+batch training loss: 0.01778, ssr: 0.99664, lr: 0.00063
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 1 epoch
+
+epoch: 37
+batch training loss: 0.01609, ssr: 0.99654, lr: 0.00065
+epoch eval loss:
+sst: 0.03
+eval score is improved from 0.02616 to 0.02559, saving model
+
+epoch: 38
+batch training loss: 0.02074, ssr: 0.99645, lr: 0.00066
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 1 epoch
+
+epoch: 39
+batch training loss: 0.01487, ssr: 0.99635, lr: 0.00068
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 2 epoch
+
+epoch: 40
+batch training loss: 0.02162, ssr: 0.99625, lr: 0.00070
+epoch eval loss:
+sst: 0.02
+eval score is improved from 0.02559 to 0.02061, saving model
+
+epoch: 41
+batch training loss: 0.01476, ssr: 0.99616, lr: 0.00072
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 42
+batch training loss: 0.01804, ssr: 0.99606, lr: 0.00074
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 2 epoch
+
+epoch: 43
+batch training loss: 0.02390, ssr: 0.99597, lr: 0.00075
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 44
+batch training loss: 0.01718, ssr: 0.99587, lr: 0.00077
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 4 epoch
+
+epoch: 45
+batch training loss: 0.02132, ssr: 0.99577, lr: 0.00079
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 5 epoch
+
+epoch: 46
+batch training loss: 0.01963, ssr: 0.99568, lr: 0.00081
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 6 epoch
+
+epoch: 47
+batch training loss: 0.01408, ssr: 0.99558, lr: 0.00082
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 48
+batch training loss: 0.01454, ssr: 0.99549, lr: 0.00084
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 8 epoch
+
+epoch: 49
+batch training loss: 0.01796, ssr: 0.99539, lr: 0.00086
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 9 epoch
+
+epoch: 50
+batch training loss: 0.01650, ssr: 0.99529, lr: 0.00088
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 10 epoch
+
+epoch: 51
+batch training loss: 0.01217, ssr: 0.99520, lr: 0.00090
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 11 epoch
+
+epoch: 52
+batch training loss: 0.02049, ssr: 0.99510, lr: 0.00091
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 12 epoch
+
+epoch: 53
+batch training loss: 0.01739, ssr: 0.99501, lr: 0.00093
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 13 epoch
+
+epoch: 54
+batch training loss: 0.01969, ssr: 0.99491, lr: 0.00095
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 14 epoch
+
+epoch: 55
+batch training loss: 0.01515, ssr: 0.99481, lr: 0.00097
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 15 epoch
+
+epoch: 56
+batch training loss: 0.01274, ssr: 0.99472, lr: 0.00099
+epoch eval loss:
+sst: 0.05
+eval score is not improved for 16 epoch
+
+epoch: 57
+batch training loss: 0.02529, ssr: 0.99462, lr: 0.00100
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 17 epoch
+
+epoch: 58
+batch training loss: 0.01204, ssr: 0.99453, lr: 0.00102
+epoch eval loss:
+sst: 0.02
+eval score is improved from 0.02061 to 0.01962, saving model
+
+epoch: 59
+batch training loss: 0.01372, ssr: 0.99443, lr: 0.00104
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 60
+batch training loss: 0.01542, ssr: 0.99433, lr: 0.00106
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 61
+batch training loss: 0.01324, ssr: 0.99424, lr: 0.00108
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 62
+batch training loss: 0.01769, ssr: 0.99414, lr: 0.00109
+epoch eval loss:
+sst: 0.02
+eval score is improved from 0.01962 to 0.01771, saving model
+
+epoch: 63
+batch training loss: 0.01374, ssr: 0.99405, lr: 0.00111
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 64
+batch training loss: 0.01736, ssr: 0.99395, lr: 0.00113
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 2 epoch
+
+epoch: 65
+batch training loss: 0.01138, ssr: 0.99385, lr: 0.00115
+epoch eval loss:
+sst: 0.05
+eval score is not improved for 3 epoch
+
+epoch: 66
+batch training loss: 0.02047, ssr: 0.99376, lr: 0.00117
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 4 epoch
+
+epoch: 67
+batch training loss: 0.02774, ssr: 0.99366, lr: 0.00118
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 68
+batch training loss: 0.01659, ssr: 0.99357, lr: 0.00120
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 6 epoch
+
+epoch: 69
+batch training loss: 0.02245, ssr: 0.99347, lr: 0.00122
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 70
+batch training loss: 0.02171, ssr: 0.99337, lr: 0.00124
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 8 epoch
+
+epoch: 71
+batch training loss: 0.01237, ssr: 0.99328, lr: 0.00125
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 9 epoch
+
+epoch: 72
+batch training loss: 0.01209, ssr: 0.99318, lr: 0.00127
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 10 epoch
+
+epoch: 73
+batch training loss: 0.00987, ssr: 0.99309, lr: 0.00129
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 11 epoch
+
+epoch: 74
+batch training loss: 0.01131, ssr: 0.99299, lr: 0.00131
+epoch eval loss:
+sst: 0.02
+eval score is improved from 0.01771 to 0.01665, saving model
+
+epoch: 75
+batch training loss: 0.01043, ssr: 0.99289, lr: 0.00133
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 76
+batch training loss: 0.01291, ssr: 0.99280, lr: 0.00134
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 77
+batch training loss: 0.02389, ssr: 0.99270, lr: 0.00136
+epoch eval loss:
+sst: 0.04
+eval score is not improved for 3 epoch
+
+epoch: 78
+batch training loss: 0.01518, ssr: 0.99261, lr: 0.00138
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 79
+batch training loss: 0.01115, ssr: 0.99251, lr: 0.00140
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 5 epoch
+
+epoch: 80
+batch training loss: 0.01419, ssr: 0.99241, lr: 0.00139
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 6 epoch
+
+epoch: 81
+batch training loss: 0.02322, ssr: 0.99232, lr: 0.00138
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 82
+batch training loss: 0.01211, ssr: 0.99222, lr: 0.00137
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 8 epoch
+
+epoch: 83
+batch training loss: 0.01123, ssr: 0.99213, lr: 0.00137
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 9 epoch
+
+epoch: 84
+batch training loss: 0.01804, ssr: 0.99203, lr: 0.00136
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 10 epoch
+
+epoch: 85
+batch training loss: 0.02074, ssr: 0.99193, lr: 0.00135
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 11 epoch
+
+epoch: 86
+batch training loss: 0.01511, ssr: 0.99184, lr: 0.00134
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 12 epoch
+
+epoch: 87
+batch training loss: 0.01134, ssr: 0.99174, lr: 0.00133
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 13 epoch
+
+epoch: 88
+batch training loss: 0.02193, ssr: 0.99165, lr: 0.00133
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 14 epoch
+
+epoch: 89
+batch training loss: 0.02892, ssr: 0.99155, lr: 0.00132
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 15 epoch
+
+epoch: 90
+batch training loss: 0.01104, ssr: 0.99145, lr: 0.00131
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 16 epoch
+
+epoch: 91
+batch training loss: 0.01385, ssr: 0.99136, lr: 0.00130
+epoch eval loss:
+sst: 0.02
+eval score is improved from 0.01665 to 0.01548, saving model
+
+epoch: 92
+batch training loss: 0.01552, ssr: 0.99126, lr: 0.00130
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 93
+batch training loss: 0.00964, ssr: 0.99117, lr: 0.00129
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 94
+batch training loss: 0.00930, ssr: 0.99107, lr: 0.00128
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 95
+batch training loss: 0.01257, ssr: 0.99097, lr: 0.00128
+epoch eval loss:
+sst: 0.02
+eval score is improved from 0.01548 to 0.01548, saving model
+
+epoch: 96
+batch training loss: 0.00987, ssr: 0.99088, lr: 0.00127
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 97
+batch training loss: 0.00989, ssr: 0.99078, lr: 0.00126
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 98
+batch training loss: 0.00944, ssr: 0.99069, lr: 0.00126
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 99
+batch training loss: 0.01155, ssr: 0.99059, lr: 0.00125
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 100
+batch training loss: 0.01482, ssr: 0.99049, lr: 0.00124
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01548 to 0.01402, saving model
+
+epoch: 101
+batch training loss: 0.00969, ssr: 0.99040, lr: 0.00124
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 102
+batch training loss: 0.00963, ssr: 0.99030, lr: 0.00123
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 2 epoch
+
+epoch: 103
+batch training loss: 0.01598, ssr: 0.99021, lr: 0.00123
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 104
+batch training loss: 0.01478, ssr: 0.99011, lr: 0.00122
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 105
+batch training loss: 0.01503, ssr: 0.99001, lr: 0.00121
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 106
+batch training loss: 0.01601, ssr: 0.98992, lr: 0.00121
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 6 epoch
+
+epoch: 107
+batch training loss: 0.01368, ssr: 0.98982, lr: 0.00120
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 108
+batch training loss: 0.01058, ssr: 0.98973, lr: 0.00120
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 8 epoch
+
+epoch: 109
+batch training loss: 0.01066, ssr: 0.98963, lr: 0.00119
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 9 epoch
+
+epoch: 110
+batch training loss: 0.01594, ssr: 0.98953, lr: 0.00119
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 10 epoch
+
+epoch: 111
+batch training loss: 0.00956, ssr: 0.98944, lr: 0.00118
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 11 epoch
+
+epoch: 112
+batch training loss: 0.01520, ssr: 0.98934, lr: 0.00117
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 12 epoch
+
+epoch: 113
+batch training loss: 0.01044, ssr: 0.98925, lr: 0.00117
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 13 epoch
+
+epoch: 114
+batch training loss: 0.01336, ssr: 0.98915, lr: 0.00116
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 14 epoch
+
+epoch: 115
+batch training loss: 0.01340, ssr: 0.98905, lr: 0.00116
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 15 epoch
+
+epoch: 116
+batch training loss: 0.01533, ssr: 0.98896, lr: 0.00115
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 117
+batch training loss: 0.01363, ssr: 0.98886, lr: 0.00115
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 17 epoch
+
+epoch: 118
+batch training loss: 0.01544, ssr: 0.98877, lr: 0.00114
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 119
+batch training loss: 0.01528, ssr: 0.98867, lr: 0.00114
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 19 epoch
+
+epoch: 120
+batch training loss: 0.01064, ssr: 0.98857, lr: 0.00113
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 20 epoch
+
+epoch: 121
+batch training loss: 0.01192, ssr: 0.98848, lr: 0.00113
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 21 epoch
+
+epoch: 122
+batch training loss: 0.01041, ssr: 0.98838, lr: 0.00112
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 22 epoch
+
+epoch: 123
+batch training loss: 0.00924, ssr: 0.98829, lr: 0.00112
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 23 epoch
+
+epoch: 124
+batch training loss: 0.00781, ssr: 0.98819, lr: 0.00112
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01402 to 0.01397, saving model
+
+epoch: 125
+batch training loss: 0.01174, ssr: 0.98809, lr: 0.00111
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 126
+batch training loss: 0.02228, ssr: 0.98800, lr: 0.00111
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 127
+batch training loss: 0.00996, ssr: 0.98790, lr: 0.00110
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01397 to 0.01331, saving model
+
+epoch: 128
+batch training loss: 0.00785, ssr: 0.98781, lr: 0.00110
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 129
+batch training loss: 0.00975, ssr: 0.98771, lr: 0.00109
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 130
+batch training loss: 0.00929, ssr: 0.98761, lr: 0.00109
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 131
+batch training loss: 0.01570, ssr: 0.98752, lr: 0.00109
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 132
+batch training loss: 0.00871, ssr: 0.98742, lr: 0.00108
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01331 to 0.01306, saving model
+
+epoch: 133
+batch training loss: 0.00837, ssr: 0.98733, lr: 0.00108
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 134
+batch training loss: 0.01566, ssr: 0.98723, lr: 0.00107
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 135
+batch training loss: 0.00987, ssr: 0.98713, lr: 0.00107
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 136
+batch training loss: 0.01096, ssr: 0.98704, lr: 0.00106
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 137
+batch training loss: 0.01120, ssr: 0.98694, lr: 0.00106
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 138
+batch training loss: 0.01043, ssr: 0.98685, lr: 0.00106
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 6 epoch
+
+epoch: 139
+batch training loss: 0.01886, ssr: 0.98675, lr: 0.00105
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 140
+batch training loss: 0.01272, ssr: 0.98665, lr: 0.00105
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 8 epoch
+
+epoch: 141
+batch training loss: 0.01272, ssr: 0.98656, lr: 0.00105
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 9 epoch
+
+epoch: 142
+batch training loss: 0.00930, ssr: 0.98646, lr: 0.00104
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 143
+batch training loss: 0.01358, ssr: 0.98637, lr: 0.00104
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 144
+batch training loss: 0.00837, ssr: 0.98627, lr: 0.00103
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 145
+batch training loss: 0.00859, ssr: 0.98617, lr: 0.00103
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 13 epoch
+
+epoch: 146
+batch training loss: 0.00889, ssr: 0.98608, lr: 0.00103
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 14 epoch
+
+epoch: 147
+batch training loss: 0.01255, ssr: 0.98598, lr: 0.00102
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 15 epoch
+
+epoch: 148
+batch training loss: 0.00747, ssr: 0.98589, lr: 0.00102
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 149
+batch training loss: 0.00821, ssr: 0.98579, lr: 0.00102
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 150
+batch training loss: 0.00841, ssr: 0.98569, lr: 0.00101
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 18 epoch
+
+epoch: 151
+batch training loss: 0.01465, ssr: 0.98560, lr: 0.00101
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 152
+batch training loss: 0.01064, ssr: 0.98550, lr: 0.00101
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01306 to 0.01272, saving model
+
+epoch: 153
+batch training loss: 0.00883, ssr: 0.98541, lr: 0.00100
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 154
+batch training loss: 0.00839, ssr: 0.98531, lr: 0.00100
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 155
+batch training loss: 0.01613, ssr: 0.98521, lr: 0.00100
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 156
+batch training loss: 0.01111, ssr: 0.98512, lr: 0.00099
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 157
+batch training loss: 0.00819, ssr: 0.98502, lr: 0.00099
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 158
+batch training loss: 0.00771, ssr: 0.98493, lr: 0.00099
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 6 epoch
+
+epoch: 159
+batch training loss: 0.00966, ssr: 0.98483, lr: 0.00098
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 160
+batch training loss: 0.00813, ssr: 0.98473, lr: 0.00098
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 161
+batch training loss: 0.00724, ssr: 0.98464, lr: 0.00098
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01272 to 0.01198, saving model
+
+epoch: 162
+batch training loss: 0.01065, ssr: 0.98454, lr: 0.00098
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 163
+batch training loss: 0.00884, ssr: 0.98445, lr: 0.00097
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 164
+batch training loss: 0.00836, ssr: 0.98435, lr: 0.00097
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 165
+batch training loss: 0.01069, ssr: 0.98425, lr: 0.00097
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01198 to 0.01166, saving model
+
+epoch: 166
+batch training loss: 0.00750, ssr: 0.98416, lr: 0.00096
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 167
+batch training loss: 0.01039, ssr: 0.98406, lr: 0.00096
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 168
+batch training loss: 0.01839, ssr: 0.98397, lr: 0.00096
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 169
+batch training loss: 0.00920, ssr: 0.98387, lr: 0.00095
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01166 to 0.01161, saving model
+
+epoch: 170
+batch training loss: 0.00696, ssr: 0.98377, lr: 0.00095
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 171
+batch training loss: 0.01508, ssr: 0.98368, lr: 0.00095
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 2 epoch
+
+epoch: 172
+batch training loss: 0.01426, ssr: 0.98358, lr: 0.00095
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 173
+batch training loss: 0.01408, ssr: 0.98349, lr: 0.00094
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 4 epoch
+
+epoch: 174
+batch training loss: 0.02531, ssr: 0.98339, lr: 0.00094
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 175
+batch training loss: 0.00733, ssr: 0.98329, lr: 0.00094
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 176
+batch training loss: 0.01202, ssr: 0.98320, lr: 0.00094
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 177
+batch training loss: 0.01523, ssr: 0.98310, lr: 0.00093
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 178
+batch training loss: 0.00710, ssr: 0.98301, lr: 0.00093
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 9 epoch
+
+epoch: 179
+batch training loss: 0.00823, ssr: 0.98291, lr: 0.00093
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 180
+batch training loss: 0.00659, ssr: 0.98281, lr: 0.00092
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 11 epoch
+
+epoch: 181
+batch training loss: 0.00928, ssr: 0.98272, lr: 0.00092
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 12 epoch
+
+epoch: 182
+batch training loss: 0.00929, ssr: 0.98262, lr: 0.00092
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 183
+batch training loss: 0.00747, ssr: 0.98253, lr: 0.00092
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 14 epoch
+
+epoch: 184
+batch training loss: 0.00674, ssr: 0.98243, lr: 0.00091
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 15 epoch
+
+epoch: 185
+batch training loss: 0.00970, ssr: 0.98233, lr: 0.00091
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 186
+batch training loss: 0.00951, ssr: 0.98224, lr: 0.00091
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 187
+batch training loss: 0.00654, ssr: 0.98214, lr: 0.00091
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 188
+batch training loss: 0.01065, ssr: 0.98205, lr: 0.00090
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 189
+batch training loss: 0.00869, ssr: 0.98195, lr: 0.00090
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01161 to 0.01147, saving model
+
+epoch: 190
+batch training loss: 0.00793, ssr: 0.98185, lr: 0.00090
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 191
+batch training loss: 0.01105, ssr: 0.98176, lr: 0.00090
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 192
+batch training loss: 0.00806, ssr: 0.98166, lr: 0.00090
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 193
+batch training loss: 0.00696, ssr: 0.98157, lr: 0.00089
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 194
+batch training loss: 0.01041, ssr: 0.98147, lr: 0.00089
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 195
+batch training loss: 0.00838, ssr: 0.98137, lr: 0.00089
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 6 epoch
+
+epoch: 196
+batch training loss: 0.00943, ssr: 0.98128, lr: 0.00089
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01147 to 0.01079, saving model
+
+epoch: 197
+batch training loss: 0.00613, ssr: 0.98118, lr: 0.00088
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 198
+batch training loss: 0.01239, ssr: 0.98109, lr: 0.00088
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 199
+batch training loss: 0.00745, ssr: 0.98099, lr: 0.00088
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 200
+batch training loss: 0.01012, ssr: 0.98089, lr: 0.00088
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 201
+batch training loss: 0.00671, ssr: 0.98080, lr: 0.00087
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01079 to 0.01075, saving model
+
+epoch: 202
+batch training loss: 0.01172, ssr: 0.98070, lr: 0.00087
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 203
+batch training loss: 0.00836, ssr: 0.98061, lr: 0.00087
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 2 epoch
+
+epoch: 204
+batch training loss: 0.01246, ssr: 0.98051, lr: 0.00087
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 205
+batch training loss: 0.01118, ssr: 0.98041, lr: 0.00087
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 206
+batch training loss: 0.00637, ssr: 0.98032, lr: 0.00086
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 207
+batch training loss: 0.00982, ssr: 0.98022, lr: 0.00086
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 6 epoch
+
+epoch: 208
+batch training loss: 0.01637, ssr: 0.98013, lr: 0.00086
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 7 epoch
+
+epoch: 209
+batch training loss: 0.01716, ssr: 0.98003, lr: 0.00086
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 8 epoch
+
+epoch: 210
+batch training loss: 0.01549, ssr: 0.97993, lr: 0.00086
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 211
+batch training loss: 0.00680, ssr: 0.97984, lr: 0.00085
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 10 epoch
+
+epoch: 212
+batch training loss: 0.00973, ssr: 0.97974, lr: 0.00085
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 213
+batch training loss: 0.00604, ssr: 0.97965, lr: 0.00085
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 214
+batch training loss: 0.00899, ssr: 0.97955, lr: 0.00085
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 215
+batch training loss: 0.00853, ssr: 0.97945, lr: 0.00085
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 216
+batch training loss: 0.00729, ssr: 0.97936, lr: 0.00084
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 217
+batch training loss: 0.00955, ssr: 0.97926, lr: 0.00084
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 218
+batch training loss: 0.00607, ssr: 0.97917, lr: 0.00084
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 17 epoch
+
+epoch: 219
+batch training loss: 0.00861, ssr: 0.97907, lr: 0.00084
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 220
+batch training loss: 0.00812, ssr: 0.97897, lr: 0.00084
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01075 to 0.01055, saving model
+
+epoch: 221
+batch training loss: 0.01029, ssr: 0.97888, lr: 0.00083
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 1 epoch
+
+epoch: 222
+batch training loss: 0.01323, ssr: 0.97878, lr: 0.00083
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 223
+batch training loss: 0.01156, ssr: 0.97869, lr: 0.00083
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 224
+batch training loss: 0.01631, ssr: 0.97859, lr: 0.00083
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 225
+batch training loss: 0.01167, ssr: 0.97849, lr: 0.00083
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 226
+batch training loss: 0.00774, ssr: 0.97840, lr: 0.00082
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 227
+batch training loss: 0.01263, ssr: 0.97830, lr: 0.00082
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 228
+batch training loss: 0.00855, ssr: 0.97821, lr: 0.00082
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 8 epoch
+
+epoch: 229
+batch training loss: 0.00962, ssr: 0.97811, lr: 0.00082
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 9 epoch
+
+epoch: 230
+batch training loss: 0.00663, ssr: 0.97801, lr: 0.00082
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 231
+batch training loss: 0.00723, ssr: 0.97792, lr: 0.00082
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 232
+batch training loss: 0.00780, ssr: 0.97782, lr: 0.00081
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 233
+batch training loss: 0.00666, ssr: 0.97773, lr: 0.00081
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 234
+batch training loss: 0.00649, ssr: 0.97763, lr: 0.00081
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 14 epoch
+
+epoch: 235
+batch training loss: 0.01084, ssr: 0.97753, lr: 0.00081
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01055 to 0.01052, saving model
+
+epoch: 236
+batch training loss: 0.01267, ssr: 0.97744, lr: 0.00081
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 237
+batch training loss: 0.00866, ssr: 0.97734, lr: 0.00081
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 238
+batch training loss: 0.00757, ssr: 0.97725, lr: 0.00080
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 239
+batch training loss: 0.02204, ssr: 0.97715, lr: 0.00080
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 240
+batch training loss: 0.01391, ssr: 0.97705, lr: 0.00080
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 241
+batch training loss: 0.01036, ssr: 0.97696, lr: 0.00080
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 6 epoch
+
+epoch: 242
+batch training loss: 0.01246, ssr: 0.97686, lr: 0.00080
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 243
+batch training loss: 0.00698, ssr: 0.97677, lr: 0.00080
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 244
+batch training loss: 0.00699, ssr: 0.97667, lr: 0.00079
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 245
+batch training loss: 0.01041, ssr: 0.97657, lr: 0.00079
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 246
+batch training loss: 0.00669, ssr: 0.97648, lr: 0.00079
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 247
+batch training loss: 0.00703, ssr: 0.97638, lr: 0.00079
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 248
+batch training loss: 0.00738, ssr: 0.97629, lr: 0.00079
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 13 epoch
+
+epoch: 249
+batch training loss: 0.00976, ssr: 0.97619, lr: 0.00079
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01052 to 0.01020, saving model
+
+epoch: 250
+batch training loss: 0.00702, ssr: 0.97609, lr: 0.00078
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 251
+batch training loss: 0.00689, ssr: 0.97600, lr: 0.00078
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.01020 to 0.00971, saving model
+
+epoch: 252
+batch training loss: 0.00549, ssr: 0.97590, lr: 0.00078
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 253
+batch training loss: 0.00925, ssr: 0.97581, lr: 0.00078
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 254
+batch training loss: 0.01152, ssr: 0.97571, lr: 0.00078
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 255
+batch training loss: 0.01154, ssr: 0.97561, lr: 0.00078
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 256
+batch training loss: 0.01093, ssr: 0.97552, lr: 0.00077
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 257
+batch training loss: 0.00527, ssr: 0.97542, lr: 0.00077
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 6 epoch
+
+epoch: 258
+batch training loss: 0.01065, ssr: 0.97533, lr: 0.00077
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 259
+batch training loss: 0.01276, ssr: 0.97523, lr: 0.00077
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 260
+batch training loss: 0.01091, ssr: 0.97513, lr: 0.00077
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 261
+batch training loss: 0.00962, ssr: 0.97504, lr: 0.00077
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 262
+batch training loss: 0.00628, ssr: 0.97494, lr: 0.00077
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 263
+batch training loss: 0.01153, ssr: 0.97485, lr: 0.00076
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 264
+batch training loss: 0.00631, ssr: 0.97475, lr: 0.00076
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 265
+batch training loss: 0.00779, ssr: 0.97465, lr: 0.00076
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 266
+batch training loss: 0.00523, ssr: 0.97456, lr: 0.00076
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 267
+batch training loss: 0.01060, ssr: 0.97446, lr: 0.00076
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 268
+batch training loss: 0.00903, ssr: 0.97437, lr: 0.00076
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 269
+batch training loss: 0.00769, ssr: 0.97427, lr: 0.00076
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 18 epoch
+
+epoch: 270
+batch training loss: 0.00647, ssr: 0.97417, lr: 0.00075
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 271
+batch training loss: 0.00658, ssr: 0.97408, lr: 0.00075
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 20 epoch
+
+epoch: 272
+batch training loss: 0.01038, ssr: 0.97398, lr: 0.00075
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 273
+batch training loss: 0.01098, ssr: 0.97389, lr: 0.00075
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 274
+batch training loss: 0.01014, ssr: 0.97379, lr: 0.00075
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 275
+batch training loss: 0.00682, ssr: 0.97369, lr: 0.00075
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 24 epoch
+
+epoch: 276
+batch training loss: 0.00935, ssr: 0.97360, lr: 0.00075
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 277
+batch training loss: 0.00539, ssr: 0.97350, lr: 0.00074
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 278
+batch training loss: 0.00553, ssr: 0.97341, lr: 0.00074
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 27 epoch
+
+epoch: 279
+batch training loss: 0.00658, ssr: 0.97331, lr: 0.00074
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00971 to 0.00962, saving model
+
+epoch: 280
+batch training loss: 0.00899, ssr: 0.97321, lr: 0.00074
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 281
+batch training loss: 0.01951, ssr: 0.97312, lr: 0.00074
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 282
+batch training loss: 0.00741, ssr: 0.97302, lr: 0.00074
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 283
+batch training loss: 0.01394, ssr: 0.97293, lr: 0.00074
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 284
+batch training loss: 0.00678, ssr: 0.97283, lr: 0.00074
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 285
+batch training loss: 0.00783, ssr: 0.97273, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 286
+batch training loss: 0.01413, ssr: 0.97264, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 287
+batch training loss: 0.00795, ssr: 0.97254, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 288
+batch training loss: 0.01285, ssr: 0.97245, lr: 0.00073
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 9 epoch
+
+epoch: 289
+batch training loss: 0.00940, ssr: 0.97235, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 290
+batch training loss: 0.00748, ssr: 0.97225, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 291
+batch training loss: 0.01480, ssr: 0.97216, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 292
+batch training loss: 0.00898, ssr: 0.97206, lr: 0.00073
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 293
+batch training loss: 0.00617, ssr: 0.97197, lr: 0.00072
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 294
+batch training loss: 0.00513, ssr: 0.97187, lr: 0.00072
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 295
+batch training loss: 0.01186, ssr: 0.97177, lr: 0.00072
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 16 epoch
+
+epoch: 296
+batch training loss: 0.00770, ssr: 0.97168, lr: 0.00072
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 17 epoch
+
+epoch: 297
+batch training loss: 0.01143, ssr: 0.97158, lr: 0.00072
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00962 to 0.00910, saving model
+
+epoch: 298
+batch training loss: 0.00773, ssr: 0.97149, lr: 0.00072
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 299
+batch training loss: 0.00529, ssr: 0.97139, lr: 0.00072
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 300
+batch training loss: 0.00803, ssr: 0.97129, lr: 0.00072
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 3 epoch
+
+epoch: 301
+batch training loss: 0.00764, ssr: 0.97120, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 302
+batch training loss: 0.00577, ssr: 0.97110, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 303
+batch training loss: 0.00676, ssr: 0.97101, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 304
+batch training loss: 0.00625, ssr: 0.97091, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 305
+batch training loss: 0.00753, ssr: 0.97081, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 306
+batch training loss: 0.00542, ssr: 0.97072, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 307
+batch training loss: 0.00556, ssr: 0.97062, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 308
+batch training loss: 0.00767, ssr: 0.97053, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 309
+batch training loss: 0.00792, ssr: 0.97043, lr: 0.00071
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00910 to 0.00880, saving model
+
+epoch: 310
+batch training loss: 0.00756, ssr: 0.97033, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 311
+batch training loss: 0.00549, ssr: 0.97024, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 312
+batch training loss: 0.01832, ssr: 0.97014, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 313
+batch training loss: 0.00652, ssr: 0.97005, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 314
+batch training loss: 0.00863, ssr: 0.96995, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 315
+batch training loss: 0.00710, ssr: 0.96985, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 316
+batch training loss: 0.01642, ssr: 0.96976, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 317
+batch training loss: 0.00618, ssr: 0.96966, lr: 0.00070
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 318
+batch training loss: 0.00608, ssr: 0.96957, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 319
+batch training loss: 0.00583, ssr: 0.96947, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 320
+batch training loss: 0.00716, ssr: 0.96937, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 321
+batch training loss: 0.00668, ssr: 0.96928, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 322
+batch training loss: 0.00799, ssr: 0.96918, lr: 0.00069
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 13 epoch
+
+epoch: 323
+batch training loss: 0.00925, ssr: 0.96909, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 324
+batch training loss: 0.00468, ssr: 0.96899, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 325
+batch training loss: 0.00531, ssr: 0.96889, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 326
+batch training loss: 0.00899, ssr: 0.96880, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 327
+batch training loss: 0.00607, ssr: 0.96870, lr: 0.00069
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 328
+batch training loss: 0.00812, ssr: 0.96861, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 329
+batch training loss: 0.00725, ssr: 0.96851, lr: 0.00068
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 20 epoch
+
+epoch: 330
+batch training loss: 0.00761, ssr: 0.96841, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 331
+batch training loss: 0.00776, ssr: 0.96832, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 332
+batch training loss: 0.00671, ssr: 0.96822, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 333
+batch training loss: 0.00784, ssr: 0.96813, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 334
+batch training loss: 0.00620, ssr: 0.96803, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 335
+batch training loss: 0.00601, ssr: 0.96793, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 336
+batch training loss: 0.00708, ssr: 0.96784, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 337
+batch training loss: 0.00729, ssr: 0.96774, lr: 0.00068
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 338
+batch training loss: 0.01555, ssr: 0.96765, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 339
+batch training loss: 0.00779, ssr: 0.96755, lr: 0.00067
+epoch eval loss:
+sst: 0.03
+eval score is not improved for 30 epoch
+
+epoch: 340
+batch training loss: 0.00946, ssr: 0.96745, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 31 epoch
+
+epoch: 341
+batch training loss: 0.00693, ssr: 0.96736, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 32 epoch
+
+epoch: 342
+batch training loss: 0.01043, ssr: 0.96726, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 33 epoch
+
+epoch: 343
+batch training loss: 0.00869, ssr: 0.96717, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 34 epoch
+
+epoch: 344
+batch training loss: 0.01078, ssr: 0.96707, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 35 epoch
+
+epoch: 345
+batch training loss: 0.01039, ssr: 0.96697, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 36 epoch
+
+epoch: 346
+batch training loss: 0.00869, ssr: 0.96688, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 37 epoch
+
+epoch: 347
+batch training loss: 0.01609, ssr: 0.96678, lr: 0.00067
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 38 epoch
+
+epoch: 348
+batch training loss: 0.00747, ssr: 0.96669, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 39 epoch
+
+epoch: 349
+batch training loss: 0.00807, ssr: 0.96659, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 40 epoch
+
+epoch: 350
+batch training loss: 0.01487, ssr: 0.96649, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 41 epoch
+
+epoch: 351
+batch training loss: 0.01212, ssr: 0.96640, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 42 epoch
+
+epoch: 352
+batch training loss: 0.00773, ssr: 0.96630, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 43 epoch
+
+epoch: 353
+batch training loss: 0.00549, ssr: 0.96621, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 44 epoch
+
+epoch: 354
+batch training loss: 0.00652, ssr: 0.96611, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 45 epoch
+
+epoch: 355
+batch training loss: 0.00945, ssr: 0.96601, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 46 epoch
+
+epoch: 356
+batch training loss: 0.01238, ssr: 0.96592, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 47 epoch
+
+epoch: 357
+batch training loss: 0.00688, ssr: 0.96582, lr: 0.00066
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 48 epoch
+
+epoch: 358
+batch training loss: 0.00613, ssr: 0.96573, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 49 epoch
+
+epoch: 359
+batch training loss: 0.00596, ssr: 0.96563, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 50 epoch
+
+epoch: 360
+batch training loss: 0.00822, ssr: 0.96553, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 51 epoch
+
+epoch: 361
+batch training loss: 0.00507, ssr: 0.96544, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00880 to 0.00867, saving model
+
+epoch: 362
+batch training loss: 0.00797, ssr: 0.96534, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 363
+batch training loss: 0.00703, ssr: 0.96525, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 364
+batch training loss: 0.00767, ssr: 0.96515, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 365
+batch training loss: 0.00763, ssr: 0.96505, lr: 0.00065
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 4 epoch
+
+epoch: 366
+batch training loss: 0.00822, ssr: 0.96496, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 367
+batch training loss: 0.00586, ssr: 0.96486, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 368
+batch training loss: 0.00554, ssr: 0.96477, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 369
+batch training loss: 0.00630, ssr: 0.96467, lr: 0.00065
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 370
+batch training loss: 0.00689, ssr: 0.96457, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 371
+batch training loss: 0.00536, ssr: 0.96448, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 372
+batch training loss: 0.01183, ssr: 0.96438, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00867 to 0.00851, saving model
+
+epoch: 373
+batch training loss: 0.00508, ssr: 0.96429, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 374
+batch training loss: 0.00831, ssr: 0.96419, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 375
+batch training loss: 0.00982, ssr: 0.96409, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 376
+batch training loss: 0.01055, ssr: 0.96400, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 377
+batch training loss: 0.00607, ssr: 0.96390, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 378
+batch training loss: 0.00597, ssr: 0.96381, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00851 to 0.00837, saving model
+
+epoch: 379
+batch training loss: 0.00541, ssr: 0.96371, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 380
+batch training loss: 0.00954, ssr: 0.96361, lr: 0.00064
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 381
+batch training loss: 0.00636, ssr: 0.96352, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 382
+batch training loss: 0.00483, ssr: 0.96342, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 383
+batch training loss: 0.00809, ssr: 0.96333, lr: 0.00063
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 5 epoch
+
+epoch: 384
+batch training loss: 0.00709, ssr: 0.96323, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 385
+batch training loss: 0.00842, ssr: 0.96313, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 386
+batch training loss: 0.01029, ssr: 0.96304, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 387
+batch training loss: 0.00770, ssr: 0.96294, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 388
+batch training loss: 0.01151, ssr: 0.96285, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 389
+batch training loss: 0.00827, ssr: 0.96275, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 390
+batch training loss: 0.00596, ssr: 0.96265, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 391
+batch training loss: 0.00690, ssr: 0.96256, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 392
+batch training loss: 0.00814, ssr: 0.96246, lr: 0.00063
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 393
+batch training loss: 0.00567, ssr: 0.96237, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 394
+batch training loss: 0.00570, ssr: 0.96227, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 395
+batch training loss: 0.00627, ssr: 0.96217, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 396
+batch training loss: 0.01551, ssr: 0.96208, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 397
+batch training loss: 0.00526, ssr: 0.96198, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 398
+batch training loss: 0.00773, ssr: 0.96189, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 20 epoch
+
+epoch: 399
+batch training loss: 0.00839, ssr: 0.96179, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 400
+batch training loss: 0.00921, ssr: 0.96169, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 401
+batch training loss: 0.00536, ssr: 0.96160, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 402
+batch training loss: 0.00921, ssr: 0.96150, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 403
+batch training loss: 0.00875, ssr: 0.96141, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 404
+batch training loss: 0.00592, ssr: 0.96131, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 405
+batch training loss: 0.00614, ssr: 0.96121, lr: 0.00062
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 406
+batch training loss: 0.00546, ssr: 0.96112, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 407
+batch training loss: 0.01304, ssr: 0.96102, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 408
+batch training loss: 0.00474, ssr: 0.96093, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 30 epoch
+
+epoch: 409
+batch training loss: 0.01596, ssr: 0.96083, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 31 epoch
+
+epoch: 410
+batch training loss: 0.00549, ssr: 0.96073, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 32 epoch
+
+epoch: 411
+batch training loss: 0.00670, ssr: 0.96064, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 33 epoch
+
+epoch: 412
+batch training loss: 0.00543, ssr: 0.96054, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 34 epoch
+
+epoch: 413
+batch training loss: 0.00711, ssr: 0.96045, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 35 epoch
+
+epoch: 414
+batch training loss: 0.00618, ssr: 0.96035, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 36 epoch
+
+epoch: 415
+batch training loss: 0.00618, ssr: 0.96025, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 37 epoch
+
+epoch: 416
+batch training loss: 0.00593, ssr: 0.96016, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 38 epoch
+
+epoch: 417
+batch training loss: 0.00717, ssr: 0.96006, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 39 epoch
+
+epoch: 418
+batch training loss: 0.00755, ssr: 0.95997, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 40 epoch
+
+epoch: 419
+batch training loss: 0.00711, ssr: 0.95987, lr: 0.00061
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 41 epoch
+
+epoch: 420
+batch training loss: 0.00429, ssr: 0.95977, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00837 to 0.00787, saving model
+
+epoch: 421
+batch training loss: 0.00670, ssr: 0.95968, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 422
+batch training loss: 0.00566, ssr: 0.95958, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 423
+batch training loss: 0.00631, ssr: 0.95949, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 424
+batch training loss: 0.00835, ssr: 0.95939, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 425
+batch training loss: 0.00905, ssr: 0.95929, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 426
+batch training loss: 0.00960, ssr: 0.95920, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 427
+batch training loss: 0.00967, ssr: 0.95910, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 428
+batch training loss: 0.00740, ssr: 0.95901, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 429
+batch training loss: 0.00472, ssr: 0.95891, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 430
+batch training loss: 0.00510, ssr: 0.95881, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 431
+batch training loss: 0.00627, ssr: 0.95872, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 432
+batch training loss: 0.00777, ssr: 0.95862, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 433
+batch training loss: 0.00496, ssr: 0.95853, lr: 0.00060
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00787 to 0.00785, saving model
+
+epoch: 434
+batch training loss: 0.00450, ssr: 0.95843, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 435
+batch training loss: 0.00686, ssr: 0.95833, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 436
+batch training loss: 0.01033, ssr: 0.95824, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 437
+batch training loss: 0.00760, ssr: 0.95814, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 438
+batch training loss: 0.00631, ssr: 0.95805, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 439
+batch training loss: 0.00657, ssr: 0.95795, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 440
+batch training loss: 0.00651, ssr: 0.95785, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 441
+batch training loss: 0.00650, ssr: 0.95776, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 442
+batch training loss: 0.00488, ssr: 0.95766, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 443
+batch training loss: 0.00503, ssr: 0.95757, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 444
+batch training loss: 0.00742, ssr: 0.95747, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 445
+batch training loss: 0.00540, ssr: 0.95737, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 446
+batch training loss: 0.00668, ssr: 0.95728, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 447
+batch training loss: 0.00499, ssr: 0.95718, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 448
+batch training loss: 0.00557, ssr: 0.95709, lr: 0.00059
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 449
+batch training loss: 0.00900, ssr: 0.95699, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 450
+batch training loss: 0.00839, ssr: 0.95689, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 451
+batch training loss: 0.00623, ssr: 0.95680, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 452
+batch training loss: 0.00693, ssr: 0.95670, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 453
+batch training loss: 0.00478, ssr: 0.95661, lr: 0.00058
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 20 epoch
+
+epoch: 454
+batch training loss: 0.00918, ssr: 0.95651, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 455
+batch training loss: 0.00580, ssr: 0.95641, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 456
+batch training loss: 0.00959, ssr: 0.95632, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 457
+batch training loss: 0.00620, ssr: 0.95622, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 458
+batch training loss: 0.00658, ssr: 0.95613, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 459
+batch training loss: 0.00583, ssr: 0.95603, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 460
+batch training loss: 0.00531, ssr: 0.95593, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 461
+batch training loss: 0.00719, ssr: 0.95584, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 462
+batch training loss: 0.00731, ssr: 0.95574, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 463
+batch training loss: 0.00784, ssr: 0.95565, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 30 epoch
+
+epoch: 464
+batch training loss: 0.01131, ssr: 0.95555, lr: 0.00058
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 31 epoch
+
+epoch: 465
+batch training loss: 0.00901, ssr: 0.95545, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 32 epoch
+
+epoch: 466
+batch training loss: 0.00739, ssr: 0.95536, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00785 to 0.00771, saving model
+
+epoch: 467
+batch training loss: 0.00485, ssr: 0.95526, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 468
+batch training loss: 0.00740, ssr: 0.95517, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 469
+batch training loss: 0.00764, ssr: 0.95507, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 470
+batch training loss: 0.00574, ssr: 0.95497, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 471
+batch training loss: 0.00690, ssr: 0.95488, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 472
+batch training loss: 0.00746, ssr: 0.95478, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 473
+batch training loss: 0.00393, ssr: 0.95469, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00771 to 0.00770, saving model
+
+epoch: 474
+batch training loss: 0.00436, ssr: 0.95459, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 475
+batch training loss: 0.00412, ssr: 0.95449, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 476
+batch training loss: 0.01009, ssr: 0.95440, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 477
+batch training loss: 0.00654, ssr: 0.95430, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 478
+batch training loss: 0.01277, ssr: 0.95421, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 479
+batch training loss: 0.00592, ssr: 0.95411, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 480
+batch training loss: 0.00983, ssr: 0.95401, lr: 0.00057
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 481
+batch training loss: 0.00726, ssr: 0.95392, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 482
+batch training loss: 0.00523, ssr: 0.95382, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 483
+batch training loss: 0.00413, ssr: 0.95373, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 484
+batch training loss: 0.00969, ssr: 0.95363, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 485
+batch training loss: 0.00544, ssr: 0.95353, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 486
+batch training loss: 0.01143, ssr: 0.95344, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 487
+batch training loss: 0.00464, ssr: 0.95334, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 488
+batch training loss: 0.00652, ssr: 0.95325, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00770 to 0.00740, saving model
+
+epoch: 489
+batch training loss: 0.00588, ssr: 0.95315, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 490
+batch training loss: 0.01109, ssr: 0.95305, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 491
+batch training loss: 0.00691, ssr: 0.95296, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 492
+batch training loss: 0.00426, ssr: 0.95286, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 493
+batch training loss: 0.00601, ssr: 0.95277, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 494
+batch training loss: 0.00469, ssr: 0.95267, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 495
+batch training loss: 0.01487, ssr: 0.95257, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 496
+batch training loss: 0.00463, ssr: 0.95248, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 497
+batch training loss: 0.00632, ssr: 0.95238, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 498
+batch training loss: 0.01515, ssr: 0.95229, lr: 0.00056
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 499
+batch training loss: 0.01026, ssr: 0.95219, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 500
+batch training loss: 0.00706, ssr: 0.95209, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 501
+batch training loss: 0.00514, ssr: 0.95200, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 502
+batch training loss: 0.00596, ssr: 0.95190, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 503
+batch training loss: 0.00520, ssr: 0.95181, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 504
+batch training loss: 0.01288, ssr: 0.95171, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 505
+batch training loss: 0.00581, ssr: 0.95161, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 506
+batch training loss: 0.00581, ssr: 0.95152, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 507
+batch training loss: 0.00906, ssr: 0.95142, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 508
+batch training loss: 0.00565, ssr: 0.95133, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 20 epoch
+
+epoch: 509
+batch training loss: 0.00662, ssr: 0.95123, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 510
+batch training loss: 0.01378, ssr: 0.95113, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 511
+batch training loss: 0.00735, ssr: 0.95104, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 512
+batch training loss: 0.00831, ssr: 0.95094, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 513
+batch training loss: 0.00631, ssr: 0.95085, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 514
+batch training loss: 0.00588, ssr: 0.95075, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 515
+batch training loss: 0.00471, ssr: 0.95065, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 516
+batch training loss: 0.01115, ssr: 0.95056, lr: 0.00055
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 517
+batch training loss: 0.00814, ssr: 0.95046, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 518
+batch training loss: 0.00631, ssr: 0.95037, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 30 epoch
+
+epoch: 519
+batch training loss: 0.00665, ssr: 0.95027, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 31 epoch
+
+epoch: 520
+batch training loss: 0.00534, ssr: 0.95017, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 32 epoch
+
+epoch: 521
+batch training loss: 0.00533, ssr: 0.95008, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 33 epoch
+
+epoch: 522
+batch training loss: 0.00469, ssr: 0.94998, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 34 epoch
+
+epoch: 523
+batch training loss: 0.00524, ssr: 0.94989, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 35 epoch
+
+epoch: 524
+batch training loss: 0.00488, ssr: 0.94979, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 36 epoch
+
+epoch: 525
+batch training loss: 0.00986, ssr: 0.94969, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 37 epoch
+
+epoch: 526
+batch training loss: 0.01360, ssr: 0.94960, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 38 epoch
+
+epoch: 527
+batch training loss: 0.00478, ssr: 0.94950, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 39 epoch
+
+epoch: 528
+batch training loss: 0.01376, ssr: 0.94941, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 40 epoch
+
+epoch: 529
+batch training loss: 0.00517, ssr: 0.94931, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 41 epoch
+
+epoch: 530
+batch training loss: 0.00443, ssr: 0.94921, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 42 epoch
+
+epoch: 531
+batch training loss: 0.00600, ssr: 0.94912, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 43 epoch
+
+epoch: 532
+batch training loss: 0.00548, ssr: 0.94902, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 44 epoch
+
+epoch: 533
+batch training loss: 0.00475, ssr: 0.94893, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 45 epoch
+
+epoch: 534
+batch training loss: 0.00511, ssr: 0.94883, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 46 epoch
+
+epoch: 535
+batch training loss: 0.00552, ssr: 0.94873, lr: 0.00054
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 47 epoch
+
+epoch: 536
+batch training loss: 0.00672, ssr: 0.94864, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 48 epoch
+
+epoch: 537
+batch training loss: 0.00847, ssr: 0.94854, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 49 epoch
+
+epoch: 538
+batch training loss: 0.01405, ssr: 0.94845, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 50 epoch
+
+epoch: 539
+batch training loss: 0.00560, ssr: 0.94835, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 51 epoch
+
+epoch: 540
+batch training loss: 0.00608, ssr: 0.94825, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 52 epoch
+
+epoch: 541
+batch training loss: 0.00456, ssr: 0.94816, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 53 epoch
+
+epoch: 542
+batch training loss: 0.00636, ssr: 0.94806, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 54 epoch
+
+epoch: 543
+batch training loss: 0.00450, ssr: 0.94797, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 55 epoch
+
+epoch: 544
+batch training loss: 0.00963, ssr: 0.94787, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 56 epoch
+
+epoch: 545
+batch training loss: 0.00569, ssr: 0.94777, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 57 epoch
+
+epoch: 546
+batch training loss: 0.00532, ssr: 0.94768, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 58 epoch
+
+epoch: 547
+batch training loss: 0.00533, ssr: 0.94758, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 59 epoch
+
+epoch: 548
+batch training loss: 0.00788, ssr: 0.94749, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 60 epoch
+
+epoch: 549
+batch training loss: 0.00770, ssr: 0.94739, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 61 epoch
+
+epoch: 550
+batch training loss: 0.00636, ssr: 0.94729, lr: 0.00053
+epoch eval loss:
+sst: 0.02
+eval score is not improved for 62 epoch
+
+epoch: 551
+batch training loss: 0.00972, ssr: 0.94720, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 63 epoch
+
+epoch: 552
+batch training loss: 0.00492, ssr: 0.94710, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 64 epoch
+
+epoch: 553
+batch training loss: 0.00412, ssr: 0.94701, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 65 epoch
+
+epoch: 554
+batch training loss: 0.00655, ssr: 0.94691, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 66 epoch
+
+epoch: 555
+batch training loss: 0.00831, ssr: 0.94681, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 67 epoch
+
+epoch: 556
+batch training loss: 0.00412, ssr: 0.94672, lr: 0.00053
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 68 epoch
+
+epoch: 557
+batch training loss: 0.01190, ssr: 0.94662, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00740 to 0.00703, saving model
+
+epoch: 558
+batch training loss: 0.00546, ssr: 0.94653, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 559
+batch training loss: 0.00598, ssr: 0.94643, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 560
+batch training loss: 0.00893, ssr: 0.94633, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 561
+batch training loss: 0.00483, ssr: 0.94624, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 562
+batch training loss: 0.00466, ssr: 0.94614, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 563
+batch training loss: 0.00464, ssr: 0.94605, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 564
+batch training loss: 0.00559, ssr: 0.94595, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 565
+batch training loss: 0.00647, ssr: 0.94585, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 566
+batch training loss: 0.00598, ssr: 0.94576, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 567
+batch training loss: 0.00754, ssr: 0.94566, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 568
+batch training loss: 0.01000, ssr: 0.94557, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 569
+batch training loss: 0.01082, ssr: 0.94547, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 570
+batch training loss: 0.00590, ssr: 0.94537, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 571
+batch training loss: 0.00595, ssr: 0.94528, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 572
+batch training loss: 0.00456, ssr: 0.94518, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 573
+batch training loss: 0.00659, ssr: 0.94509, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 574
+batch training loss: 0.01010, ssr: 0.94499, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 575
+batch training loss: 0.00543, ssr: 0.94489, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 576
+batch training loss: 0.00665, ssr: 0.94480, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 577
+batch training loss: 0.01286, ssr: 0.94470, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 20 epoch
+
+epoch: 578
+batch training loss: 0.00428, ssr: 0.94461, lr: 0.00052
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 579
+batch training loss: 0.00448, ssr: 0.94451, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 580
+batch training loss: 0.00732, ssr: 0.94441, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 581
+batch training loss: 0.00942, ssr: 0.94432, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 582
+batch training loss: 0.00566, ssr: 0.94422, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 583
+batch training loss: 0.00464, ssr: 0.94413, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 584
+batch training loss: 0.00584, ssr: 0.94403, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 585
+batch training loss: 0.00713, ssr: 0.94393, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 586
+batch training loss: 0.00504, ssr: 0.94384, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 587
+batch training loss: 0.00650, ssr: 0.94374, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 30 epoch
+
+epoch: 588
+batch training loss: 0.00730, ssr: 0.94365, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 31 epoch
+
+epoch: 589
+batch training loss: 0.00452, ssr: 0.94355, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 32 epoch
+
+epoch: 590
+batch training loss: 0.01218, ssr: 0.94345, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 33 epoch
+
+epoch: 591
+batch training loss: 0.00583, ssr: 0.94336, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 34 epoch
+
+epoch: 592
+batch training loss: 0.01390, ssr: 0.94326, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 35 epoch
+
+epoch: 593
+batch training loss: 0.00768, ssr: 0.94317, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 36 epoch
+
+epoch: 594
+batch training loss: 0.01035, ssr: 0.94307, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 37 epoch
+
+epoch: 595
+batch training loss: 0.00396, ssr: 0.94297, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 38 epoch
+
+epoch: 596
+batch training loss: 0.00663, ssr: 0.94288, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 39 epoch
+
+epoch: 597
+batch training loss: 0.00646, ssr: 0.94278, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 40 epoch
+
+epoch: 598
+batch training loss: 0.00434, ssr: 0.94269, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 41 epoch
+
+epoch: 599
+batch training loss: 0.01071, ssr: 0.94259, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 42 epoch
+
+epoch: 600
+batch training loss: 0.01048, ssr: 0.94249, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 43 epoch
+
+epoch: 601
+batch training loss: 0.00718, ssr: 0.94240, lr: 0.00051
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 44 epoch
+
+epoch: 602
+batch training loss: 0.00818, ssr: 0.94230, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 45 epoch
+
+epoch: 603
+batch training loss: 0.00972, ssr: 0.94221, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 46 epoch
+
+epoch: 604
+batch training loss: 0.01037, ssr: 0.94211, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 47 epoch
+
+epoch: 605
+batch training loss: 0.00694, ssr: 0.94201, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 48 epoch
+
+epoch: 606
+batch training loss: 0.00835, ssr: 0.94192, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 49 epoch
+
+epoch: 607
+batch training loss: 0.00743, ssr: 0.94182, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 50 epoch
+
+epoch: 608
+batch training loss: 0.00544, ssr: 0.94173, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 51 epoch
+
+epoch: 609
+batch training loss: 0.00937, ssr: 0.94163, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 52 epoch
+
+epoch: 610
+batch training loss: 0.00854, ssr: 0.94153, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 53 epoch
+
+epoch: 611
+batch training loss: 0.00453, ssr: 0.94144, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 54 epoch
+
+epoch: 612
+batch training loss: 0.01264, ssr: 0.94134, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 55 epoch
+
+epoch: 613
+batch training loss: 0.00416, ssr: 0.94125, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 56 epoch
+
+epoch: 614
+batch training loss: 0.00501, ssr: 0.94115, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 57 epoch
+
+epoch: 615
+batch training loss: 0.00769, ssr: 0.94105, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 58 epoch
+
+epoch: 616
+batch training loss: 0.00770, ssr: 0.94096, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 59 epoch
+
+epoch: 617
+batch training loss: 0.00991, ssr: 0.94086, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 60 epoch
+
+epoch: 618
+batch training loss: 0.00938, ssr: 0.94077, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 61 epoch
+
+epoch: 619
+batch training loss: 0.00817, ssr: 0.94067, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 62 epoch
+
+epoch: 620
+batch training loss: 0.00486, ssr: 0.94057, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 63 epoch
+
+epoch: 621
+batch training loss: 0.01022, ssr: 0.94048, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 64 epoch
+
+epoch: 622
+batch training loss: 0.00565, ssr: 0.94038, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 65 epoch
+
+epoch: 623
+batch training loss: 0.00533, ssr: 0.94029, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 66 epoch
+
+epoch: 624
+batch training loss: 0.00657, ssr: 0.94019, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 67 epoch
+
+epoch: 625
+batch training loss: 0.00650, ssr: 0.94009, lr: 0.00050
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 68 epoch
+
+epoch: 626
+batch training loss: 0.00470, ssr: 0.94000, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 69 epoch
+
+epoch: 627
+batch training loss: 0.00512, ssr: 0.93990, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 70 epoch
+
+epoch: 628
+batch training loss: 0.00574, ssr: 0.93981, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 71 epoch
+
+epoch: 629
+batch training loss: 0.00497, ssr: 0.93971, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 72 epoch
+
+epoch: 630
+batch training loss: 0.00642, ssr: 0.93961, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 73 epoch
+
+epoch: 631
+batch training loss: 0.00582, ssr: 0.93952, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 74 epoch
+
+epoch: 632
+batch training loss: 0.00364, ssr: 0.93942, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 75 epoch
+
+epoch: 633
+batch training loss: 0.00959, ssr: 0.93933, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 76 epoch
+
+epoch: 634
+batch training loss: 0.00852, ssr: 0.93923, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 77 epoch
+
+epoch: 635
+batch training loss: 0.00427, ssr: 0.93913, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 78 epoch
+
+epoch: 636
+batch training loss: 0.00603, ssr: 0.93904, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00703 to 0.00702, saving model
+
+epoch: 637
+batch training loss: 0.00555, ssr: 0.93894, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 638
+batch training loss: 0.00682, ssr: 0.93885, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 639
+batch training loss: 0.00810, ssr: 0.93875, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 640
+batch training loss: 0.00431, ssr: 0.93865, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 641
+batch training loss: 0.00403, ssr: 0.93856, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 642
+batch training loss: 0.00759, ssr: 0.93846, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 643
+batch training loss: 0.00504, ssr: 0.93837, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 644
+batch training loss: 0.00619, ssr: 0.93827, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 645
+batch training loss: 0.00665, ssr: 0.93817, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 646
+batch training loss: 0.00458, ssr: 0.93808, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 647
+batch training loss: 0.00477, ssr: 0.93798, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00702 to 0.00696, saving model
+
+epoch: 648
+batch training loss: 0.00404, ssr: 0.93789, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 649
+batch training loss: 0.00384, ssr: 0.93779, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 650
+batch training loss: 0.00910, ssr: 0.93769, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 651
+batch training loss: 0.00634, ssr: 0.93760, lr: 0.00049
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 652
+batch training loss: 0.00414, ssr: 0.93750, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 653
+batch training loss: 0.00961, ssr: 0.93741, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 654
+batch training loss: 0.00540, ssr: 0.93731, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 655
+batch training loss: 0.00752, ssr: 0.93721, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 656
+batch training loss: 0.00649, ssr: 0.93712, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 657
+batch training loss: 0.00662, ssr: 0.93702, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 658
+batch training loss: 0.00670, ssr: 0.93693, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00696 to 0.00684, saving model
+
+epoch: 659
+batch training loss: 0.00365, ssr: 0.93683, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 660
+batch training loss: 0.00404, ssr: 0.93673, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 661
+batch training loss: 0.00542, ssr: 0.93664, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 662
+batch training loss: 0.00618, ssr: 0.93654, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 663
+batch training loss: 0.00772, ssr: 0.93645, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 664
+batch training loss: 0.00485, ssr: 0.93635, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 665
+batch training loss: 0.00433, ssr: 0.93625, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 666
+batch training loss: 0.00601, ssr: 0.93616, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 667
+batch training loss: 0.01051, ssr: 0.93606, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 668
+batch training loss: 0.00567, ssr: 0.93597, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 669
+batch training loss: 0.00443, ssr: 0.93587, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 670
+batch training loss: 0.00401, ssr: 0.93577, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 671
+batch training loss: 0.00755, ssr: 0.93568, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 672
+batch training loss: 0.00803, ssr: 0.93558, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 673
+batch training loss: 0.00421, ssr: 0.93549, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 674
+batch training loss: 0.00473, ssr: 0.93539, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 675
+batch training loss: 0.00533, ssr: 0.93529, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00684 to 0.00676, saving model
+
+epoch: 676
+batch training loss: 0.00902, ssr: 0.93520, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 677
+batch training loss: 0.00802, ssr: 0.93510, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 678
+batch training loss: 0.00392, ssr: 0.93501, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 679
+batch training loss: 0.00449, ssr: 0.93491, lr: 0.00048
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00676 to 0.00671, saving model
+
+epoch: 680
+batch training loss: 0.00788, ssr: 0.93481, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 681
+batch training loss: 0.00332, ssr: 0.93472, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 682
+batch training loss: 0.00594, ssr: 0.93462, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 683
+batch training loss: 0.01135, ssr: 0.93453, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 684
+batch training loss: 0.00545, ssr: 0.93443, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 685
+batch training loss: 0.00543, ssr: 0.93433, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 686
+batch training loss: 0.00409, ssr: 0.93424, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 687
+batch training loss: 0.00400, ssr: 0.93414, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00671 to 0.00671, saving model
+
+epoch: 688
+batch training loss: 0.00640, ssr: 0.93405, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 689
+batch training loss: 0.00480, ssr: 0.93395, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 690
+batch training loss: 0.00393, ssr: 0.93385, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 691
+batch training loss: 0.00412, ssr: 0.93376, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 692
+batch training loss: 0.00633, ssr: 0.93366, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 693
+batch training loss: 0.00437, ssr: 0.93357, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 694
+batch training loss: 0.00424, ssr: 0.93347, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 695
+batch training loss: 0.00805, ssr: 0.93337, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 696
+batch training loss: 0.00546, ssr: 0.93328, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 697
+batch training loss: 0.00503, ssr: 0.93318, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 698
+batch training loss: 0.00862, ssr: 0.93309, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 699
+batch training loss: 0.00702, ssr: 0.93299, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 700
+batch training loss: 0.00934, ssr: 0.93289, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 701
+batch training loss: 0.00637, ssr: 0.93280, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 702
+batch training loss: 0.00520, ssr: 0.93270, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 703
+batch training loss: 0.00465, ssr: 0.93261, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 704
+batch training loss: 0.00515, ssr: 0.93251, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 705
+batch training loss: 0.00871, ssr: 0.93241, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 706
+batch training loss: 0.00375, ssr: 0.93232, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 707
+batch training loss: 0.00641, ssr: 0.93222, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 20 epoch
+
+epoch: 708
+batch training loss: 0.00526, ssr: 0.93213, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 709
+batch training loss: 0.00622, ssr: 0.93203, lr: 0.00047
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 710
+batch training loss: 0.00414, ssr: 0.93193, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 711
+batch training loss: 0.00430, ssr: 0.93184, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 712
+batch training loss: 0.00683, ssr: 0.93174, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 713
+batch training loss: 0.00812, ssr: 0.93165, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 714
+batch training loss: 0.00713, ssr: 0.93155, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 715
+batch training loss: 0.00432, ssr: 0.93145, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 716
+batch training loss: 0.00679, ssr: 0.93136, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 717
+batch training loss: 0.00539, ssr: 0.93126, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 30 epoch
+
+epoch: 718
+batch training loss: 0.00977, ssr: 0.93117, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 31 epoch
+
+epoch: 719
+batch training loss: 0.00402, ssr: 0.93107, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 32 epoch
+
+epoch: 720
+batch training loss: 0.00476, ssr: 0.93097, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 33 epoch
+
+epoch: 721
+batch training loss: 0.00757, ssr: 0.93088, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 34 epoch
+
+epoch: 722
+batch training loss: 0.00741, ssr: 0.93078, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 35 epoch
+
+epoch: 723
+batch training loss: 0.00485, ssr: 0.93069, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 36 epoch
+
+epoch: 724
+batch training loss: 0.00518, ssr: 0.93059, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 37 epoch
+
+epoch: 725
+batch training loss: 0.00794, ssr: 0.93049, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 38 epoch
+
+epoch: 726
+batch training loss: 0.00480, ssr: 0.93040, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 39 epoch
+
+epoch: 727
+batch training loss: 0.00847, ssr: 0.93030, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 40 epoch
+
+epoch: 728
+batch training loss: 0.00374, ssr: 0.93021, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 41 epoch
+
+epoch: 729
+batch training loss: 0.00518, ssr: 0.93011, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 42 epoch
+
+epoch: 730
+batch training loss: 0.00916, ssr: 0.93001, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 43 epoch
+
+epoch: 731
+batch training loss: 0.00381, ssr: 0.92992, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 44 epoch
+
+epoch: 732
+batch training loss: 0.00370, ssr: 0.92982, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 45 epoch
+
+epoch: 733
+batch training loss: 0.00499, ssr: 0.92973, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 46 epoch
+
+epoch: 734
+batch training loss: 0.01056, ssr: 0.92963, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 47 epoch
+
+epoch: 735
+batch training loss: 0.00590, ssr: 0.92953, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 48 epoch
+
+epoch: 736
+batch training loss: 0.00486, ssr: 0.92944, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 49 epoch
+
+epoch: 737
+batch training loss: 0.00665, ssr: 0.92934, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 50 epoch
+
+epoch: 738
+batch training loss: 0.01086, ssr: 0.92925, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 51 epoch
+
+epoch: 739
+batch training loss: 0.00694, ssr: 0.92915, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 52 epoch
+
+epoch: 740
+batch training loss: 0.00367, ssr: 0.92905, lr: 0.00046
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 53 epoch
+
+epoch: 741
+batch training loss: 0.00771, ssr: 0.92896, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 54 epoch
+
+epoch: 742
+batch training loss: 0.00423, ssr: 0.92886, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 55 epoch
+
+epoch: 743
+batch training loss: 0.00548, ssr: 0.92877, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 56 epoch
+
+epoch: 744
+batch training loss: 0.00503, ssr: 0.92867, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 57 epoch
+
+epoch: 745
+batch training loss: 0.00692, ssr: 0.92857, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00671 to 0.00669, saving model
+
+epoch: 746
+batch training loss: 0.00365, ssr: 0.92848, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 747
+batch training loss: 0.00817, ssr: 0.92838, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 748
+batch training loss: 0.00522, ssr: 0.92829, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 749
+batch training loss: 0.00561, ssr: 0.92819, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 750
+batch training loss: 0.00351, ssr: 0.92809, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 751
+batch training loss: 0.00623, ssr: 0.92800, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 752
+batch training loss: 0.00754, ssr: 0.92790, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 753
+batch training loss: 0.00412, ssr: 0.92781, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 754
+batch training loss: 0.00725, ssr: 0.92771, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 755
+batch training loss: 0.00715, ssr: 0.92761, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 756
+batch training loss: 0.00469, ssr: 0.92752, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 757
+batch training loss: 0.00352, ssr: 0.92742, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 758
+batch training loss: 0.01309, ssr: 0.92733, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 759
+batch training loss: 0.00865, ssr: 0.92723, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 760
+batch training loss: 0.00534, ssr: 0.92713, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 761
+batch training loss: 0.00493, ssr: 0.92704, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 762
+batch training loss: 0.00453, ssr: 0.92694, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 763
+batch training loss: 0.00960, ssr: 0.92685, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 764
+batch training loss: 0.00455, ssr: 0.92675, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 765
+batch training loss: 0.00488, ssr: 0.92665, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 20 epoch
+
+epoch: 766
+batch training loss: 0.00500, ssr: 0.92656, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 21 epoch
+
+epoch: 767
+batch training loss: 0.00507, ssr: 0.92646, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 22 epoch
+
+epoch: 768
+batch training loss: 0.00558, ssr: 0.92637, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 23 epoch
+
+epoch: 769
+batch training loss: 0.00467, ssr: 0.92627, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 24 epoch
+
+epoch: 770
+batch training loss: 0.00666, ssr: 0.92617, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 25 epoch
+
+epoch: 771
+batch training loss: 0.01345, ssr: 0.92608, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 26 epoch
+
+epoch: 772
+batch training loss: 0.00853, ssr: 0.92598, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 27 epoch
+
+epoch: 773
+batch training loss: 0.00507, ssr: 0.92589, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 28 epoch
+
+epoch: 774
+batch training loss: 0.00593, ssr: 0.92579, lr: 0.00045
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 29 epoch
+
+epoch: 775
+batch training loss: 0.00463, ssr: 0.92569, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00669 to 0.00645, saving model
+
+epoch: 776
+batch training loss: 0.00494, ssr: 0.92560, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 777
+batch training loss: 0.00805, ssr: 0.92550, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 778
+batch training loss: 0.00500, ssr: 0.92541, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 779
+batch training loss: 0.00425, ssr: 0.92531, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 780
+batch training loss: 0.00501, ssr: 0.92521, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+
+epoch: 781
+batch training loss: 0.00520, ssr: 0.92512, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 6 epoch
+
+epoch: 782
+batch training loss: 0.00506, ssr: 0.92502, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 7 epoch
+
+epoch: 783
+batch training loss: 0.00589, ssr: 0.92493, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 8 epoch
+
+epoch: 784
+batch training loss: 0.00965, ssr: 0.92483, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 9 epoch
+
+epoch: 785
+batch training loss: 0.00581, ssr: 0.92473, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 10 epoch
+
+epoch: 786
+batch training loss: 0.00486, ssr: 0.92464, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 11 epoch
+
+epoch: 787
+batch training loss: 0.00425, ssr: 0.92454, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 12 epoch
+
+epoch: 788
+batch training loss: 0.00398, ssr: 0.92445, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 13 epoch
+
+epoch: 789
+batch training loss: 0.00454, ssr: 0.92435, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 14 epoch
+
+epoch: 790
+batch training loss: 0.00464, ssr: 0.92425, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 15 epoch
+
+epoch: 791
+batch training loss: 0.00734, ssr: 0.92416, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 16 epoch
+
+epoch: 792
+batch training loss: 0.00852, ssr: 0.92406, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 17 epoch
+
+epoch: 793
+batch training loss: 0.00756, ssr: 0.92397, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 18 epoch
+
+epoch: 794
+batch training loss: 0.01142, ssr: 0.92387, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 19 epoch
+
+epoch: 795
+batch training loss: 0.01410, ssr: 0.92377, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is improved from 0.00645 to 0.00645, saving model
+
+epoch: 796
+batch training loss: 0.00492, ssr: 0.92368, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 1 epoch
+
+epoch: 797
+batch training loss: 0.00850, ssr: 0.92358, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 2 epoch
+
+epoch: 798
+batch training loss: 0.00510, ssr: 0.92349, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 3 epoch
+
+epoch: 799
+batch training loss: 0.00887, ssr: 0.92339, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 4 epoch
+
+epoch: 800
+batch training loss: 0.00632, ssr: 0.92329, lr: 0.00044
+epoch eval loss:
+sst: 0.01
+eval score is not improved for 5 epoch
+{'sst input': (370, 3, 5, 28, 52), 'sst target': (370, 1, 28, 52)}
+0.0064542642794549465
+(370, 1, 28, 52)
+(370, 1, 28, 52)
+(370, 52, 1, 28)
+(370, 52, 1, 28)
+1456
+0.04059172
+1456
+0.045831904
+1456
+0.049682
+1456
+0.06163416
+1456
+0.08161236
+1456
+0.102911204
+1456
+0.097353116
+1456
+0.12673177
+1456
+0.19417733
+1456
+0.24566516
+1456
+0.2317308
+1456
+0.27402505
+1456
+0.5654164
+1456
+0.8864782
+1456
+0.8871378
+1456
+0.7802393
+1456
+0.82627535
+1456
+0.6526931
+1456
+0.4193361
+1456
+0.3018344
+1456
+0.18720444
+1456
+0.12589172
+1456
+0.14739889
+1456
+0.14251278
+1456
+0.19487165
+1456
+0.26504245
+1456
+0.31382856
+1456
+0.43962264
+1456
+0.55088323
+1456
+4.904974
+1456
+2.288279
+1456
+0.12471785
+1456
+0.12289094
+1456
+0.09912413
+1456
+0.11066266
+1456
+0.09715225
+1456
+0.11874816
+1456
+0.116132274
+1456
+0.10898106
+1456
+0.12479524
+1456
+0.105719656
+1456
+0.10706775
+1456
+0.097662285
+1456
+0.08857468
+1456
+0.07796289
+1456
+0.079390176
+1456
+0.07342651
+1456
+0.062990926
+1456
+0.06289067
+1456
+0.062353127
+1456
+0.056956
+1456
+0.060954902
+1456
+0.054534845
+1456
+0.05771477
+1456
+0.049124863
+1456
+0.057270665
+1456
+0.06300996
+1456
+0.06651904
+1456
+0.06790035
+1456
+0.07026501
+1456
+0.24620458
+1456
+0.13484047
+1456
+0.08943252
+1456
+0.087861925
+1456
+0.09077349
+1456
+0.07891442
+1456
+0.0807956
+1456
+0.082136355
+1456
+0.079163484
+1456
+0.080239296
+1456
+0.0920101
+1456
+0.09800227
+1456
+0.09821146
+1456
+0.1021294
+1456
+0.094719484
+1456
+0.088020414
+1456
+0.08948934
+1456
+0.09247831
+1456
+0.09537613
+1456
+0.08932702
+1456
+0.085668206
+1456
+0.08282478
+1456
+0.07743682
+1456
+0.07557383
+1456
+0.073257945
+1456
+0.07787257
+1456
+0.072043285
+1456
+0.0786064
+1456
+0.080595076
+1456
+0.08484366
+1456
+0.07748295
+1456
+0.7416544
+1456
+0.51254725
+1456
+0.46970087
+1456
+0.6412416
+1456
+1.0768168
+1456
+1.1300801
+1456
+0.9129404
+1456
+0.71240896
+1456
+0.5874752
+1456
+0.5360368
+1456
+0.5751758
+1456
+0.68157315
+1456
+0.74161357
+1456
+0.67970145
+1456
+0.5027136
+1456
+0.43951607
+1456
+0.3951304
+1456
+0.40236875
+1456
+0.40896988
+1456
+0.3396014
+1456
+0.32192287
+1456
+0.31857252
+1456
+0.2915576
+1456
+0.27040786
+1456
+0.19170135
+1456
+0.17982578
+1456
+0.18503585
+1456
+0.14125179
+1456
+0.11380126
+1456
+0.090331376
+1456
+0.089618996
+1456
+3.6836872
+1456
+0.42484826
+1456
+0.11905064
+1456
+0.12214531
+1456
+0.10880381
+1456
+0.093629055
+1456
+0.09208485
+1456
+0.08844498
+1456
+0.08948343
+1456
+0.09156109
+1456
+0.10364099
+1456
+0.08281315
+1456
+0.081798665
+1456
+0.078576505
+1456
+0.07348721
+1456
+0.06743842
+1456
+0.06683013
+1456
+0.06682116
+1456
+0.06664603
+1456
+0.080720566
+1456
+0.07581222
+1456
+0.083381794
+1456
+0.08452062
+1456
+0.08183439
+1456
+0.08101809
+1456
+0.07983481
+1456
+0.07894128
+1456
+0.08248316
+1456
+0.087711126
+1456
+0.0913351
+1456
+0.07822588
+1456
+0.53180957
+1456
+0.2791552
+1456
+0.1867094
+1456
+0.19876018
+1456
+0.21457939
+1456
+0.25644332
+1456
+0.20489329
+1456
+0.21862349
+1456
+0.18426995
+1456
+0.22117195
+1456
+0.17006424
+1456
+0.1816343
+1456
+0.13951722
+1456
+0.1537278
+1456
+0.11356754
+1456
+0.11955981
+1456
+0.101678506
+1456
+0.10972271
+1456
+0.097884655
+1456
+0.12112731
+1456
+0.10541192
+1456
+0.10559653
+1456
+0.104340784
+1456
+0.14232543
+1456
+0.15332225
+1456
+0.1535719
+1456
+0.20455249
+1456
+0.17709847
+1456
+0.16340962
+1456
+0.15730529
+1456
+0.14423041
+1456
+19.003965
+1456
+7.9031253
+1456
+1.0144321
+1456
+0.82117856
+1456
+0.6322527
+1456
+0.5251884
+1456
+0.53539973
+1456
+0.48885435
+1456
+0.49701807
+1456
+0.44536895
+1456
+0.5030117
+1456
+0.46813887
+1456
+0.40248778
+1456
+0.45962542
+1456
+0.46826896
+1456
+0.48047495
+1456
+0.44188914
+1456
+0.4012217
+1456
+0.34441975
+1456
+0.2916863
+1456
+0.32206312
+1456
+0.2855332
+1456
+0.2617936
+1456
+0.255637
+1456
+0.26503444
+1456
+0.24136522
+1456
+0.25215298
+1456
+0.20668864
+1456
+0.18807139
+1456
+0.190712
+1456
+0.19762748
+1456
+7.342935
+1456
+2.3748398
+1456
+1.0562546
+1456
+0.8600788
+1456
+0.7753973
+1456
+0.78461134
+1456
+1.0315278
+1456
+1.0820509
+1456
+1.1101962
+1456
+1.1499279
+1456
+1.1256034
+1456
+1.2229092
+1456
+1.2415192
+1456
+1.3967328
+1456
+1.3103726
+1456
+0.9859854
+1456
+0.8795998
+1456
+0.6832456
+1456
+0.66049653
+1456
+0.5692305
+1456
+0.5804949
+1456
+0.52632886
+1456
+0.5518357
+1456
+0.44366565
+1456
+0.487831
+1456
+0.52582747
+1456
+0.5392757
+1456
+0.53030396
+1456
+0.59583634
+1456
+0.5559143
+1456
+0.5502054
+1456
+41.9056
+1456
+1.0205663
+1456
+0.13243404
+1456
+0.1189179
+1456
+0.13049176
+1456
+0.102782205
+1456
+0.11141163
+1456
+0.093956605
+1456
+0.08783017
+1456
+0.13395184
+1456
+0.12218614
+1456
+0.16377953
+1456
+0.12453197
+1456
+0.09490256
+1456
+0.1190027
+1456
+0.11170185
+1456
+0.10410461
+1456
+0.10736996
+1456
+0.110123485
+1456
+0.11220902
+1456
+0.1649638
+1456
+0.16797629
+1456
+0.16522445
+1456
+0.13165142
+1456
+0.13079777
+1456
+0.16082925
+1456
+0.11831105
+1456
+0.13594468
+1456
+0.13242306
+1456
+0.15490696
+1456
+0.14150159
+1456
+0.3910215
+1456
+0.15556157
+1456
+0.11682952
+1456
+0.10486533
+1456
+0.10954094
+1456
+0.119827636
+1456
+0.13820218
+1456
+0.11996998
+1456
+0.12459293
+1456
+0.124465
+1456
+0.10836383
+1456
+0.09934076
+1456
+0.09844965
+1456
+0.10082197
+1456
+0.12090427
+1456
+0.13178337
+1456
+0.1354448
+1456
+0.14207815
+1456
+0.14538309
+1456
+0.1491349
+1456
+0.14354068
+1456
+0.12623414
+1456
+0.10184953
+1456
+0.09191623
+1456
+0.0820889
+1456
+0.09151238
+1456
+0.102294594
+1456
+0.15188348
+1456
+0.15707798
+1456
+0.18570524
+1456
+0.20558827
+1456
+6.5204334
+1456
+3.2197018
+1456
+0.28826898
+1456
+0.2515576
+1456
+0.21591336
+1456
+0.25715357
+1456
+0.22368425
+1456
+0.22060902
+1456
+0.21892363
+1456
+0.19018957
+1456
+0.191385
+1456
+0.20600209
+1456
+0.1983933
+1456
+0.20025167
+1456
+0.19824588
+1456
+0.18349576
+1456
+0.1770248
+1456
+0.15348929
+1456
+0.14260036
+1456
+0.12173188
+1456
+0.12046991
+1456
+0.115374
+1456
+0.12615585
+1456
+0.12526695
+1456
+0.112520464
+1456
+0.103295684
+1456
+0.10303786
+1456
+0.08596562
+1456
+0.08633633
+1456
+0.08423413
+1456
+0.07705448
+1456
+0.96892464
+1456
+0.37107328
+1456
+0.35140246
+1456
+0.32385492
+1456
+0.27904046
+1456
+0.30383366
+1456
+0.20703328
+1456
+0.22234054
+1456
+0.23190239
+1456
+0.35011497
+1456
+0.3446118
+1456
+0.31109938
+1456
+0.35725397
+1456
+0.34414425
+1456
+0.36105973
+1456
+0.3941908
+1456
+0.29601926
+1456
+0.2677443
+1456
+0.29064965
+1456
+0.2865668
+1456
+0.33884668
+1456
+0.43847567
+1456
+0.51324093
+1456
+0.5947286
+1456
+0.69095683
+1456
+0.62724614
+1456
+0.5548925
+1456
+0.4079258
+1456
+0.5081592
+1456
+0.5683377
+1456
+0.45076588
+RMSE: 0.014186720898524002
+CORR 0.9971487695253728
+(4011, 28, 52) (370, 52, 28) (370, 52, 28)
+1层:NRMSE RESULT:
+ 0.0028231537346607113

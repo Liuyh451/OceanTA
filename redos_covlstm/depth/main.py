@@ -249,10 +249,10 @@ configs.batch_size = 16
 #configs.lr = 0.001
 configs.weight_decay = 0
 configs.display_interval = 10
-configs.num_epochs = 50
+configs.num_epochs = 20
 #这是早停的耐心参数。即使模型在900个epoch内没有改善性能，训练仍会继续。如果在900个epoch内性能没有改善，训练将停止
 configs.early_stopping = True
-configs.patience = 50
+configs.patience = 20
 #禁用梯度裁剪（Gradient Clipping）。梯度裁剪用于防止梯度爆炸问题，但在这里未启用
 configs.gradient_clipping = False
 #设置梯度裁剪的阈值为1。如果梯度裁剪启用，梯度的最大值将被限制为1。不过在这种配置下，由于梯度裁剪被禁用，这个参数实际上不会生效
@@ -366,7 +366,7 @@ print("test_pred",test_pred[0, 0, :10])
 print("test_true",test_true[0, 0, :10])
 rmse = []
 corr = []
-test_pred.shape[0]
+print(test_pred.shape)
 for i in range(test_pred.shape[0]):
     predict_result = test_pred[i]
     #print(predict_result)

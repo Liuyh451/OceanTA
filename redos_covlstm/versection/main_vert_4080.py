@@ -113,10 +113,6 @@ class dataPreprocess:
         while current_date < end_date:
             date_str = current_date.strftime('%Y%m%d')
             nc_file = path + '/subset_' + date_str + '.nc'
-            # 当月份大于2时停止循环
-            if current_date.month > 3:
-                print("月份大于3，停止循环。")
-                break
             # 读取 NetCDF 文件
             dataset = xr.open_dataset(nc_file)
             dataset = self.fill_depth_for_zeta(dataset)
@@ -179,11 +175,10 @@ class dataPreprocess:
         return X, Y, raw_data
 
 
-# 使用示例
-file_path = 'E:/DataSet/redos/Subset_1.0_1995'
+file_path = '/home/hy4080/redos/subset_file/'
 data_pre = dataPreprocess(file_path, 3)
 # 划分训练集
-data_dict, data_dict_Jan = data_pre.load_all_nc_data(1995, 1995)
+data_dict, data_dict_Jan = data_pre.load_all_nc_data(1992, 2006)
 train_sssa, _, _ = data_pre.read_col_data(data_dict, 's')
 train_ssha, _, _ = data_pre.read_col_data(data_dict, 'zeta')
 train_sswu, _, _ = data_pre.read_col_data(data_dict, 'u')
@@ -217,7 +212,6 @@ def unscaler(data, data_min, data_scale):
     return data_inv
 
 
-num_test = 12
 # 对数据进行归一化
 sta_train, _, _ = scaler(train_argo[:])
 ssa_train, _, _ = scaler(train_sssa[:])
@@ -270,23 +264,23 @@ configs.vtype = 't'
 configs.n_cpu = 0
 # configs.device = torch.device('cpu')
 configs.device = torch.device('cuda:0')
-configs.batch_size_test = 10
-configs.batch_size = 16
+configs.batch_size_test = 64
+configs.batch_size = 128
 # configs.lr = 0.001
 configs.weight_decay = 0
-configs.display_interval = 10
-configs.num_epochs = 30
-# 这是早停的耐心参数。即使模型在900个epoch内没有改善性能，训练仍会继续。如果在900个epoch内性能没有改善，训练将停止
+configs.display_interval = 400
+configs.num_epochs = 800
+# 这是早停的耐心参数。如果在N个epoch内性能没有改善，训练将停止
 configs.early_stopping = True
-configs.patience = 200
-# 禁用梯度裁剪（Gradient Clipping）。梯度裁剪用于防止梯度爆炸问题，但在这里未启用
+configs.patience = 800
+# 梯度裁剪用于防止梯度爆炸问题，但在这里未启用
 configs.gradient_clipping = False
 # 设置梯度裁剪的阈值为1。如果梯度裁剪启用，梯度的最大值将被限制为1。不过在这种配置下，由于梯度裁剪被禁用，这个参数实际上不会生效
 configs.clipping_threshold = 1.
 
 # lr warmup
 # 这是学习率预热的步数设置。在训练的前n步内，学习率将逐渐从一个较小的值线性增加到预设的学习率。  √
-configs.warmup = 800
+configs.warmup = 2500
 
 # data related
 # 这是输入数据的维度设置。这通常取决于你使用的数据的特征数或通道数
@@ -384,7 +378,6 @@ test_true[np.isnan(test_true)] = 0
 
 rmse = []
 corr = []
-print(test_pred.shape)
 for i in range(test_pred.shape[0]):
     predict_result = test_pred[i]
     # print(predict_result)
@@ -393,7 +386,7 @@ for i in range(test_pred.shape[0]):
     total = predict_result.shape[0]
     #print(total)
     sse = np.sum((true_result - predict_result) ** 2)
-    print(sse)
+    print(i,"_sse:",sse)
     rmse_temp = np.sqrt(sse / total)
     '''
     if i == 0:
@@ -410,6 +403,6 @@ for i in range(test_pred.shape[0]):
     corr.append(corr_temp)
 RMSE = np.sum(rmse) / len(rmse)
 CORR = np.sum(corr) / len(corr)
-print(RMSE)
-print(CORR)
+print("RMSE:",RMSE)
+print("CORR",CORR)
 nrmse = loss(data_mask_t, 1, test_pred, test_true)

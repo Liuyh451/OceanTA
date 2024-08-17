@@ -112,31 +112,21 @@ class covlstmformer(nn.Module):
         6 torch.Size([16, 3, 5, 28, 52])
         7 torch.Size([16, 1, 28, 52])
         """
-        print("原始形状:", x.shape)
-        resdual1 = self.cov1(x)
-        print("0", resdual1.shape)  #
+        resdual1 = self.cov1(x) #0
         # 将特征图按 (5, 5) 大小的块展开或重新排列
-        resdual1 = unfold_StackOverChannel(resdual1, (5, 5))
-        print("1", resdual1.shape)
+        resdual1 = unfold_StackOverChannel(resdual1, (5, 5))#1
         x = resdual1
         # 跳跃连接操作
         x = resdual1 + self.encode1(x)
-        print("2", x.shape)  # ([16, 8, 3, 3])
-        # Debug: Print shape after first addition
         # 函数将特征图 x 折叠成 (60, 80) 尺寸，可能对应于输入尺寸的恢复
         x = fold_tensor(x, (28, 52), (5, 5))
-        print("3", x.shape)
         resdual2 = x + self.cov2(x)  # xiu gai 的地方在这
         resdual2 = unfold_StackOverChannel(resdual2, (5, 5))
         x = resdual2
-        print("4", x.shape)
         x = resdual2 + self.encode2(x)
-        print("5", x.shape)
         # Debug: Print shape after second addition
         x = fold_tensor(x, (28, 52), (5, 5))
-        print("6", x.shape)
         x = self.cov_last(x)
-        print("7", x.shape)
         return x
 
 
