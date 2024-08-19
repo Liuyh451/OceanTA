@@ -74,18 +74,18 @@ def read_raw_data(var_type, depth, time_step, data_dict):
     return X, Y, raw_data
 data_dict,data_dict_Jan=load_all_nc_data(file_path,1992,2006)
 #划分训练集
-train_sssa, _, _ = read_raw_data('s', 0, 3, data_dict)
+train_sssa, _, _ = read_raw_data('t', 0, 3, data_dict)
 train_ssha, _, _ = read_raw_data('zeta', 0, 3, data_dict)
 train_sswu, _, _ = read_raw_data('u', 0, 3, data_dict)
 train_sswv, _, _ = read_raw_data('v', 0, 3, data_dict)
-train_argo, label_argo, data_mask_t = read_raw_data('t', 3, 3, data_dict)
+train_argo, label_argo, data_mask_t = read_raw_data('s', 0, 3, data_dict)
 #todo depth更改1和2
 #划分验证集
-test_sssa, _, _ = read_raw_data('s', 0, 3, data_dict_Jan)
+test_sssa, _, _ = read_raw_data('t', 0, 3, data_dict_Jan)
 test_ssha, _, _ = read_raw_data('zeta', 0, 3, data_dict_Jan)
 test_sswu, _, _ = read_raw_data('u', 0, 3, data_dict_Jan)
 test_sswv, _, _ = read_raw_data('v', 0, 3, data_dict_Jan)
-test_argo, label_test_argo, _ = read_raw_data('t', 3, 3, data_dict_Jan)
+test_argo, label_test_argo, _ = read_raw_data('s', 0, 3, data_dict_Jan)
 del data_dict,data_dict_Jan# 删除字典对象
 # def extract_nc_layer_data(path,type,depth,start_year, end_year):
 #     daily_data = []
@@ -228,7 +228,7 @@ class Configs:
 configs = Configs()
 
 # trainer related
-configs.vtype = 't'
+configs.vtype = 's'
 # configs.depth = 11
 # configs.time_step = 1
 configs.n_cpu = 0
@@ -385,5 +385,5 @@ print("RMSE:",RMSE)
 print("CORR",CORR)
 from utils import  loss
 #todo depth更改3
-nrmse = loss(data_mask_t, 3, test_pred, test_true)
+nrmse = loss(data_mask_t, 0, test_pred, test_true)
 
