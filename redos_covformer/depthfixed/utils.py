@@ -119,13 +119,13 @@ class covlstmformer(nn.Module):
         # 跳跃连接操作
         x = resdual1 + self.encode1(x)
         # 函数将特征图 x 折叠成 (60, 80) 尺寸，可能对应于输入尺寸的恢复
-        x = fold_tensor(x, (28, 52), (5, 5))
+        x = fold_tensor(x, (60, 80), (5, 5))
         resdual2 = x + self.cov2(x)  # xiu gai 的地方在这
         resdual2 = unfold_StackOverChannel(resdual2, (5, 5))
         x = resdual2
         x = resdual2 + self.encode2(x)
         # Debug: Print shape after second addition
-        x = fold_tensor(x, (28, 52), (5, 5))
+        x = fold_tensor(x, (60, 80), (5, 5))
         x = self.cov_last(x)
         return x
 
@@ -508,12 +508,12 @@ def fold_tensor(tensor, output_size, kernel_size):
         (N, *, C, H=n_h*k_h, W=n_w*k_w)
     """
     #todo planB 改为56是否更好
-    tensor = tensor.reshape(-1, 50, 3, 25)
+    tensor = tensor.reshape(-1, 192, 3, 25)
     T = tensor.size(2)
     tensor = tensor.permute(0, 2, 3, 1)  # (N, T, C_, S)
     #todo planB
     tensor = tensor.reshape(tensor.size(0), T, 25,
-                            5, 10)
+                            12, 16)
     tensor = tensor.float()
     n_dim = len(tensor.size())
     assert n_dim == 4 or n_dim == 5
@@ -521,7 +521,7 @@ def fold_tensor(tensor, output_size, kernel_size):
     folded = F.fold(f.flatten(-2), output_size=output_size, kernel_size=kernel_size, stride=kernel_size)
     if n_dim == 5:
         folded = folded.reshape(tensor.size(0), tensor.size(1), *folded.size()[1:])
-    return folded.reshape(-1, T, 5, 28, 52)
+    return folded.reshape(-1, T, 5, 60, 80)
 
 
 def TimeAttention(query, key, value, mask=None, dropout=None):

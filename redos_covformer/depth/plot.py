@@ -104,7 +104,7 @@ class Plot:
         plt.title('test_pred')
         plt.show()
 plot=Plot(data1,data2)
-data1,data2=plot.mean_over_time()
+
 
 # 示例调用
 depth = list(range(1, 25))
@@ -114,3 +114,62 @@ nrmse = [0.002023, 0.002823, 0.003603, 0.003094, 0.002901, 0.002428, 0.002329, 0
              0.001717,
              0.002045]
 # polt.plot_nrmse_vs_depth(depth, nrmse)
+import matplotlib.pyplot as plt
+import re
+
+
+def extract_data_from_log(file_path):
+    epochs = []
+    training_losses = []
+    eval_losses = []
+    learning_rates = []
+
+    with open(file_path, 'r',encoding='utf-8') as f:
+        for line in f:
+            # 提取 epoch
+            epoch_match = re.search(r'epoch: (\d+)', line)
+            if epoch_match:
+                epochs.append(int(epoch_match.group(1)))
+
+            # 提取 batch training loss 和 lr
+            training_loss_match = re.search(r'batch training loss: ([\d\.]+),.*lr: ([\d\.]+)', line)
+            if training_loss_match:
+                training_losses.append(float(training_loss_match.group(1)))
+                learning_rates.append(float(training_loss_match.group(2)))
+
+            # 提取 eval loss
+            eval_loss_match = re.search(r'sst: ([\d\.]+)', line)
+            if eval_loss_match:
+                eval_losses.append(float(eval_loss_match.group(1)))
+
+    return epochs, training_losses, eval_losses, learning_rates
+
+
+def plot_metrics(epochs, training_losses, eval_losses, learning_rates):
+    plt.figure(figsize=(12, 6))
+
+    # 绘制 Loss 曲线
+    plt.subplot(1, 2, 1)
+    plt.plot(epochs, training_losses, label='Training Loss')
+    plt.plot(epochs, eval_losses, label='Eval Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Loss vs Epoch')
+    plt.legend()
+
+    # 绘制 Learning Rate 曲线
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, learning_rates, label='Learning Rate', color='orange')
+    plt.xlabel('Epoch')
+    plt.ylabel('Learning Rate')
+    plt.title('Learning Rate vs Epoch')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
+
+# 使用你的日志文件路径
+file_path = 'D:/WorkSpace/output_6.txt'
+epochs, training_losses, eval_losses, learning_rates = extract_data_from_log(file_path)
+plot_metrics(epochs, training_losses, eval_losses, learning_rates)
