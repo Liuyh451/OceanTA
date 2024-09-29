@@ -81,17 +81,17 @@ def read_raw_data(var_type, depth, time_step, data_dict):
 file_path = 'E:/DataSet/redos/Subset_1.0_1995'
 data_dict,data_dict_Jan=load_all_nc_data(file_path,1995,1995)
 #划分训练集
-train_sssa, _, _ = read_raw_data('t', 23, 3, data_dict)
-train_ssha, _, _ = read_raw_data('zeta', 23, 3, data_dict)
-train_sswu, _, _ = read_raw_data('u', 23, 3, data_dict)
-train_sswv, _, _ = read_raw_data('v', 23, 3, data_dict)
-train_argo, label_argo, data_mask_t_1 = read_raw_data('s', depth_globel, 3, data_dict)
-#划分验证集
-test_sssa, _, _ = read_raw_data('t', 23, 3, data_dict_Jan)
-test_ssha, _, _ = read_raw_data('zeta', 23, 3, data_dict_Jan)
-test_sswu, _, _ = read_raw_data('u', 23, 3, data_dict_Jan)
-test_sswv, _, _ = read_raw_data('v', 23, 3, data_dict_Jan)
-test_argo, label_test_argo, data_mask_t_2 = read_raw_data('s', depth_globel, 3, data_dict_Jan)
+train_sssa, _, _ = read_raw_data('t', 23, 3, data_dict_Jan)
+train_ssha, _, _ = read_raw_data('zeta', 23, 3, data_dict_Jan)
+train_sswu, _, _ = read_raw_data('u', 23, 3, data_dict_Jan)
+train_sswv, _, _ = read_raw_data('v', 23, 3, data_dict_Jan)
+train_argo, label_argo, data_mask_t = read_raw_data('s', depth_globel, 3, data_dict_Jan)
+# #划分验证集
+# test_sssa, _, _ = read_raw_data('t', 23, 3, data_dict_Jan)
+# test_ssha, _, _ = read_raw_data('zeta', 23, 3, data_dict_Jan)
+# test_sswu, _, _ = read_raw_data('u', 23, 3, data_dict_Jan)
+# test_sswv, _, _ = read_raw_data('v', 23, 3, data_dict_Jan)
+# test_argo, label_test_argo, data_mask_t_2 = read_raw_data('s', depth_globel, 3, data_dict_Jan)
 del data_dict,data_dict_Jan# 删除字典对象
 def scaler(data):
     #normalise [0,1]
@@ -109,34 +109,33 @@ def unscaler(data, data_min, data_scale):
     data_inv = (data * data_scale) + data_min
     return data_inv
 
-num_test=12
+num_test=8
 #对数据进行归一化
 print("sta_train",end=' ')
-sta_train,_,_ = scaler(train_argo[:])
+sta_train,_,_ = scaler(train_argo[:-num_test,:])
 print("ssa_train",end=' ')
-ssa_train,_,_  = scaler(train_sssa[:])
+ssa_train,_,_  = scaler(train_sssa[:-num_test,:])
 print("ssha_train",end=' ')
-ssha_train,_,_ = scaler(train_ssha[:])
+ssha_train,_,_ = scaler(train_ssha[:-num_test,:])
 print("sswu_train",end=' ')
-sswu_train,_,_ = scaler(train_sswu[:])
+sswu_train,_,_ = scaler(train_sswu[:-num_test,:])
 print("sswv_train",end=' ')
-sswv_train,_,_ = scaler(train_sswv[:])
+sswv_train,_,_ = scaler(train_sswv[:-num_test,:])
 print("train_train",end=' ')
-true_train,_,_ = scaler(label_argo[:])
+true_train,_,_ = scaler(label_argo[:-num_test,:])
 
 #用历年一月份数据作为验证集
-sta_test,_,_ = scaler(test_argo[:])
-ssa_test,_,_  = scaler(test_sssa[:])
-ssha_test,_,_ = scaler(test_ssha[:])
-sswu_test,_,_ = scaler(test_sswu[:])
-sswv_test,_,_ = scaler(test_sswv[:])
+sta_test,_,_ = scaler(train_argo[-num_test:])
+ssa_test,_,_  = scaler(train_sssa[-num_test:])
+ssha_test,_,_ = scaler(train_ssha[-num_test:])
+sswu_test,_,_ = scaler(train_sswu[-num_test:])
+sswv_test,_,_ = scaler(train_sswv[-num_test:])
 
 #将多个不同类型的训练数据和测试数据沿着指定轴进行拼接，axis=2即增加特征的数量（即通道或变量的数量）
 sta_train = np.concatenate((sta_train,ssa_train,ssha_train,sswu_train,sswv_train),axis = 2 )
 sta_test = np.concatenate((sta_test,ssa_test,ssha_test,sswu_test,sswv_test),axis = 2)
-data_mask_t=np.concatenate((data_mask_t_1,data_mask_t_2),axis = 0)
-print("data_mask_t.shape",data_mask_t.shape)
-true_test,test_min,test_scale = scaler(label_test_argo[:])
+# data_mask_t=np.concatenate((data_mask_t_1,data_mask_t_2),axis = 0)
+true_test,test_min,test_scale = scaler(label_argo[-num_test:])
 #true_test是归一化后的 label_argo 数据，对应于最后 12 个时间步的标签数据
 #test_min是 label_argo[-12:] 数据中的最小值，在归一化过程中用作偏移量。
 #test_scale是 label_argo[-12:] 数据的范围，即最大值与最小值的差值。在归一化过程中用于缩放数据

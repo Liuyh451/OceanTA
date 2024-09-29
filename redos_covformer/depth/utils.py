@@ -570,9 +570,9 @@ class Trainer:
         torch.manual_seed(5)
         self.network = covlstmformer(configs).to(configs.device)
         adam = torch.optim.Adam(self.network.parameters(), lr=0, weight_decay=configs.weight_decay)
-        sgd=torch.optim.SGD(self.network.parameters(), lr=5e-3, weight_decay=configs.weight_decay)
+        # sgd=torch.optim.SGD(self.network.parameters(), lr=5e-3, weight_decay=configs.weight_decay)
         factor = math.sqrt(configs.d_model * configs.warmup) * 0.0014
-        self.opt = NoamOpt(configs.d_model, factor, warmup=configs.warmup, optimizer=sgd)
+        self.opt = NoamOpt(configs.d_model, factor, warmup=configs.warmup, optimizer=adam)
 
     def loss_sst(self, y_pred, y_true):
         # y_pred/y_true (N, 26, 24, 48)
