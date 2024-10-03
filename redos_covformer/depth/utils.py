@@ -42,15 +42,15 @@ class covlstmformer(nn.Module):
         resdual1 = unfold_StackOverChannel(resdual1, (5, 5))#1
         x = resdual1
         # 跳跃连接操作
-        x = resdual1 + self.encode1(x)
+        x = resdual1 + self.encode1(x)#2
         # 函数将特征图 x 折叠成 (60, 80) 尺寸，可能对应于输入尺寸的恢复
-        x = fold_tensor(x, (28, 52), (5, 5))
+        x = fold_tensor(x, (28, 52), (5, 5))#3
         resdual2 = x + self.cov2(x)  # xiu gai 的地方在这
-        resdual2 = unfold_StackOverChannel(resdual2, (5, 5))
+        resdual2 = unfold_StackOverChannel(resdual2, (5, 5))#4
         x = resdual2
-        x = resdual2 + self.encode2(x)
+        x = resdual2 + self.encode2(x)#5
         # Debug: Print shape after second addition
-        x = fold_tensor(x, (28, 52), (5, 5))
+        x = fold_tensor(x, (28, 52), (5, 5))#6
         x = self.cov_last(x)
         return x
 

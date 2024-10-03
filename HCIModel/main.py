@@ -1,5 +1,8 @@
+import os
+
 import numpy as np
 import pandas as pd
+import torch
 from torch.utils.data import TensorDataset
 
 from Util import cmip_dataset, ModelTrainer
@@ -49,9 +52,6 @@ def standardize(data):
     return standardized_data, means, stds
 
 
-def denormalize(z, mu, sigma):
-    return z * sigma + mu
-
 
 def standardize_train():
     file_prefix = 'mode'
@@ -91,6 +91,7 @@ def standardize_label(column):
     standardized_data_test, mean, std = standardize(y_test)
     standardized_data_train, _, _ = standardize(y_train)
     standardized_data_val, _, _ = standardize(y_val)
+
     # 提取标签列
     label_data_train = standardized_data_train[column]
     label_data_test = standardized_data_test[column]
@@ -140,3 +141,13 @@ trainer = ModelTrainer(train_data=dataset_train,
 
 # 训练模型
 trainer.train()
+#保存模型
+trainer.save_model('checkpoint.chk')
+#加载模型
+chk = torch.load('./checkpoint.chk')
+trainer.brain_analysis_module.load_state_dict(chk['net'])
+#测试
+trainer.test_model()
+
+
+

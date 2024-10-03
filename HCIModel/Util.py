@@ -3,14 +3,17 @@ import pandas as pd
 import torch
 import torch.nn as nn
 
+import torch
+import torch.nn as nn
+
 
 class BasicUnit(nn.Module):
     """
         提取长短期特征
         输入通道数：32
-        输出通道数：8
+        输出通道数：32
         参数：
-        input_channels, output_channels,data
+        input_channels, output_channels, data
         返回：
         特征图 Tensor (N*C*L)
     """
@@ -34,20 +37,25 @@ class BasicUnit(nn.Module):
 
 
 class BrainAnalysisModule(nn.Module):
-    def __init__(self, input_channels, output_channels):
+    def __init__(self, input_channels, output_channels, time_step):
         super(BrainAnalysisModule, self).__init__()
+        self.fc_input_channels = output_channels * time_step
+        self.fc_output_channels = 1
         self.basic_unit1 = BasicUnit(input_channels, output_channels)  # 第一个基本单元
-        self.basic_unit2 = BasicUnit(input_channels, output_channels)  # 第二个基本单元
+        self.basic_unit2 = BasicUnit(output_channels, output_channels)  # 第二个基本单元
+        self.fc = nn.Linear(self.fc_input_channels, self.fc_output_channels)  # 添加全连接层
+        # self.fc = nn.Conv1d(output_channels, 8, kernel_size=1)  # 1x1卷积层替代全连接层
 
     def forward(self, x):
         output1 = self.basic_unit1(x)  # 经过第一个基本单元
-        output2 = self.basic_unit2(x)  # 经过第二个基本单元
-        combined_output = output1 + output2  # 将两个输出相加
-        return combined_output
-
-
-import torch
-import torch.nn as nn
+        print("output1", output1.shape)
+        output2 = self.basic_unit2(output1)  # 以output1作为第二个单元的输入
+        print("output2", output2.shape)
+        output2_flat = output2.view(output2.size(0), -1)  # 将输出展平成2D形状，适用于全连接层
+        print("output2_flat", output2_flat.shape)
+        final_output = self.fc(output2_flat)  # 经过全连接层
+        # final_output = self.fc(output2)  # 经过全连接层
+        return final_output
 
 
 class AnticipationModule(nn.Module):
@@ -69,6 +77,8 @@ class AnticipationModule(nn.Module):
         返回：
         torch.Tensor - 重建预测值，形状为 (N, 1)
         """
+        # 在时间维度求和，获得各模式的预测值
+        forecast_mode = torch.sum(predicted_modes, dim=2)
         # 将所有模式的预测值求和sum_result = torch.sum(tensor, dim=1)  # 结果形状为 (N, L)
         reconstructed_prediction = torch.sum(predicted_modes, dim=1)
         # print('reconstructed_prediction',reconstructed_prediction.shape)
@@ -76,22 +86,11 @@ class AnticipationModule(nn.Module):
         # print('final_forecast', final_forecast.shape)
         # 在 C 维度上进行平均，确保最后的输出为 (N, 1)
         # todo 要不要求平均
-
         # final_forecast = final_forecast.mean(dim=1, keepdim=True)  # (N, 1)
 
-        return final_forecast
+        return final_forecast, forecast_mode
 
 
-# 示例：使用 AnticipationModule
-# if __name__ == "__main__":
-#     # 假设有8个模式的预测值
-#     predicted_modes = [torch.rand(1) for _ in range(8)]  # 生成随机预测值作为示例
-#
-#     anticipation_module = AnticipationModule()
-#     reconstructed_prediction = anticipation_module.forward(predicted_modes)
-#
-#     print("重建预测值：", reconstructed_prediction.item())
-#     print("预测值的维度：", reconstructed_prediction.size())  # 或者使用 reconstructed_prediction.shape
 class ModelEvaluator:
     def __init__(self, true_values, predicted_values):
         self.true_values = np.array(true_values)
@@ -188,9 +187,10 @@ class ModelTrainer:
                                     list(self.anticipation_module.parameters()),
                                     lr=self.initial_lr, weight_decay=0.01)
 
-    # def save_model(self, path):
-    #     # torch.save({'net': self.network.state_dict(),
-    #     #             'optimizer': self.opt.optimizer.state_dict()}, path)
+    def save_model(self, path):
+        torch.save({'net': self.brain_analysis_module.state_dict(),
+                    'optimizer': self.optimizer.state_dict()}, path)
+
     def train(self):
         print('loading train dataloader')
         train_loader = DataLoader(self.train_data, batch_size=self.batch_size, shuffle=True)
@@ -208,13 +208,15 @@ class ModelTrainer:
                 # 每10个批次打印一次
                 if (batch_idx + 1) % 10 == 0:
                     print(f"第 {batch_idx + 1} 批次已训练完成")
+                if not isinstance(inputs, torch.Tensor):
+                    raise ValueError(f"Expected inputs to be a torch.Tensor but got {type(inputs)} instead.")
                 inputs = inputs.to(self.device).float()  # 获取输入数据并转移到 GPU
                 targets = targets.to(self.device).float()  # 获取目标数据并转移到 GPU
 
                 # 前向传播
                 y_hat = self.brain_analysis_module(inputs)
                 # print("y_hat shape",y_hat.shape)
-                final_output = self.anticipation_module(y_hat)
+                final_output, _ = self.anticipation_module(y_hat)
                 # print("final_output shape", final_output.shape,"target shape",targets.shape)
                 # 计算损失
                 loss = self.criterion(final_output, targets)  # 使用 targets 计算损失
@@ -250,7 +252,7 @@ class ModelTrainer:
 
                 # 前向传播
                 y_hat = self.brain_analysis_module(inputs)
-                final_output = self.anticipation_module(y_hat)
+                final_output, _ = self.anticipation_module(y_hat)
 
                 # 计算损失
                 loss = self.criterion(final_output, targets)
@@ -258,3 +260,50 @@ class ModelTrainer:
 
         avg_val_loss = val_loss / len(val_loader)
         print(f'Validation Loss: {avg_val_loss:.4f}')
+
+    def test_model(self):
+        """
+        测试模型并将预测值和真实值保存到 .npy 文件中
+
+        参数：
+        - model: 已训练的模型
+        - test_loader: 测试集的数据加载器
+        - device: 运行模型的设备（'cpu' 或 'cuda'）
+        - save_path: 保存预测结果的文件路径，默认为 'predictions.npy'
+        """
+        print('loading eval dataloader')
+        test_loader = DataLoader(self.test_data, batch_size=self.batch_size, shuffle=False)
+        self.brain_analysis_module.eval()  # 设置评估模式
+        self.anticipation_module.eval()  # 设置评估模式
+        all_predictions = []
+        all_targets = []
+        all_predictions_modes = []
+
+        with torch.no_grad():  # 禁用梯度计算，节省内存
+            for inputs, targets in test_loader:
+                inputs = inputs.to(self.device).float()  # 获取输入数据并转移到 GPU
+                targets = targets.to(self.device).float()  # 获取标签并转移到 GPU
+                # 模型进行前向传播，得到预测值
+                y_hat = self.brain_analysis_module(inputs)
+                predictions, predictions_mode = self.anticipation_module(y_hat)
+
+                # 将预测值和真实值保存
+                all_predictions.append(predictions.cpu().numpy())  # 将结果从GPU移到CPU，并转换为numpy格式
+                all_targets.append(targets.cpu().numpy())
+                all_predictions_modes.append(predictions_mode.cpu().numpy())
+
+        # 转换为 numpy 数组
+        all_predictions = np.concatenate(all_predictions, axis=0)
+        all_targets = np.concatenate(all_targets, axis=0)
+        all_predictions_modes = np.concatenate(all_predictions_modes, axis=0)
+        # 保存到 .npy 文件，确保预测值和真实值一一对应
+        # 分别保存预测值和真实值
+        pred_path = './data/predictions.npy'
+        target_path = './data/targets.npy'
+        pre_mode_path = './data/pre_mode.npy'
+        np.save(pred_path, all_predictions)
+        np.save(target_path, all_targets)
+        np.save(pre_mode_path, all_predictions_modes)
+
+        print(f'预测值已保存到 {pred_path}')
+        print(f'真实值已保存到 {target_path}')
