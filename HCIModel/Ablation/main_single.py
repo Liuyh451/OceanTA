@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from Util import cmip_dataset, ModelTrainer, AnticipationModule
+from model import cmip_dataset, ModelTrainer, AnticipationModule
 
 file_path = 'E:/Dataset/waves/'
 # 设置滑动窗口大小
@@ -17,6 +17,7 @@ def create_dataset(data, time_step):
     for i in range(data.shape[0] - time_step + 1):
         dataX.append(data[i:i + time_step])
     return np.array(dataX)
+
 
 def standardize(data):
     """
@@ -118,7 +119,7 @@ trainer = ModelTrainer(
     min_lr=0.00001,
 )
 
-# for i in range(2, 9):
+# for i in range(1,2):
 #     dataset_train = cmip_dataset(X_train, y_train_list[i - 1])
 #     print(f'dataset_mode{i} train shape', dataset_train.GetDataShape())
 #     dataset_eval = cmip_dataset(X_val, y_val_list[i - 1])
@@ -127,28 +128,30 @@ trainer = ModelTrainer(
 #     trainer.train(dataset_train, dataset_eval)
 #     print(f'mode{i} train completed')
 #     # 保存模型
-#     trainer.save_model('./net/dt1/' + f'checkpoint{i}.chk')
+#     trainer.save_model('./net/' + f'checkpoint{i}.chk')
 #     print(f'model{i} save completed')
-# for i in range(2, 9):
-#     # 加载模型
-#     chk = torch.load('./net/dt1/' + f'checkpoint{i}.chk')
-#     trainer.brain_analysis_module.load_state_dict(chk['net'])
-#     # 测试
-#     dataset_test = cmip_dataset(X_test, y_test_list[i - 1])
-#     print(dataset_test.GetDataShape())
-#     all_predictions, all_targets = trainer.test_model(dataset_test)
-#     pred_path = 'data/dt1/' + f'mode{i}' + '/predictions.npy'
-#     target_path = 'data/dt1/' + f'mode{i}' + '/targets.npy'
-#     np.save(pred_path, all_predictions)
-#     np.save(target_path, all_targets)
-#     print(f'预测值已保存到 {pred_path}')
-#     print(f'真实值已保存到 {target_path}')
-# def anticipate_mode_ori(data_path):
-#     predication = np.load(data_path)
-#     anticipation_module = AnticipationModule()
-#     prediction_data = anticipation_module(predication)
-#     return prediction_data
-# anticipate_data = anticipate_mode_ori('data/dt1/predictions_inverse.npy')
-# print(anticipate_data.shape)
-# np.save('data/dt1/pre_original_data.npy', anticipate_data)
+all_predictions_list = []
+all_targets_list = []
+for i in range(1, 9):
+    # 加载模型
+    chk = torch.load('./net/' + f'checkpoint{i}.chk')
+    trainer.brain_analysis_module.load_state_dict(chk['net'])
+    # 测试
+    dataset_test = cmip_dataset(X_test, y_test_list[i - 1])
+    print(dataset_test.GetDataShape())
+    all_predictions, all_targets = trainer.test_model(dataset_test)
+    # 将每个模式的预测值和真实值添加到列表中
+    all_predictions_list.append(all_predictions.reshape(-1, 1))
+    all_targets_list.append(all_targets.reshape(-1, 1))
+# 将列表中的数据转换为 (600, 8) 的数组
+predictions_combined = np.hstack(all_predictions_list)
+targets_combined = np.hstack(all_targets_list)
+
+# 保存最终的预测值和真实值数组
+pred_path = 'data/single/predictions.npy'
+target_path = 'data/single/targets.npy'
+np.save(pred_path, predictions_combined)
+np.save(target_path, targets_combined)
+print(f'所有模式的预测值已保存到 {pred_path}')
+print(f'所有模式的真实值已保存到 {target_path}')
 
