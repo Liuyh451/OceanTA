@@ -1,9 +1,11 @@
-import os
-import torch
-
+from torch.autograd import Variable
 import numpy as np
+from torch import optim
 
-buoy_obs=np.load('data/buoy_obs.npy')
+from Utils import *
+
+import torch
+from torch.utils.data import Dataset, DataLoader
 
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -13,13 +15,13 @@ class BuoyDataset(Dataset):
     自定义数据集，用于加载浮标观测数据进行训练。
 
     参数：
-    - data: np.ndarray，形状为 (5, 113615, 4) 的浮标数据。
+    - data: np.ndarray，形状为 (5, 113613, 3, 4) 的浮标数据。
     """
     def __init__(self, data):
         # 将 NumPy 数据转换为 PyTorch Tensor
-        self.data = torch.tensor(data, dtype=torch.float32)  # 形状 (5, 113615, 4)
-        # 展平第一个维度，将浮标和时间序列合并
-        self.data = self.data.view(-1, self.data.shape[2])  # 形状 (5 * 113615, 4)
+        self.data = torch.tensor(data, dtype=torch.float32)  # 形状 (5, 113613, 3, 4)
+        # 合并浮标和时间序列维度
+        self.data = self.data.view(-1, self.data.shape[2], self.data.shape[3])  # 形状 (5 * 113613, 3, 4)
 
     def __len__(self):
         """
@@ -31,7 +33,7 @@ class BuoyDataset(Dataset):
         """
         获取指定索引的样本。
         """
-        return self.data[idx]  # 返回形状为 (4,) 的特征向量
+        return self.data[idx]  # 返回形状为 (3, 4) 的样本
 
 # 定义函数用于创建 DataLoader
 def create_dataloader(data, batch_size=32, shuffle=True):
@@ -39,7 +41,7 @@ def create_dataloader(data, batch_size=32, shuffle=True):
     创建 DataLoader。
 
     参数：
-    - data: np.ndarray，形状为 (5, 113615, 4) 的浮标数据。
+    - data: np.ndarray，形状为 (5, 113613, 3, 4) 的浮标数据。
     - batch_size: int，每个批次的样本数量，默认值为 32。
     - shuffle: bool，是否打乱数据，默认值为 True。
 
@@ -53,7 +55,7 @@ def create_dataloader(data, batch_size=32, shuffle=True):
 # 示例调用
 if __name__ == "__main__":
     # 加载数据
-    buoy_obs = np.load('data/buoy_obs.npy')  # 假设数据形状为 (5, 113615, 4)
+    buoy_obs = np.load('data/buoy_obs.npy')  # 假设数据形状为 (5, 113613, 3, 4)
 
     # 创建 DataLoader
     batch_size = 64
@@ -64,6 +66,7 @@ if __name__ == "__main__":
         print(f"Batch {batch_idx}: Shape {batch.shape}")
         if batch_idx == 1:  # 仅打印前两个批次
             break
+
 
 # 训练过程
 def train_cvae_al(cvae, discriminator, dataloader, optimizer_g, optimizer_d, lambda_kl=1.0, lambda_adv=1.0):
@@ -99,15 +102,15 @@ def train_cvae_al(cvae, discriminator, dataloader, optimizer_g, optimizer_d, lam
 
 
 # 假设我们已经构建了上下文编码器、编码器、解码器和鉴别器，并且有训练数据集dataloader
-context_encoder = ...
-encoder = ...
-decoder = ...
-discriminator = Discriminator()
-
-cvae = CVAE(context_encoder, encoder, decoder)
-
-optimizer_g = optim.Adam(cvae.parameters(), lr=0.001)
-optimizer_d = optim.Adam(discriminator.parameters(), lr=0.001)
-
-# 训练循环
-train_cvae_al(cvae, discriminator, dataloader, optimizer_g, optimizer_d)
+# context_encoder = ...
+# encoder = ...
+# decoder = ...
+# discriminator = Discriminator()
+#
+# cvae = CVAE(context_encoder, encoder, decoder)
+#
+# optimizer_g = optim.Adam(cvae.parameters(), lr=0.001)
+# optimizer_d = optim.Adam(discriminator.parameters(), lr=0.001)
+#
+# # 训练循环
+# train_cvae_al(cvae, discriminator, dataloader, optimizer_g, optimizer_d)

@@ -1,8 +1,56 @@
 import netCDF4 as nc
-import numpy as np
 import os
-import xarray as xr
+import pandas as pd
 import torch
+
+
+def fill_missing_time_points(file_path):
+    # 从文件名中提取年和月
+    file_name = file_path.split('\\')[-1]
+    year = int(file_name.split('_')[0][:4])
+    month = int(file_name.split('_')[0][4:6])
+
+    # 确定每个月的天数
+    days_in_month = pd.Timestamp(year=year, month=month, day=1).days_in_month
+
+    # 创建完整的时间序列
+    time_freq = '10min'
+    full_time_range = pd.date_range(
+        start=f'{year}-{month:02d}-01 00:00:00',
+        end=f'{year}-{month:02d}-{days_in_month} 23:50:00',
+        freq=time_freq
+    )
+
+    # 读取文件中的时间数据和其他数据
+    with nc.Dataset(file_path, 'r') as ds:
+        # 获取时间变量
+        time_var = ds.variables['time'][:]  # 假设时间变量名为 'time'
+        time_units = ds.variables['time'].units  # 获取时间单位
+        time_calendar = ds.variables['time'].calendar if hasattr(ds.variables['time'], 'calendar') else 'standard'
+        # 转换为标准的 Python datetime
+        file_time = nc.num2date(time_var, units=time_units, calendar=time_calendar)
+        file_time = pd.to_datetime([t.isoformat() for t in file_time])  # 转换为 ISO 格式后解析为 pandas 时间戳
+
+        Hs = ds['Hm0'][:]  # 假设波高数据变量名为 'Hm0'
+        Tm = ds['tm02'][:]  # 假设平均周期数据变量名为 'tm02'
+        dirm = ds['mdir'][:]  # 假设波向数据变量名为 'mdir'
+    # 创建填充后的时间对齐数据框架
+    filled_data = pd.DataFrame(index=full_time_range)
+
+    # 将每个数据对齐到完整时间序列，并填充缺失数据为 NaN
+    hs_df = pd.DataFrame({'Hs': Hs}, index=file_time)
+    tm_df = pd.DataFrame({'Tm': Tm}, index=file_time)
+    dirm_df = pd.DataFrame({'dirm': dirm}, index=file_time)
+
+    # 使用 join 对齐数据
+    merged_data = filled_data.join(hs_df).join(tm_df).join(dirm_df)
+
+    # 打印填充后的形状
+    print("填充后的形状:", merged_data.shape)
+
+    # 返回填充后的数据
+    return merged_data
+
 
 def process_wave_data(dirm):
     """
@@ -50,7 +98,6 @@ def read_nc_files_and_extract_features(base_path, year_month):
     - data: np.ndarray, 形状为 (5, max_timestep, 3)，浮标个数、时间步、特征数
     """
     buoy_count = 5  # 固定浮标数量
-    features = ['tm02', 'mdir', 'Hm0']  # 所需提取的特征
     all_data = []
     max_timestep = 0  # 用于记录最大时间步数
 
@@ -64,37 +111,24 @@ def read_nc_files_and_extract_features(base_path, year_month):
     # 读取每个文件的数据并获取最大时间步
     for file in files:
         file_path = os.path.join(base_path, file)
-
+        ds = fill_missing_time_points(file_path)
         # 打开 .nc 文件
-        with xr.open_dataset(file_path) as ds:
-            # 提取所需特征
-            Hs = ds['Hm0'].values
-            Tm = ds['tm02'].values
-            dirm = ds['mdir'].values
+        Hs = ds['Hs'].values  # 提取波高数据
+        Tm = ds['Tm'].values  # 提取平均周期数据
+        dirm = ds['dirm'].values  # 提取波向数据
 
-            # 处理波浪数据
-            cos_dirm, sin_dirm = process_wave_data(dirm)
+        # 处理波浪数据
+        cos_dirm, sin_dirm = process_wave_data(dirm)
 
-            # 将处理后的数据拼接为 (时间步, 特征数)
-            data = np.stack([Hs, Tm, cos_dirm, sin_dirm], axis=-1)
-            all_data.append(data)
+        # 将处理后的数据拼接为 (时间步, 特征数)
+        data = np.stack([Hs, Tm, cos_dirm, sin_dirm], axis=-1)
+        all_data.append(data)
 
-            print(f"文件 {file} 处理后形状: {data.shape}")
-            max_timestep = max(max_timestep, data.shape[0])  # 更新最大时间步
-
-    # 对齐时间步，不足的部分用 NaN 填充
-    aligned_data = []
-    for data in all_data:
-        # 计算当前文件的时间步差
-        timestep_diff = max_timestep - data.shape[0]
-        if timestep_diff > 0:
-            # 使用 NaN 填充不足的时间步
-            padding = np.full((timestep_diff, data.shape[1]), np.nan)
-            data = np.vstack([data, padding])  # 拼接填充的 NaN
-        aligned_data.append(data)
+        print(f"文件 {file} 特征维度处理后形状: {data.shape}")
+        max_timestep = max(max_timestep, data.shape[0])  # 更新最大时间步
 
     # 拼接为目标形状 (5, max_timestep, 3)
-    data_array = np.stack(aligned_data, axis=0)
+    data_array = np.stack(all_data, axis=0)
     return data_array
 
 
@@ -112,10 +146,10 @@ def combine_monthly_data(base_path, start_year, end_year):
     """
     monthly_data = []
 
-    for year in range(start_year, end_year + 1):
+    for year in range(start_year, end_year):
         for month in range(1, 13):  # 遍历1到12月
             year_month = f"{year}{month:02d}"  # 格式化为"YYYYMM"
-            if (year == 2019 and month > 2):
+            if (year == 2020 and month > 2):
                 break
             # 检查文件是否存在
             # 调用函数读取数据
@@ -134,32 +168,6 @@ def combine_monthly_data(base_path, start_year, end_year):
     return combined_data
 
 
-# 提取滑动窗口数据
-def create_sliding_windows(data, window_size, step_size):
-    """
-    使用滑动窗口生成子序列
-    Args:
-        data: numpy 数组，形状为 (num_samples, seq_length, features)
-        window_size: 滑动窗口大小
-        step_size: 滑动步长
-    Returns:
-        result: numpy 数组，形状为 (num_samples, num_windows, window_size, features)
-    """
-    num_samples, seq_length, features = data.shape
-    num_windows = (seq_length - window_size) // step_size + 1  # 计算窗口数量
-
-    # 初始化结果数组
-    result = np.zeros((num_samples, num_windows, window_size, features))
-
-    # 滑动窗口提取
-    for i in range(num_windows):
-        start_idx = i * step_size
-        end_idx = start_idx + window_size
-        result[:, i, :, :] = data[:, start_idx:end_idx, :]
-
-    return result
-
-
 def normalize_and_save_numpy(data, save_path):
     """
     使用 NumPy 对输入数据的前两维特征进行归一化，并记录最大值和最小值保存为 .npy 文件。
@@ -171,21 +179,15 @@ def normalize_and_save_numpy(data, save_path):
     返回：
     - normalized_data: torch.Tensor，归一化后的数据，与输入形状相同。
     """
-    if not isinstance(data, torch.Tensor):
-        raise ValueError("输入数据必须是 torch.Tensor 类型")
-
-    # 转为 NumPy
-    data_np = data.numpy()
 
     # 初始化最大值和最小值存储
     min_vals = []
     max_vals = []
 
     # 归一化前两维特征
-    normalized_data_np = np.zeros_like(data_np)
+    normalized_data_np = np.zeros_like(data)
     for i in range(2):  # 遍历每个特征
-        print(i)
-        feature = data_np[:, :, i]  # 提取当前特征
+        feature = data[:, :, i]  # 提取当前特征
 
         # 忽略 NaN 值，计算最小值和最大值
         min_val = np.nanmin(feature)
@@ -214,112 +216,80 @@ def normalize_and_save_numpy(data, save_path):
     return normalized_data
 
 
-def create_missing_nc(template_file, output_dir, start_month, end_month, file_prefix):
+import numpy as np
+
+
+def generate_indices(sequence_length, group_size, skip_size):
     """
-    根据模板文件生成缺失的 NetCDF 文件，并用 NaN 填充。
+    动态生成需要提取的索引，第一个索引值从3开始。
 
-    参数：
-        - template_file: str，模板 nc 文件路径
-        - output_dir: str，生成文件的保存目录
-        - start_month: str，起始月份，格式为 YYYYMM
-        - end_month: str，结束月份，格式为 YYYYMM
-        - file_prefix: str，文件名前缀，如 "E39_C_Sulafjorden_wave" 或 "E39_F_Vartdalsfjorden_wave"
+    参数:
+        sequence_length: int，序列的总长度。
+        group_size: int，每次提取的连续点数。
+        skip_size: int，每组之间跳过的点数。
+
+    返回:
+        indices: list，生成的索引列表（从1开始计数）。
     """
-    # 加载模板文件
-    ds_template = nc.Dataset(template_file, 'r')
+    indices = []
+    start = 2  # 从2开始，这样下一次循环添加的第一个索引就是3
+    while start < sequence_length:
+        # 添加连续的group_size个点
+        indices.extend(range(start + 1, start + group_size + 1))
+        # 更新起点，跳过skip_size个点
+        start += group_size + skip_size
+    # 确保索引不超过序列长度
+    return [i for i in indices if i <= sequence_length]
 
-    # 获取经纬度和时间维度
-    lat = ds_template.variables['latitude'][:]
-    lon = ds_template.variables['longitude'][:]
-    time_len = len(ds_template.dimensions['time'])  # 假设时间维度存在
 
-    # 确定时间范围
-    year_start, month_start = int(start_month[:4]), int(start_month[4:])
-    year_end, month_end = int(end_month[:4]), int(end_month[4:])
+def extract_elements(data, indices):
+    """
+    从多维数组的b维度中提取指定索引的元素。
 
-    # 遍历所有需要生成的月份
-    for year in range(year_start, year_end + 1):
-        for month in range(1, 13):
-            # 如果不在指定范围内，则跳过
-            if (year == year_start and month < month_start) or (year == year_end and month > month_end):
-                continue
+    参数:
+        data: ndarray，多维数组，时间序列位于b维度。
+        indices: list，指定b维度中需要提取的索引列表（从1开始计数）。
 
-            # 生成文件名
-            file_name = f"{year}{str(month).zfill(2)}_{file_prefix}.nc"
-            output_path = os.path.join(output_dir, file_name)
+    返回:
+        result: ndarray，包含提取的目标数据。
+    """
+    zero_based_indices = [i - 1 for i in indices]  # 转换为0基索引
+    return data[:, zero_based_indices, :]
 
-            # 创建新 NetCDF 文件
-            with nc.Dataset(output_path, 'w', format='NETCDF4') as new_ds:
-                # 创建维度
-                new_ds.createDimension('lat', len(lat))
-                new_ds.createDimension('lon', len(lon))
-                new_ds.createDimension('time', time_len)
 
-                # 创建变量并用 NaN 填充
-                lat_var = new_ds.createVariable('lat', 'f4', ('lat',))
-                lon_var = new_ds.createVariable('lon', 'f4', ('lon',))
-                time_var = new_ds.createVariable('time', 'f4', ('time',))
+# 重置索引
+def reset_indices(arr):
+    """
+    重置提取后数组的索引（即重新排序成从 0 开始）。
 
-                # 拷贝变量数据
-                lat_var[:] = lat
-                lon_var[:] = lon
-                time_var[:] = ds_template.variables['time'][:]
+    参数:
+        arr: ndarray，提取后的数据。
 
-                # 处理所有其他变量
-                for var_name in ds_template.variables:
-                    if var_name not in ('lat', 'lon', 'time'):
-                        var_template = ds_template.variables[var_name]
-                        var_dims = var_template.dimensions
-                        var_dtype = var_template.datatype
-                        new_var = new_ds.createVariable(var_name, var_dtype, var_dims)
-                        new_var[:] = np.full(var_template.shape, np.nan)  # 用 NaN 填充
-
-                print(f"生成文件: {output_path}")
-
-    # 关闭模板文件
-    ds_template.close()
+    返回:
+        new_arr: ndarray，重新索引后的数据。
+    """
+    return arr  # NumPy 数组本身是从 0 开始的索引
 
 
 base_path = r"E:\Dataset\met_waves\buoy"
+save_path = "./data"
 start_year = 2017
-end_year = 2019
+end_year = 2020
 combined_data = combine_monthly_data(base_path, start_year, end_year)
 print(f"Combined data shape: {combined_data.shape}")
-save_path = "./data"
+np_data = combined_data.numpy()
+sequence_length = np_data.shape[1]  # 获取 b 的长度
+# 动态生成索引：每次提取连续 3 个点，跳过 3 个点
+indices_to_extract = generate_indices(sequence_length, group_size=3, skip_size=3)
+# 提取指定索引的数据
+extracted_data = extract_elements(np_data, indices_to_extract)
+print("提取后的数据形状：", extracted_data.shape)
+# 重置索引（这里的 "索引" 是 NumPy 数组本身的顺序）
+reset_data = reset_indices(extracted_data)
 # 创建保存路径
 os.makedirs(save_path, exist_ok=True)
 # 调用函数
-normalized_data = normalize_and_save_numpy(combined_data, save_path)
+normalized_data = normalize_and_save_numpy(reset_data, save_path)
 print("归一化后的数据形状:", normalized_data.shape)
-# 滑动窗口参数
-window_size = 3  # 滑动窗口大小（过去 20 分钟，3 条观测数据）
-step_size = 1  # 滑动步长
-
-#使用滑动窗口提取数据
-sliding_window_data = create_sliding_windows(normalized_data, window_size, step_size)
-
-# 查看滑动窗口后的数据形状
-print(f"原始数据形状: {normalized_data.shape}")
-print(f"滑动窗口后的数据形状: {sliding_window_data.shape}")
-np.save(f"{save_path}/buoy_obs.npy", sliding_window_data)
+np.save(f"{save_path}/buoy_obs.npy", normalized_data)
 print(f"浮标观察值已保存到 {save_path}")
-
-
-
-# 创建 Sulafjorden 的 2017 年 1 月到 3 月的文件
-# create_missing_nc(
-#     template_file=r'E:\Dataset\met_waves\buoy\201704_E39_C_Sulafjorden_wave.nc',
-#     output_dir=r'E:\Dataset\met_waves\fill',
-#     start_month='201701',
-#     end_month='201703',
-#     file_prefix='E39_C_Sulafjorden_wave'
-# )
-
-# 创建 Vartdalsfjorden 的 2017 年 1 月到 10 月的文件
-# create_missing_nc(
-#     template_file=r'E:\Dataset\met_waves\buoy\201711_E39_F_Vartdalsfjorden_wave.nc',
-#     output_dir=r'E:\Dataset\met_waves\fill',
-#     start_month='201701',
-#     end_month='201710',
-#     file_prefix='E39_F_Vartdalsfjorden_wave'
-# )
