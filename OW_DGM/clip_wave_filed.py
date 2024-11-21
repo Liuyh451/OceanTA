@@ -106,7 +106,7 @@ def crop_and_save(input_file, output_file):
         dirm_var.long_name = 'Mean Wave Direction'
 
     print(f"裁剪完成并保存文件: {output_file}")
-
+crop_and_save("E:/Dataset/met_waves/swan/swanSula202001.nc","E:/Dataset/met_waves/Swan_cropped/swanSula202001_cropped.nc")
 
 def process_all_files():
     # 遍历文件名，并对每个文件进行裁剪
@@ -128,4 +128,4 @@ def process_all_files():
 
 
 # 执行批量处理
-process_all_files()
+# process_all_files()

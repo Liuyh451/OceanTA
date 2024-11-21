@@ -41,7 +41,6 @@ def read_nc_files_and_extract_features(base_path, year_month):
         Tm = np.array(Tm, dtype='float32')
         # 处理波浪数据
         cos_dirm, sin_dirm = process_wave_data(dirm)
-        print(sin_dirm.dtype,Tm.dtype)
         # 将处理后的数据拼接为 (时间步, 特征数)
         data = np.stack([Hs, Tm, cos_dirm, sin_dirm], axis=-1)
         print(f"文件 {file_path} 处理后形状: {data.shape}")
@@ -82,4 +81,5 @@ def combine_monthly_data(base_path, start_year, end_year):
     # 拼接所有月份的数据
     combined_data = torch.cat(monthly_data, dim=1)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
     return combined_data
-read_nc_files_and_extract_features("E:/Dataset/met_waves/Swan_cropped/swanSula",'201702')
+
+combined_data=combine_monthly_data("E:/Dataset/met_waves/Swan_cropped/swanSula",2017,2021)
