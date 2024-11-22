@@ -1,8 +1,49 @@
-import torch
-import torch.nn as nn
+
 import torch
 import torch.nn as nn
 
+class ContextualEncoder(nn.Module):
+    def __init__(self, input_dim, embedding_dim, gru_hidden_size):
+        super(ContextualEncoder, self).__init__()
+        self.input_dim = input_dim
+        self.embedding_dim = embedding_dim
+        self.gru = nn.GRU(input_dim + embedding_dim, gru_hidden_size, batch_first=True)
+        self.max_pool = nn.MaxPool1d(num_buoys)
+
+    def forward(self, x, buoy_ids):
+        batch_size, num_buoys, window_size, _ = x.size()
+        # Encode buoy ids into positional embeddings
+        buoy_id_embeddings = self.get_buoy_id_embeddings(buoy_ids, num_buoys, self.embedding_dim)
+        # Concatenate positional embeddings with observations at each time step
+        x_with_id = torch.cat([x, buoy_id_embeddings.unsqueeze(2).expand(-1, -1, window_size, -1)], dim=-1)
+        print(x_with_id.shape)
+        _, gru_hidden_states = self.gru(x_with_id)
+        # Extract the last hidden state for each buoy
+        buoy_embeddings = gru_hidden_states[:, -1, :]
+        # Reshape for max pooling
+        pooled_embeddings = buoy_embeddings.permute(0, 2, 1)
+        # Apply max pooling across buoys
+        context_vector = self.max_pool(pooled_embeddings).squeeze(-1)
+        return context_vector
+
+    def get_buoy_id_embeddings(self, buoy_ids, num_buoys, embedding_dim):
+        embeddings = nn.Embedding(num_buoys, embedding_dim)
+        return embeddings(buoy_ids)
+# 假设一些示例输入
+batch_size = 32
+num_buoys = 5
+window_size = 3
+input_dim = 4
+embedding_dim = 16
+gru_hidden_size = 512
+
+# 创建随机输入数据和 buoy ids
+input_data = torch.randn(batch_size, num_buoys, window_size, input_dim)
+buoy_ids = torch.randint(0, num_buoys, (batch_size, num_buoys))
+
+encoder = ContextualEncoder(input_dim, embedding_dim, gru_hidden_size)
+context_vector = encoder(input_data, buoy_ids)
+print(context_vector.shape)
 
 class ContextualEncoder(nn.Module):
     def __init__(self, input_dim, embedding_dim, gru_hidden_size):
@@ -62,30 +103,13 @@ class ContextualEncoder(nn.Module):
         return max_pooled
 
 
-# 测试代码
-batch_size = 5  # 浮标数量
-num_windows = 10  # 每个浮标的窗口数
-window_size = 3  # 每个窗口的时间步数
-input_dim = 4  # 每个时间步的特征数
-embedding_dim = 16  # 浮标 ID 嵌入维度
-gru_hidden_size = 512  # GRU 隐藏层大小
-
-# 创建滑动窗口后的数据
-obs_data = torch.rand(batch_size * num_windows, window_size, input_dim)  # 滑动窗口数据
-buoy_ids = torch.randint(0, 100, (batch_size,))  # 随机生成浮标 ID
-
-# 创建编码器
-encoder = SimplifiedContextualEncoder(input_dim, embedding_dim, gru_hidden_size)
-c = encoder(obs_data, buoy_ids)  # 全局上下文向量
-
-print(f"编码器输出形状: {c.shape}")  # 预期形状: (batch_size, gru_hidden_size)
 
 """
 这是第3版的代码，对比第一版的代码更改的地方在于：
 1.feature_dim特征数为4，而不是time_step=4
 2.拼接的过程中提取3个时间步进行一次拼接，和id拼接后的向量为20
 """
-class ContextualEncoder(nn.Module):
+class ContextualEncoder3(nn.Module):
     def __init__(self, input_dim, embedding_dim, hidden_dim, num_buoys, time_steps):
         """
         初始化 Contextual Encoder
@@ -95,7 +119,7 @@ class ContextualEncoder(nn.Module):
         :param num_buoys: 最大浮标数量
         :param time_steps: 时间步数 (T)
         """
-        super(ContextualEncoder, self).__init__()
+        super(ContextualEncoder3, self).__init__()
 
         self.embedding = nn.Embedding(num_embeddings=num_buoys, embedding_dim=embedding_dim)
         self.gru = nn.GRU(input_size=input_dim + embedding_dim, hidden_size=hidden_dim, batch_first=True)
@@ -128,34 +152,14 @@ class ContextualEncoder(nn.Module):
         return context_vector
 
 
-# 示例代码
-if __name__ == "__main__":
-    # 假设有以下输入数据
-    batch_size = 4
-    time_steps = 3  # 过去20分钟，3个时间步
-    feature_dim = 4  # 每个时间步的特征维度
-    embedding_dim = 16  # 浮标 ID 嵌入维度
-    hidden_dim = 512  # GRU 隐藏层维度
-    num_buoys = 10  # 假设最多10个浮标
-
-    # 初始化输入
-    buoy_obs = torch.randn(batch_size, time_steps, feature_dim)  # 浮标观测数据 (B, T, F)
-    buoy_ids = torch.randint(0, num_buoys, (batch_size, time_steps))  # 浮标 ID (B, T)
-
-    # 初始化 Contextual Encoder 并前向传播
-    encoder = ContextualEncoder(input_dim=feature_dim, embedding_dim=embedding_dim,
-                                hidden_dim=hidden_dim, num_buoys=num_buoys, time_steps=time_steps)
-    context_vector = encoder(buoy_obs, buoy_ids)
-
-    print("Context vector shape:", context_vector.shape)  # 输出: (B, H)
 """
 这是第2（也与是2）版的代码，对比第一版的代码更改的地方在于：
 1.feature_dim特征数为4，而不是time_step=4
 2.拼接的过程中提取3个时间步进行一次拼接，和id拼接后的向量为20
 """
-class ContextualEncoder(nn.Module):
+class ContextualEncoder2(nn.Module):
     def __init__(self, feature_dim=4, id_emb_dim=16, gru_hidden_size=512):
-        super(ContextualEncoder, self).__init__()
+        super(ContextualEncoder2, self).__init__()
         self.feature_dim = feature_dim
         self.id_emb_dim = id_emb_dim
         self.gru_hidden_size = gru_hidden_size
@@ -218,19 +222,5 @@ class ContextualEncoder(nn.Module):
         return context_vector
 
 
-# 示例数据
-num_buoys = 5
-time_steps = 3
-feature_dim = 4
-
-buoy_obs = torch.randn(num_buoys, time_steps, feature_dim)
-buoy_ids = torch.randint(0, 5, (num_buoys,))
-
-# 初始化模型
-encoder = ContextualEncoder(feature_dim=4, id_emb_dim=16, gru_hidden_size=512)
-
-# 前向传播
-context_vector = encoder(buoy_obs, buoy_ids)
-print(context_vector.shape)  # 输出应为 (1, 512, 1)
 
 

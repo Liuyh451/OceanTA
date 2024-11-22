@@ -2,11 +2,8 @@ import torch
 import torch.nn as nn
 
 
-import torch
-import torch.nn as nn
-
 class ContextualEncoder(nn.Module):
-    def __init__(self, input_dim, embedding_dim, gru_hidden_size):
+    def __init__(self, input_dim=4, embedding_dim=16, gru_hidden_size=512):
         """
         上下文编码器。
 
@@ -20,47 +17,64 @@ class ContextualEncoder(nn.Module):
         # 浮标 ID 嵌入层
         self.embedding = nn.Embedding(num_embeddings=100, embedding_dim=embedding_dim)
 
-        # GRU 编码器（共享的）
+        # GRU 编码器（共享的）输入参数：(batch_size, sequence_length, input_size)）sequence_length表示序列的长度 input_size是每个时间步输入特征的维度
         self.gru = nn.GRU(input_dim + embedding_dim, gru_hidden_size, batch_first=True)
 
         # 最大池化层（用于聚合浮标的上下文向量）
         self.max_pool = nn.AdaptiveMaxPool1d(1)
 
-    def forward(self, obs_data, buoy_ids):
+    def forward(self, obs_data):
         """
         前向传播。
 
         Args:
-            obs_data: 滑动窗口后的观测数据，形状为 (num_buoys * num_windows, window_size, input_dim)。
-            buoy_ids: 浮标 ID，形状为 (num_buoys,)。
+            obs_data: 观测数据，形状为 (batch_size, num_buoys, window_size, input_dim)。
+            buoy_ids: 浮标 ID，形状为 (num_buoys,)，用于嵌入。
 
         Returns:
-            c: 全局上下文向量，形状为 (512, 1, 1)。
+            c: 全局上下文向量，形状为 (gru_hidden_size, 1, 1)。
         """
+        # 确保 buoy_ids 和 obs_data 在相同的设备上
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        buoy_ids = torch.tensor([0, 1, 2, 3, 4])  # 注意方括号
+        buoy_ids = buoy_ids.to(device)
+        obs_data = obs_data.to(device)
+
         num_buoys = buoy_ids.shape[0]
-        num_windows = obs_data.size(0) // num_buoys  # 每个浮标的窗口数
-        window_size = obs_data.size(1)
+        window_size = obs_data.size(2)
 
         # Step 1: 浮标 ID 嵌入
+        # Step 1.1 构建 ID 嵌入
         buoy_embeddings = self.embedding(buoy_ids)  # (num_buoys, embedding_dim)
-        buoy_embeddings = buoy_embeddings.unsqueeze(1).expand(-1, num_windows, -1)  # (num_buoys, num_windows, embedding_dim)
-        buoy_embeddings = buoy_embeddings.reshape(-1, buoy_embeddings.size(-1))  # (num_buoys * num_windows, embedding_dim)
+        buoy_embeddings = buoy_embeddings.unsqueeze(1).expand(-1, window_size,
+                                                              -1)  # (num_buoys, window_size, embedding_dim)，即(5, 3, 16)
+        print("buoy_embeddings", buoy_embeddings.shape)
+        # Step 1.2 添加batch_size维度
+        batch_size = obs_data.shape[0]
+        buoy_embeddings = buoy_embeddings.unsqueeze(0).expand(batch_size, -1, -1, -1).contiguous()
+        # 此时形状变为(batch_size, num_buoys, window_size, embedding_dim)，即(32, 5, 3, 16)
+        # Step 1.3 合并维度
+        # 形状变为(batch_size * num_buoys, window_size, embedding_dim)
+        buoy_embeddings = buoy_embeddings.reshape(batch_size * num_buoys, window_size, -1)
+        # 此时形状变为(32 * 5, 3, 16)，符合(batch_size , window_size* num_buoys, embedding_dim)的形状要求
 
         # Step 2: 将浮标嵌入与窗口数据拼接
-        concatenated_data = torch.cat([obs_data, buoy_embeddings.unsqueeze(1).expand(-1, window_size, -1)], dim=-1)
-
+        # 确保拼接时数据的维度对齐
+        obs_data_reshaped = obs_data.reshape(batch_size * num_buoys, window_size, -1)
+        concatenated_data = torch.cat([obs_data_reshaped, buoy_embeddings],
+                                      dim=-1)  # (batch_size * num_buoys, window_size, input_dim + embedding_dim)即(32*5,3, 20)
         # Step 3: 通过 GRU 编码每个浮标的窗口片段
-        _, gru_hidden_states = self.gru(concatenated_data)  # (1, num_buoys * num_windows, gru_hidden_size)
-        buoy_embeddings = gru_hidden_states.squeeze(0)  # (num_buoys * num_windows, gru_hidden_size)
+        # 输出隐藏状态 output (batch_size, sequence_length, num_directions * hidden_size)，num_directions表示方向数，单向时为1，双向时为2
+        # 最终隐藏状态 h_n (num_layers * num_directions, batch_size, hidden_size) num_layers是GRU的层数
+        _, gru_hidden_states = self.gru(concatenated_data)  # (batch_size * num_buoys, window_size, gru_hidden_size)
+        # gru_hidden_states torch.Size([1, 160, 512])
+        buoy_embeddings = gru_hidden_states[-1, :, :]  # 取最后一个时间步的隐藏状态 (batch_size * num_buoys, gru_hidden_size)
+        # Step 4: 恢复浮标维度
+        buoy_embeddings = buoy_embeddings.reshape(batch_size, num_buoys, 512)  # (batch_size，num_buoys, gru_hidden_size)
+        #  Step 5: 聚合所有浮标，并调整为 (batch_size，gru_hidden_size, 1, 1)
+        context_vector = self.max_pool(buoy_embeddings.transpose(1, 2)).unsqueeze(-1)
+        return context_vector
 
-        # Step 4: 恢复浮标维度，并进行最大池化
-        buoy_embeddings = buoy_embeddings.reshape(num_buoys, num_windows, -1)  # (num_buoys, num_windows, gru_hidden_size)
-        max_pooled = self.max_pool(buoy_embeddings.transpose(1, 2)).squeeze(-1)  # (num_buoys, gru_hidden_size)
-
-        # Step 5: 聚合所有浮标，并调整为 (512, 1, 1)
-        c = max_pooled.mean(dim=0, keepdim=True).squeeze(0).unsqueeze(-1).unsqueeze(-1)  # (512, 1, 1)
-
-        return c
 
 class WaveFieldEncoderWithBuoy(nn.Module):
     def __init__(self, input_channels=4, context_dim=512, latent_dim=512):
@@ -217,7 +231,7 @@ class Discriminator(nn.Module):
 
         # 模块A
         self.A = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride=1, padding=1),
+            nn.Conv2d(in_channels=4, out_channels=64, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(64),
             nn.LeakyReLU(0.2, inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2)
@@ -252,6 +266,8 @@ class Discriminator(nn.Module):
 
         # 输出层
         self.fc = nn.Linear(512, 1)
+        # todo 激活层 确保结果在0到1之间
+        self.sg = nn.Sigmoid()  # 确保输出在 [0, 1]
 
     def forward(self, x):
         x = self.A(x)  # 通过第一个模块A
@@ -261,6 +277,7 @@ class Discriminator(nn.Module):
         x = self.global_avg_pool(x)  # 全局平均池化
         x = x.view(x.size(0), -1)  # Flatten
         x = self.fc(x)  # 通过全连接层输出
+        x = self.sg(x)
         return x
 
 
@@ -307,40 +324,3 @@ def mse_loss(X, X_hat):
 
 def kl_loss(mu, log_var):
     return -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
-
-# # 测试模型的构建
-# if __name__ == "__main__":
-#     model = Discriminator()
-#     input_tensor = torch.randn(1, 3, 128, 128)  # 输入张量（batch_size=1, channels=3, height=128, width=128）
-#     output = model(input_tensor)
-#     print(output.shape)  # 输出形状，应该是 (1, 1)
-
-# 示例代码
-# if __name__ == "__main__":
-#     # 假设编码器输出的 μ 和 σ
-#     batch_size = 8
-#     latent_dim = 512
-#     mu = torch.randn(batch_size, latent_dim, 1, 1)  # (batch_size, 512, 1, 1)
-#     sigma = torch.randn(batch_size, latent_dim, 1, 1)  # (batch_size, 512, 1, 1)
-#
-#     # 初始化解码器并前向传播
-#     decoder = WaveFieldDecoder(latent_dim=latent_dim, output_channels=4)
-#     wave_field = decoder(mu, sigma)
-#
-#     print("Wave field shape:", wave_field.shape)  # 输出: (batch_size, 4, 128, 128)
-
-# # 示例代码
-# if __name__ == "__main__":
-#     # 波场输入 (batch_size, 4, 128, 128)
-#     batch_size = 8
-#     wave_field = torch.randn(batch_size, 4, 128, 128)
-#
-#     # 浮标上下文向量输入 (batch_size, context_dim)
-#     context_vector = torch.randn(batch_size, 512)
-#
-#     # 初始化模型并前向传播
-#     encoder = WaveFieldEncoderWithBuoy(input_channels=4, context_dim=512, latent_dim=512)
-#     mu, sigma = encoder(wave_field, context_vector)
-#
-#     print("Mu shape:", mu.shape)  # 输出: (batch_size, 512, 1, 1)
-#     print("Sigma shape:", sigma.shape)  # 输出: (batch_size, 512, 1, 1)
