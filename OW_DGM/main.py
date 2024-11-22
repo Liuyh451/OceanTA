@@ -1,116 +1,191 @@
-from torch.autograd import Variable
-import numpy as np
-from torch import optim
-
+import Utils
 from Utils import *
-
 import torch
+import torch.nn as nn
+import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 
-import torch
-from torch.utils.data import Dataset, DataLoader
 
-class BuoyDataset(Dataset):
-    """
-    自定义数据集，用于加载浮标观测数据进行训练。
+class TimeSeriesDataset(Dataset):
+    def __init__(self, A, B, batch_size, time_step_A=3, time_step_B_ratio=3):
+        """
+        自定义数据集。
 
-    参数：
-    - data: np.ndarray，形状为 (5, 113613, 3, 4) 的浮标数据。
-    """
-    def __init__(self, data):
-        # 将 NumPy 数据转换为 PyTorch Tensor
-        self.data = torch.tensor(data, dtype=torch.float32)  # 形状 (5, 113613, 3, 4)
-        # 合并浮标和时间序列维度
-        self.data = self.data.view(-1, self.data.shape[2], self.data.shape[3])  # 形状 (5 * 113613, 3, 4)
+        参数：
+        - A: torch.Tensor，形状为 (5, T, 4) 的时间序列 A。
+        - B: torch.Tensor，形状为 (T, 4, 128, 128) 的时间序列 B。
+        - batch_size: int，批次大小。
+        - time_step_A: int，每次从 A 读取的时间步长。
+        - time_step_B_ratio: int，从 B 读取的时间步与 A 的时间步长比率。
+        """
+        self.A = A
+        self.B = B
+        self.batch_size = batch_size
+        self.time_step_A = time_step_A
+        self.time_step_B_ratio = time_step_B_ratio
+        self.num_samples = A.shape[1]  # A 的时间步数
 
     def __len__(self):
-        """
-        返回数据集的总样本数。
-        """
-        return self.data.shape[0]
+        # 计算总批次数
+        total_batches = (self.num_samples + self.time_step_A - 1) // self.time_step_A
+        return (total_batches + self.batch_size - 1) // self.batch_size
 
     def __getitem__(self, idx):
-        """
-        获取指定索引的样本。
-        """
-        return self.data[idx]  # 返回形状为 (3, 4) 的样本
+        # 每个批次包含的时间段索引范围
+        batch_start_idx = idx * self.batch_size * self.time_step_A
+        batch_end_idx = min((idx + 1) * self.batch_size * self.time_step_A, self.num_samples)
 
-# 定义函数用于创建 DataLoader
-def create_dataloader(data, batch_size=32, shuffle=True):
+        # 按时间步分段获取 A 和 B 的时间片
+        A_batches = []
+        B_batches = []
+
+        for start_idx in range(batch_start_idx, batch_end_idx, self.time_step_A):
+            end_idx = min(start_idx + self.time_step_A, self.num_samples)
+            A_segment = self.A[:, start_idx:end_idx, :]  # (5, time_step_A, 4)
+            B_segment = self.B[start_idx // self.time_step_B_ratio:end_idx // self.time_step_B_ratio]  # 对应 B 的时间步
+            A_batches.append(A_segment)
+            B_batches.append(B_segment)
+
+        # 合并为 batch 维度
+        A_batches = torch.stack(A_batches, dim=0)  # (batch_size, 5, time_step_A, 4)
+        B_batches = torch.stack(B_batches, dim=0).squeeze(1)  # (batch_size, 4, 128, 128)
+
+        return A_batches, B_batches
+
+# 示例数据
+T1 = 300  # 时间步
+T2 =100
+A = torch.randn(5, T1, 4)  # (5, T, 4)
+B = torch.randn(T2, 4, 128, 128)  # (T, 4, 128, 128)
+batch_size = 10
+
+# 创建数据集和数据加载器
+dataset = TimeSeriesDataset(A, B, batch_size=batch_size)
+dataloader = DataLoader(dataset, batch_size=None, shuffle=False)
+
+# 测试
+for i, (A_batch, B_batch) in enumerate(dataloader):
+    print(f"Batch {i + 1}:")
+    print(f"A_batch shape: {A_batch.shape}")
+    print(f"B_batch shape: {B_batch.shape}")
+
+
+
+def train_cvae_al(
+    context_encoder, encoder, decoder, discriminator,
+    dataloader, device, latent_dim=128,
+    lambda_kl=0.1, lambda_adv=0.01, lr=1e-4,
+    epochs=50, verbose=True
+):
     """
-    创建 DataLoader。
+    训练 CVAE-AL 模型的函数。
 
     参数：
-    - data: np.ndarray，形状为 (5, 113613, 3, 4) 的浮标数据。
-    - batch_size: int，每个批次的样本数量，默认值为 32。
-    - shuffle: bool，是否打乱数据，默认值为 True。
+    - context_encoder: nn.Module，上下文编码器。
+    - encoder: nn.Module，编码器。
+    - decoder: nn.Module，解码器。
+    - discriminator: nn.Module，判别器。
+    - dataloader: torch.utils.data.DataLoader，数据加载器。
+    - device: torch.device，设备（CPU/GPU）。
+    - latent_dim: int，潜在向量的维度。
+    - lambda_kl: float，KL 损失的权重。
+    - lambda_adv: float，对抗损失的权重。
+    - lr: float，学习率。
+    - epochs: int，训练轮数。
+    - verbose: bool，是否打印训练日志。
 
     返回：
-    - DataLoader 对象。
+    - context_encoder, encoder, decoder, discriminator：训练后的模型。
     """
-    dataset = BuoyDataset(data)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
-    return dataloader
+    # 损失函数
+    mse_loss = nn.MSELoss()  # 重构损失
+    bce_loss = nn.BCELoss()  # 二分类交叉熵损失
 
-# 示例调用
-if __name__ == "__main__":
-    # 加载数据
-    buoy_obs = np.load('data/buoy_obs.npy')  # 假设数据形状为 (5, 113613, 3, 4)
+    # 优化器
+    generator_params = list(context_encoder.parameters()) + \
+                       list(encoder.parameters()) + \
+                       list(decoder.parameters())
+    discriminator_params = discriminator.parameters()
 
-    # 创建 DataLoader
-    batch_size = 64
-    dataloader = create_dataloader(buoy_obs, batch_size=batch_size)
+    optimizer_G = optim.Adam(generator_params, lr=lr)
+    optimizer_D = optim.Adam(discriminator_params, lr=lr)
 
-    # 测试 DataLoader
-    for batch_idx, batch in enumerate(dataloader):
-        print(f"Batch {batch_idx}: Shape {batch.shape}")
-        if batch_idx == 1:  # 仅打印前两个批次
-            break
+    # 将模型和损失函数移动到设备
+    context_encoder.to(device)
+    encoder.to(device)
+    decoder.to(device)
+    discriminator.to(device)
+
+    for epoch in range(epochs):
+        context_encoder.train()
+        encoder.train()
+        decoder.train()
+        discriminator.train()
+
+        for batch_idx, (buoy_data, wave_field) in enumerate(dataloader):
+            # 将数据移动到设备
+            buoy_data = buoy_data.to(device)  # 浮标数据 (batch_size, 5, 3, 4)
+            wave_field = wave_field.to(device)  # 波场数据 (batch_size, 3, 128, 128)
+
+            # 生成上下文向量 c
+            context_vector = context_encoder(buoy_data)  # (batch_size, latent_dim)
+
+            # 编码器生成 z 的均值和标准差
+            z_mean, z_logvar = encoder(wave_field, context_vector)  # (batch_size, latent_dim)
+            # # 从标准正态分布中采样一个随机张量 eps
+            # eps = torch.randn_like(mu)
+            #
+            # # 计算 Z
+            # Z = mu + sigma * eps
+
+            z_std = torch.exp(0.5 * z_logvar)
+            z = torch.randn_like(z_std) * z_std + z_mean  # 重参数化采样
+            # 解码器生成波场
+            reconstructed_wave_field = decoder(z, context_vector)  # (batch_size, 3, 128, 128)
+            # 计算生成器损失
+            l_rec = mse_loss(reconstructed_wave_field, wave_field)  # 重构损失
+            kl_div = -0.5 * torch.sum(1 + z_logvar - z_mean.pow(2) - torch.exp(z_logvar)) / wave_field.size(0)
+            fake_preds = discriminator(reconstructed_wave_field)  # 判别器对生成波场的判别
+            l_adv_G = bce_loss(fake_preds, torch.ones_like(fake_preds))  # 对抗损失（生成器）
+            l_G = l_rec + lambda_kl * kl_div + lambda_adv * l_adv_G  # 总生成器损失
+            # 优化生成器
+            optimizer_G.zero_grad()
+            l_G.backward()
+            optimizer_G.step()
+
+            # 计算判别器损失
+            real_preds = discriminator(wave_field)  # 判别器对真实波场的判别
+            fake_preds = discriminator(reconstructed_wave_field.detach())  # 判别器对生成波场的判别
+            print("Real predictions range:", real_preds.min().item(), real_preds.max().item())
+            print("Fake predictions range:", fake_preds.min().item(), fake_preds.max().item())
+
+            l_adv_D = 0.5 * (bce_loss(real_preds, torch.ones_like(real_preds)) +
+                             bce_loss(fake_preds, torch.zeros_like(fake_preds)))  # 判别器总损失
+
+            # 优化判别器
+            optimizer_D.zero_grad()
+            l_adv_D.backward()
+            optimizer_D.step()
+
+            if verbose:
+                print(f"Epoch [{epoch + 1}/{epochs}] Batch [{batch_idx + 1}/{len(dataloader)}]: "
+                      f"Loss_G: {l_G.item():.4f}, Loss_D: {l_adv_D.item():.4f}, "
+                      f"L_rec: {l_rec.item():.4f}, KL: {kl_div.item():.4f}")
+
+    return context_encoder, encoder, decoder, discriminator
+# 定义设备
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# 训练模型
+context_encoder = Utils.ContextualEncoder()
+encoder = Utils.WaveFieldEncoderWithBuoy()
+decoder = Utils.WaveFieldDecoder()
+discriminator = Discriminator()
+trained_context_encoder, trained_encoder, trained_decoder, trained_discriminator = train_cvae_al(
+    context_encoder, encoder, decoder, discriminator,
+    dataloader, device, latent_dim=128,
+    lambda_kl=0.1, lambda_adv=0.01, lr=1e-4,
+    epochs=50, verbose=True
+)
 
 
-# 训练过程
-def train_cvae_al(cvae, discriminator, dataloader, optimizer_g, optimizer_d, lambda_kl=1.0, lambda_adv=1.0):
-    cvae.train()
-    discriminator.train()
-
-    for X, c in dataloader:
-        # 将数据和条件传入网络
-        X, c = Variable(X), Variable(c)
-
-        # 生成器训练
-        optimizer_g.zero_grad()
-        X_hat, z_mean, z_log_var = cvae(X, c)
-
-        # 计算损失
-        rec_loss = mse_loss(X, X_hat)
-        kl_loss_val = kl_loss(z_mean, z_log_var)
-        adv_loss_g = bce_loss(discriminator(X_hat), torch.ones_like(discriminator(X_hat)))
-
-        loss_g = rec_loss + lambda_kl * kl_loss_val + lambda_adv * adv_loss_g
-        loss_g.backward()
-        optimizer_g.step()
-
-        # 鉴别器训练
-        optimizer_d.zero_grad()
-        adv_loss_d = bce_loss(discriminator(X_hat), torch.zeros_like(discriminator(X_hat))) + \
-                     bce_loss(discriminator(X), torch.ones_like(discriminator(X)))
-
-        adv_loss_d.backward()
-        optimizer_d.step()
-
-        print(f"Generator loss: {loss_g.item()}, Discriminator loss: {adv_loss_d.item()}")
-
-
-# 假设我们已经构建了上下文编码器、编码器、解码器和鉴别器，并且有训练数据集dataloader
-# context_encoder = ...
-# encoder = ...
-# decoder = ...
-# discriminator = Discriminator()
-#
-# cvae = CVAE(context_encoder, encoder, decoder)
-#
-# optimizer_g = optim.Adam(cvae.parameters(), lr=0.001)
-# optimizer_d = optim.Adam(discriminator.parameters(), lr=0.001)
-#
-# # 训练循环
-# train_cvae_al(cvae, discriminator, dataloader, optimizer_g, optimizer_d)
