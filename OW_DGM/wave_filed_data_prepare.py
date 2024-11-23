@@ -61,10 +61,10 @@ def combine_monthly_data(base_path, start_year, end_year):
     """
     monthly_data = []
 
-    for year in range(start_year, end_year + 1):
+    for year in range(start_year, end_year):
         for month in range(1, 13):  # 遍历1到12月
             year_month = f"{year}{month:02d}"  # 格式化为"YYYYMM"
-            if (year == 2019 and month > 2):
+            if (year == 2020 and month > 2):
                 break
             # 检查文件是否存在
             # 调用函数读取数据
@@ -79,7 +79,5 @@ def combine_monthly_data(base_path, start_year, end_year):
         raise ValueError("No valid data files found for the specified range.")
 
     # 拼接所有月份的数据
-    combined_data = torch.cat(monthly_data, dim=1)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
+    combined_data = torch.cat(monthly_data, dim=0)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
     return combined_data
-
-combined_data=combine_monthly_data("E:/Dataset/met_waves/Swan_cropped/swanSula",2017,2021)

@@ -119,6 +119,7 @@ def read_nc_files_and_extract_features(base_path, year_month):
 
         # 处理波浪数据
         cos_dirm, sin_dirm = process_wave_data(dirm)
+        print("cos,sin", cos_dirm, sin_dirm)
 
         # 将处理后的数据拼接为 (时间步, 特征数)
         data = np.stack([Hs, Tm, cos_dirm, sin_dirm], axis=-1)
@@ -127,8 +128,9 @@ def read_nc_files_and_extract_features(base_path, year_month):
         print(f"文件 {file} 特征维度处理后形状: {data.shape}")
         max_timestep = max(max_timestep, data.shape[0])  # 更新最大时间步
 
-    # 拼接为目标形状 (5, max_timestep, 3)
+    # 拼接为目标形状 (5, max_timestep, 4)
     data_array = np.stack(all_data, axis=0)
+    print("111", data_array[0, 0:3, 2], data_array[0, 0:3, 3])
     return data_array
 
 
@@ -186,7 +188,7 @@ def normalize_and_save_numpy(data, save_path):
 
     # 归一化前两维特征
     normalized_data_np = np.zeros_like(data)
-    for i in range(2):  # 遍历每个特征
+    for i in range(4):  # 遍历每个特征
         feature = data[:, :, i]  # 提取当前特征
 
         # 忽略 NaN 值，计算最小值和最大值
@@ -199,7 +201,10 @@ def normalize_and_save_numpy(data, save_path):
 
         # 归一化公式
         normalized_feature = 2 * (feature - min_val) / (max_val - min_val) - 1
-        normalized_data_np[:, :, i] = normalized_feature
+        if (i > 2):
+            normalized_data_np[:, :, i] = feature
+        else:
+            normalized_data_np[:, :, i] = normalized_feature
 
     # 转回 PyTorch
     normalized_data = torch.from_numpy(normalized_data_np)
@@ -274,18 +279,33 @@ def reset_indices(arr):
 base_path = r"E:\Dataset\met_waves\buoy"
 save_path = "./data"
 start_year = 2017
-end_year = 2020
+end_year = 2021
 combined_data = combine_monthly_data(base_path, start_year, end_year)
 print(f"Combined data shape: {combined_data.shape}")
 np_data = combined_data.numpy()
+# column_data=np_data[:,:,3]
+# column_data= column_data[~np.isnan(column_data)]
+# max_value = column_data.max()
+# min_value = column_data.min()
+# print(np_data.shape,max_value,min_value)
 sequence_length = np_data.shape[1]  # 获取 b 的长度
 # 动态生成索引：每次提取连续 3 个点，跳过 3 个点
 indices_to_extract = generate_indices(sequence_length, group_size=3, skip_size=3)
 # 提取指定索引的数据
 extracted_data = extract_elements(np_data, indices_to_extract)
 print("提取后的数据形状：", extracted_data.shape)
+column_data = extracted_data[:, :, 3]
+column_data = column_data[~np.isnan(column_data)]
+max_value = column_data.max()
+min_value = column_data.min()
+print(extracted_data.shape, max_value, min_value)
 # 重置索引（这里的 "索引" 是 NumPy 数组本身的顺序）
 reset_data = reset_indices(extracted_data)
+column_data = reset_data[:, :, 3]
+column_data = column_data[~np.isnan(column_data)]
+max_value = column_data.max()
+min_value = column_data.min()
+print(reset_data.shape, max_value, min_value)
 # 创建保存路径
 os.makedirs(save_path, exist_ok=True)
 # 调用函数

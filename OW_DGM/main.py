@@ -1,3 +1,5 @@
+import numpy as np
+import wave_filed_data_prepare
 import Utils
 from Utils import *
 import torch
@@ -52,30 +54,12 @@ class TimeSeriesDataset(Dataset):
 
         return A_batches, B_batches
 
-# 示例数据
-T1 = 300  # 时间步
-T2 =100
-A = torch.randn(5, T1, 4)  # (5, T, 4)
-B = torch.randn(T2, 4, 128, 128)  # (T, 4, 128, 128)
-batch_size = 10
-
-# 创建数据集和数据加载器
-dataset = TimeSeriesDataset(A, B, batch_size=batch_size)
-dataloader = DataLoader(dataset, batch_size=None, shuffle=False)
-
-# 测试
-for i, (A_batch, B_batch) in enumerate(dataloader):
-    print(f"Batch {i + 1}:")
-    print(f"A_batch shape: {A_batch.shape}")
-    print(f"B_batch shape: {B_batch.shape}")
-
-
 
 def train_cvae_al(
-    context_encoder, encoder, decoder, discriminator,
-    dataloader, device, latent_dim=128,
-    lambda_kl=0.1, lambda_adv=0.01, lr=1e-4,
-    epochs=50, verbose=True
+        context_encoder, encoder, decoder, discriminator,
+        dataloader, device, latent_dim=128,
+        lambda_kl=0.1, lambda_adv=0.01, lr=1e-4,
+        epochs=50, verbose=True
 ):
     """
     训练 CVAE-AL 模型的函数。
@@ -98,6 +82,7 @@ def train_cvae_al(
     - context_encoder, encoder, decoder, discriminator：训练后的模型。
     """
     # 损失函数
+    loss = Loss()
     mse_loss = nn.MSELoss()  # 重构损失
     bce_loss = nn.BCELoss()  # 二分类交叉熵损失
 
@@ -123,6 +108,8 @@ def train_cvae_al(
         discriminator.train()
 
         for batch_idx, (buoy_data, wave_field) in enumerate(dataloader):
+            print(f"Batch {batch_idx + 1}:", f"buoy_data_batch shape: {buoy_data.shape}",
+                  f"wave_field_batch shape: {wave_field.shape}")
             # 将数据移动到设备
             buoy_data = buoy_data.to(device)  # 浮标数据 (batch_size, 5, 3, 4)
             wave_field = wave_field.to(device)  # 波场数据 (batch_size, 3, 128, 128)
@@ -131,23 +118,21 @@ def train_cvae_al(
             context_vector = context_encoder(buoy_data)  # (batch_size, latent_dim)
 
             # 编码器生成 z 的均值和标准差
-            z_mean, z_logvar = encoder(wave_field, context_vector)  # (batch_size, latent_dim)
-            # # 从标准正态分布中采样一个随机张量 eps
-            # eps = torch.randn_like(mu)
-            #
-            # # 计算 Z
-            # Z = mu + sigma * eps
-
-            z_std = torch.exp(0.5 * z_logvar)
-            z = torch.randn_like(z_std) * z_std + z_mean  # 重参数化采样
+            z_mean, z_var = encoder(wave_field, context_vector)  # (batch_size, latent_dim)
+            z = loss.reparameterize(z_mean, z_var)  # 重参数化采样
             # 解码器生成波场
             reconstructed_wave_field = decoder(z, context_vector)  # (batch_size, 3, 128, 128)
-            # 计算生成器损失
-            l_rec = mse_loss(reconstructed_wave_field, wave_field)  # 重构损失
-            kl_div = -0.5 * torch.sum(1 + z_logvar - z_mean.pow(2) - torch.exp(z_logvar)) / wave_field.size(0)
+            # 重构损失
+            l_rec = loss.mse_loss(wave_field, reconstructed_wave_field)
+            # KL损失
+            l_kl = loss.kl_loss(z_mean, z_var)
             fake_preds = discriminator(reconstructed_wave_field)  # 判别器对生成波场的判别
-            l_adv_G = bce_loss(fake_preds, torch.ones_like(fake_preds))  # 对抗损失（生成器）
-            l_G = l_rec + lambda_kl * kl_div + lambda_adv * l_adv_G  # 总生成器损失
+            print("Fake predictions range:", fake_preds.min().item(), fake_preds.max().item())
+            l_adv_G = loss.bce_loss(fake_preds, torch.ones_like(fake_preds))  # 对抗损失（生成器）
+            # print("Real predictions range:", real_preds.min().item(), real_preds.max().item())
+
+
+            l_G = l_rec + lambda_kl * l_kl + lambda_adv * l_adv_G  # 总生成器损失
             # 优化生成器
             optimizer_G.zero_grad()
             l_G.backward()
@@ -170,12 +155,72 @@ def train_cvae_al(
             if verbose:
                 print(f"Epoch [{epoch + 1}/{epochs}] Batch [{batch_idx + 1}/{len(dataloader)}]: "
                       f"Loss_G: {l_G.item():.4f}, Loss_D: {l_adv_D.item():.4f}, "
-                      f"L_rec: {l_rec.item():.4f}, KL: {kl_div.item():.4f}")
+                      f"L_rec: {l_rec.item():.4f}, KL: {l_kl.item():.4f}")
 
     return context_encoder, encoder, decoder, discriminator
+
+
+def replace_invalid_values(data):
+    """
+    将数据中值为 -32768、9999.0 或 NaN 的位置替换为 0。
+
+    参数：
+    - data: torch.Tensor，输入数据张量。
+
+    返回：
+    - 处理后的 torch.Tensor。
+    """
+    # 替换 NaN 值为 0
+    data = torch.nan_to_num(data, nan=0.0)
+    # 替换 -32768 和 9999.0 为 0
+    data = torch.where((data == -32768) | (data == 9999.0), 0.0, data)
+    return data
+
+
+def count_nan_values(data):
+    """
+    统计数据中 NaN 值的总数。
+
+    参数：
+    - data: torch.Tensor，输入数据张量。
+
+    返回：
+    - NaN 值的数量。
+    """
+    return torch.isnan(data).sum().item()
+
+def normalize(data):
+    x_min = torch.min(data)
+    x_max = torch.max(data)
+    data = (data - x_min) / (x_max - x_min)
+    return data
 # 定义设备
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+print("loading swan data and buoy data........")
+swan_data= torch.randn(270, 4, 128, 128)  # (T, 4, 128, 128)
+buoy_data= torch.randn( 5, 810, 4)
+swan_data=normalize(swan_data)
+buoy_data=normalize(buoy_data)
+# swan_data = np.load("E:/Dataset/met_waves/swan_data.npy")
+# buoy_data = np.load('data/buoy_obs.npy')
+print(torch.min(buoy_data), torch.max(buoy_data))
+buoy_data = torch.tensor(buoy_data)
+# swan_data = wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2017, 2018)
+# swan_data = torch.tensor(swan_data).permute(0, 3, 1, 2)
+# 处理 Swan 数据
+swan_data = replace_invalid_values(swan_data)
+# 查看 Swan 数据中的 NaN 值数量
+# 处理 Buoy 数据
+buoy_data = replace_invalid_values(buoy_data)
+num_nan_swan = count_nan_values(swan_data)
+print(f"Swan 数据中 NaN 值的数量: {num_nan_swan}")
+# 查看 Buoy 数据中的 NaN 值数量
+num_nan_buoy = count_nan_values(buoy_data)
+print(f"Buoy 数据中 NaN 值的数量: {num_nan_buoy}")
+print("swan data and buoy data shape", buoy_data.shape, swan_data.shape)
+# 创建数据集和数据加载器
+dataset = TimeSeriesDataset(buoy_data, swan_data, batch_size=32)
+dataloader = DataLoader(dataset, batch_size=None, shuffle=False)
 # 训练模型
 context_encoder = Utils.ContextualEncoder()
 encoder = Utils.WaveFieldEncoderWithBuoy()
@@ -187,5 +232,3 @@ trained_context_encoder, trained_encoder, trained_decoder, trained_discriminator
     lambda_kl=0.1, lambda_adv=0.01, lr=1e-4,
     epochs=50, verbose=True
 )
-
-

@@ -1,3 +1,4 @@
+import math
 import torch
 import torch.nn as nn
 
@@ -282,45 +283,28 @@ class Discriminator(nn.Module):
 
 
 # 定义CVAE模型（生成器部分）
-class CVAE(nn.Module):
-    def __init__(self, context_encoder, encoder, decoder):
-        super(CVAE, self).__init__()
-        self.context_encoder = context_encoder
-        self.encoder = encoder
-        self.decoder = decoder
-
-    def forward(self, X, c):
-        # 从上下文编码器获得条件向量 c
-        c_encoded = self.context_encoder(c)
-
-        # 编码器输出潜在变量 z
-        z_mean, z_log_var = self.encoder(X, c_encoded)
-
-        # 使用重参数化技巧生成潜在变量 z
-        z = self.reparameterize(z_mean, z_log_var)
-
-        # 解码器生成重建的波浪场
-        X_hat = self.decoder(z, c_encoded)
-
-        return X_hat, z_mean, z_log_var
-
-    def reparameterize(self, mu, log_var):
-        std = torch.exp(0.5 * log_var)
+class Loss:
+    def reparameterize(self, mu, std):
         eps = torch.randn_like(std)
         return mu + eps * std
 
+    # 损失函数：对抗损失、重建损失、KL损失
+    def bce_loss(self,output, target):
+        criterion = nn.BCELoss()
+        return criterion(output, target)
 
-# 定义鉴别器
+    def mse_loss(self,X, X_hat):
+        return nn.MSELoss()(X, X_hat)
 
-# 损失函数：对抗损失、重建损失、KL损失
-def bce_loss(output, target):
-    criterion = nn.BCELoss()
-    return criterion(output, target)
+    def kl_loss(self,mu, sigma):
+        """
+            计算 KL 损失。
 
+            参数：
+            - mu: torch.Tensor，编码器输出的均值 (batch_size, latent_dim)。
+            - var: torch.Tensor，编码器输出的方差 (batch_size, latent_dim)。
 
-def mse_loss(X, X_hat):
-    return nn.MSELoss()(X, X_hat)
-
-
-def kl_loss(mu, log_var):
-    return -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
+            返回：
+            - kl_loss: KL 损失，标量。
+            """
+        return 0.5 * torch.sum(mu.pow(2) + sigma.pow(2) - 1 - torch.log(sigma.pow(2))) / mu.size(1)
