@@ -2,6 +2,9 @@ import netCDF4 as nc
 import os
 import pandas as pd
 import torch
+import numpy as np
+
+import wave_filed_data_prepare
 
 
 def fill_missing_time_points(file_path):
@@ -119,7 +122,6 @@ def read_nc_files_and_extract_features(base_path, year_month):
 
         # 处理波浪数据
         cos_dirm, sin_dirm = process_wave_data(dirm)
-        print("cos,sin", cos_dirm, sin_dirm)
 
         # 将处理后的数据拼接为 (时间步, 特征数)
         data = np.stack([Hs, Tm, cos_dirm, sin_dirm], axis=-1)
@@ -130,7 +132,6 @@ def read_nc_files_and_extract_features(base_path, year_month):
 
     # 拼接为目标形状 (5, max_timestep, 4)
     data_array = np.stack(all_data, axis=0)
-    print("111", data_array[0, 0:3, 2], data_array[0, 0:3, 3])
     return data_array
 
 
@@ -144,9 +145,10 @@ def combine_monthly_data(base_path, start_year, end_year):
     - end_year (int): 结束年份。
 
     返回：
-    - combined_data (torch.Tensor): 拼接后的数据张量，形状为 (num_buoys, total_time_steps, feature_dim)。
+    - combined_data (torch.Tensor): 拼接后的数据tensor，形状为 (num_buoys, total_time_steps, feature_dim)。
     """
-    monthly_data = []
+    monthly_data_train = []
+    monthly_data_test = []
 
     for year in range(start_year, end_year):
         for month in range(1, 13):  # 遍历1到12月
@@ -157,17 +159,19 @@ def combine_monthly_data(base_path, start_year, end_year):
             # 调用函数读取数据
             print(f"Processing file for {year_month}...")
             monthly_obs = read_nc_files_and_extract_features(base_path, year_month)
-            # 确保数据是torch.Tensor类型
-            if isinstance(monthly_obs, np.ndarray):
-                monthly_obs = torch.tensor(monthly_obs)
-            monthly_data.append(monthly_obs)
+            if (year < 2019):
+                monthly_data_train.append(monthly_obs)
+            else:
+                monthly_data_test.append(monthly_obs)
     # 检查是否有数据
-    if not monthly_data:
+    if not monthly_data_train and not monthly_data_test:
         raise ValueError("No valid data files found for the specified range.")
 
     # 拼接所有月份的数据
-    combined_data = torch.cat(monthly_data, dim=1)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
-    return combined_data
+    combined_data_train = np.concatenate(monthly_data_train,
+                                         axis=1)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
+    combined_data_test = np.concatenate(monthly_data_test, axis=1)
+    return combined_data_train, combined_data_test
 
 
 def normalize_and_save_numpy(data, save_path):
@@ -205,23 +209,10 @@ def normalize_and_save_numpy(data, save_path):
             normalized_data_np[:, :, i] = feature
         else:
             normalized_data_np[:, :, i] = normalized_feature
-
-    # 转回 PyTorch
-    normalized_data = torch.from_numpy(normalized_data_np)
-
     # 将最大最小值保存为 .npy 文件
     min_vals = np.array(min_vals)
     max_vals = np.array(max_vals)
-
-    np.save(f"{save_path}/min_values.npy", min_vals)
-    np.save(f"{save_path}/max_values.npy", max_vals)
-
-    print(f"最大最小值已保存到 {save_path}")
-
-    return normalized_data
-
-
-import numpy as np
+    return normalized_data_np, min_vals, max_vals
 
 
 def generate_indices(sequence_length, group_size, skip_size):
@@ -262,54 +253,28 @@ def extract_elements(data, indices):
     return data[:, zero_based_indices, :]
 
 
-# 重置索引
-def reset_indices(arr):
-    """
-    重置提取后数组的索引（即重新排序成从 0 开始）。
-
-    参数:
-        arr: ndarray，提取后的数据。
-
-    返回:
-        new_arr: ndarray，重新索引后的数据。
-    """
-    return arr  # NumPy 数组本身是从 0 开始的索引
-
-
 base_path = r"E:\Dataset\met_waves\buoy"
 save_path = "./data"
 start_year = 2017
 end_year = 2021
-combined_data = combine_monthly_data(base_path, start_year, end_year)
-print(f"Combined data shape: {combined_data.shape}")
-np_data = combined_data.numpy()
-# column_data=np_data[:,:,3]
-# column_data= column_data[~np.isnan(column_data)]
-# max_value = column_data.max()
-# min_value = column_data.min()
-# print(np_data.shape,max_value,min_value)
-sequence_length = np_data.shape[1]  # 获取 b 的长度
+combined_data_train, combined_data_test = combine_monthly_data(base_path, start_year, end_year)
+print(f"Combined data shape: {combined_data_train.shape},{combined_data_test.shape}")
 # 动态生成索引：每次提取连续 3 个点，跳过 3 个点
-indices_to_extract = generate_indices(sequence_length, group_size=3, skip_size=3)
+indices_to_extract_train = generate_indices(combined_data_train.shape[1], group_size=3, skip_size=3)
+indices_to_extract_test = generate_indices(combined_data_test.shape[1], group_size=3, skip_size=3)
 # 提取指定索引的数据
-extracted_data = extract_elements(np_data, indices_to_extract)
-print("提取后的数据形状：", extracted_data.shape)
-column_data = extracted_data[:, :, 3]
-column_data = column_data[~np.isnan(column_data)]
-max_value = column_data.max()
-min_value = column_data.min()
-print(extracted_data.shape, max_value, min_value)
-# 重置索引（这里的 "索引" 是 NumPy 数组本身的顺序）
-reset_data = reset_indices(extracted_data)
-column_data = reset_data[:, :, 3]
-column_data = column_data[~np.isnan(column_data)]
-max_value = column_data.max()
-min_value = column_data.min()
-print(reset_data.shape, max_value, min_value)
-# 创建保存路径
-os.makedirs(save_path, exist_ok=True)
-# 调用函数
-normalized_data = normalize_and_save_numpy(reset_data, save_path)
-print("归一化后的数据形状:", normalized_data.shape)
-np.save(f"{save_path}/buoy_obs.npy", normalized_data)
-print(f"浮标观察值已保存到 {save_path}")
+extracted_data_train = extract_elements(combined_data_train, indices_to_extract_train)
+extracted_data_test = extract_elements(combined_data_test, indices_to_extract_test)
+# 替换数据中的填充值
+valid_data_train = wave_filed_data_prepare.replace_invalid_values(extracted_data_train)
+valid_data_test = wave_filed_data_prepare.replace_invalid_values(extracted_data_test)
+# 归一化并保存数据
+buoy_data_train, max_vals, min_vals = normalize_and_save_numpy(valid_data_train, save_path)
+np.save(f"{save_path}/buoy_data_train.npy", buoy_data_train)
+np.save(f"{save_path}/min_values_train.npy", min_vals)
+np.save(f"{save_path}/max_values_train.npy", max_vals)
+buoy_data_test, max_vals, min_vals = normalize_and_save_numpy(valid_data_test, save_path)
+np.save(f"{save_path}/buoy_data_test.npy", buoy_data_test)
+np.save(f"{save_path}/min_values_test.npy", min_vals)
+np.save(f"{save_path}/max_values_test.npy", max_vals)
+print(f"浮标值、最大最小值已保存到 {save_path}")
