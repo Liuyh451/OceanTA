@@ -23,9 +23,10 @@ def replace_invalid_values(data):
 
 
 def normalize(data):
+    # 归一化到[-1,1]
     x_min = torch.min(data)
     x_max = torch.max(data)
-    data = (data - x_min) / (x_max - x_min)
+    data = 2 * (data - x_min) / (x_max - x_min) - 1
     return data
 
 
@@ -64,8 +65,8 @@ def read_nc_files_and_extract_features(base_path, year_month):
     with xr.open_dataset(file_path) as ds:
         # 提取所需特征
         Hs = ds['hs'].values
-        Tm = ds['tm'].values
-        dirm = ds['dirm'].values
+        Tm = ds['tm02'].values
+        dirm = ds['theta0'].values
         # 这里就很奇怪，数据保存的时候确实是float32，读取后就变为timedelta64了
         Tm = np.array(Tm, dtype='float32')
         # 处理波浪数据
