@@ -3,31 +3,58 @@ import torch
 import xarray as xr
 
 
+def normalize(data):
+    """
+    使用 NumPy 对输入数据的前两维特征进行归一化
+
+    参数：
+    - data: npy，形状为 (浮标数, 时间步数, 特征数)。
+    返回：
+    - normalized_data: npy，归一化后的数据，与输入形状相同。
+    """
+    # 归一化前两维特征
+    normalized_data_np = np.zeros_like(data)
+    for i in range(4):  # 遍历每个特征
+        feature = data[:, i, :, :]  # 提取当前特征
+
+        # 忽略 NaN 值，计算最小值和最大值
+        min_val = np.nanmin(feature)
+        max_val = np.nanmax(feature)
+        print(min_val, max_val)
+        # 归一化公式
+        normalized_feature = 2 * (feature - min_val) / (max_val - min_val) - 1
+        if (i > 2):
+            normalized_data_np[:, i, :, :] = feature
+        else:
+            normalized_data_np[:, i, :, :] = normalized_feature
+    return normalized_data_np
+
+
 def replace_invalid_values(data):
     """
     将数据中值为 -32768、9999.0 或 NaN 的位置替换为 0。
 
     参数：
-    - data: torch.Tensor，输入数据张量。
+    - data: npy，输入数据npy
 
     返回：
-    - 处理后的 torch.Tensor。
+    - 处理后的 npy。
     """
-    if isinstance(data, np.ndarray):
-        data = torch.tensor(data)
-    # 替换 NaN 值为 0
-    data = torch.nan_to_num(data, nan=0.0)
-    # 替换 -32768 和 9999.0 为 0
-    data = torch.where((data == -32768) | (data == 9999.0), 0.0, data)
+    # 条件值
+    condition = (data == -32768) | (data == 9999.0)
+    # 将 -32768 和 9999.0 替换为 np.nan
+    data = np.where(condition, np.nan, data)
+    # 替换 NaN 为 0
+    data[np.isnan(data)] = 0
     return data
 
 
-def normalize(data):
-    # 归一化到[-1,1]
-    x_min = torch.min(data)
-    x_max = torch.max(data)
-    data = 2 * (data - x_min) / (x_max - x_min) - 1
-    return data
+# def normalize(data):
+#     # 归一化到[-1,1]
+#     x_min = np.nanmin(data)
+#     x_max = np.nanmax(data)
+#     data = 2 * (data - x_min) / (x_max - x_min) - 1
+#     return data
 
 
 def process_wave_data(dirm):
@@ -109,18 +136,16 @@ def combine_monthly_data(base_path, start_year, end_year):
             monthly_swan = read_nc_files_and_extract_features(base_path, year_month)
             monthly_swan = monthly_swan.transpose(0, 3, 1, 2)
             # 确保数据是torch.Tensor类型
-            if isinstance(monthly_swan, np.ndarray):
-                monthly_swan = torch.tensor(monthly_swan)
             monthly_data.append(monthly_swan)
     # 检查是否有数据
     if not monthly_data:
         raise ValueError("No valid data files found for the specified range.")
 
     # 拼接所有月份的数据
-    combined_data = torch.cat(monthly_data, dim=0)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
+    combined_data = np.concatenate(monthly_data, axis=0)  # 按时间步拼接 (num_buoys, total_time_steps, feature_dim)
     # 处理 Swan数据中的无效值
     swan_data = replace_invalid_values(combined_data)
     # 对数据进行归一化
     swan_data = normalize(swan_data)
     return swan_data
-# swan_data = combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2017, 2018)
+# swan_data = combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2017, 2019)
