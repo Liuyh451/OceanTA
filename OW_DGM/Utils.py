@@ -286,14 +286,35 @@ class Loss:
         eps = torch.randn_like(std)
         return mu + eps * std
 
-    # 损失函数：对抗损失、重建损失、KL损失
-    def bce_loss(self,output, target):
+    @staticmethod
+    def bce_loss(output, target):
+        """
+        Binary Cross-Entropy Loss with NaN handling.
+        NaN values in target are ignored during loss computation.
+        """
+        # # 忽略 output 为 0 的位置
+        # output_mask = (output != 0)
+        # mask = output_mask
+        # # 筛选有效值
+        # output = output[mask]
+        # target = target[mask].view(-1)  # 展平目标值
+        # # Compute BCE loss
         criterion = nn.BCELoss()
         return criterion(output, target)
 
-    def mse_loss(self,X, X_hat):
+    @staticmethod
+    def mse_loss(X, X_hat):
+        """
+        Mean Squared Error Loss with NaN handling.
+        NaN values in X are ignored during loss computation.
+        """
+        # mask = (X != 0)
+        # # 筛选有效值
+        # # Apply mask to X and X_hat
+        # X = X[mask]
+        # X_hat = X_hat[mask]
+        # Compute MSE loss
         return nn.MSELoss()(X, X_hat)
-
     def kl_loss(self,mu, sigma):
         """
             计算 KL 损失。

@@ -19,7 +19,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("loading swan data and buoy data........")
 buoy_data = np.load('data/buoy_data_test.npy')
 buoy_data = torch.tensor(buoy_data)
-swan_data = wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2019, 2021)
+swan_data = wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2019,
+                                                         2021)
+swan_data = torch.tensor(swan_data)
 print("swan data and buoy data shape", buoy_data.shape, swan_data.shape)
 # 初始化推理模块
 inference = Utils.Inference(context_encoder, decoder, device)
@@ -34,7 +36,6 @@ for batch_idx, (buoy_data, _) in enumerate(dataloader):
 # 将所有生成的波场拼接为一个张量
 all_generated_wave_fields = torch.cat(all_generated_wave_fields, dim=0)
 print("所有生成波场的形状:", all_generated_wave_fields.shape)
-generated_wave_fields=all_generated_wave_fields.cpu().numpy()
-np.save('data/generated_wave_fields.npy', generated_wave_fields)
+generated_wave_fields = all_generated_wave_fields.cpu().numpy()
+np.save('/home/hy4080/met_waves/data/generated_wave_fields.npy', generated_wave_fields)
 print("数据已成功保存为.npy文件")
-
