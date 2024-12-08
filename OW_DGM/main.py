@@ -134,10 +134,10 @@ swan_data= wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/
 # 将双精度张量转为单精度
 swan_data = torch.tensor(swan_data).float()
 print(swan_data.dtype)  # 输出 torch.float32
-# 查看 Swan 数据中的 NaN 值数量
-num_nan_swan = count_invalid(swan_data)
-num_nan_buoy = count_invalid(buoy_data)
-print(f"Swan和Buoy数据中无效值的数量分别为: {num_nan_swan},{num_nan_buoy}")
+# # 查看 Swan 数据中的 NaN 值数量
+# num_nan_swan = count_invalid(swan_data)
+# num_nan_buoy = count_invalid(buoy_data)
+# print(f"Swan和Buoy数据中无效值的数量分别为: {num_nan_swan},{num_nan_buoy}")
 print("swan data and buoy data shape", buoy_data.shape, swan_data.shape)
 # 创建数据集和数据加载器
 dataset = TimeSeriesDataset(buoy_data, swan_data, batch_size=128)
@@ -151,7 +151,7 @@ trained_context_encoder, trained_encoder, trained_decoder, trained_discriminator
     context_encoder, encoder, decoder, discriminator,
     dataloader, device, latent_dim=128,
     lambda_kl=0.8, lambda_adv=0.01, lr=1e-4,
-    epochs=200, verbose=True
+    epochs=100, verbose=True
 )
 # 保存 Contextual Encoder 和 Decoder 的参数
 torch.save(trained_context_encoder.state_dict(), "net/context_encoder_params.pth")

@@ -20,7 +20,6 @@ def normalize(data):
         # 忽略 NaN 值，计算最小值和最大值
         min_val = np.nanmin(feature)
         max_val = np.nanmax(feature)
-        print(min_val, max_val)
         # 归一化公式
         normalized_feature = 2 * (feature - min_val) / (max_val - min_val) - 1
         if (i > 2):

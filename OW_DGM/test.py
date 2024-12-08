@@ -19,8 +19,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("loading swan data and buoy data........")
 buoy_data = np.load('data/buoy_data_test.npy')
 buoy_data = torch.tensor(buoy_data)
-swan_data = wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2019,
-                                                         2021)
+# 加载数据
+swan_data = np.load("/home/hy4080/met_waves/data/wave_filed.npy")
 swan_data = torch.tensor(swan_data)
 print("swan data and buoy data shape", buoy_data.shape, swan_data.shape)
 # 初始化推理模块
