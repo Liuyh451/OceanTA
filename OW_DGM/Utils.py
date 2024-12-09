@@ -281,6 +281,7 @@ class Discriminator(nn.Module):
         x = self.sg(x)
         return x
 
+
 class Loss:
     def reparameterize(self, mu, std):
         eps = torch.randn_like(std)
@@ -315,7 +316,8 @@ class Loss:
         # X_hat = X_hat[mask]
         # Compute MSE loss
         return nn.MSELoss()(X, X_hat)
-    def kl_loss(self,mu, sigma):
+
+    def kl_loss(self, mu, sigma):
         """
             计算 KL 损失。
 
@@ -327,6 +329,8 @@ class Loss:
             - kl_loss: KL 损失，标量。
             """
         return 0.5 * torch.sum(mu.pow(2) + sigma.pow(2) - 1 - torch.log(sigma.pow(2))) / mu.size(1)
+
+
 class Inference:
     def __init__(self, contextual_encoder, decoder, device):
         """
@@ -357,10 +361,10 @@ class Inference:
             # 生成 z 并解码
             batch_size = wave_buoy_data.size(0)
             wave_fields = []
-            num_samples=1
+            num_samples = 1
             for _ in range(num_samples):
                 # 从标准正态分布 N(0, I) 中采样 z
-                z = torch.randn_like(context, device=self.device)# z 形状与 context 相同
+                z = torch.randn_like(context, device=self.device)  # z 形状与 context 相同
                 # 解码生成波场
                 generated_wave_field = self.decoder(z, context)  # 形状为 (batch_size, channels, height, width)
                 wave_fields.append(generated_wave_field)
@@ -368,6 +372,7 @@ class Inference:
             # 合并生成的波场样本
             wave_fields = torch.cat(wave_fields, dim=0)  # 合并生成的样本
             return wave_fields
+
 
 import numpy as np
 
@@ -443,8 +448,10 @@ class EvaluationMetrics:
         predictions_reshaped = flattened_predictions.reshape(-1, 10)  # 假设使用10个集合成员作为样本，按样本维度重塑
         ground_truth_reshaped = flattened_ground_truth.reshape(-1, 1)
         crps_per_cell = np.array([self._compute_crps_per_grid_cell(predictions_reshaped[i], ground_truth_reshaped[i])
-                                 for i in range(self.num_examples * self.num_grid_cells)])
+                                  for i in range(self.num_examples * self.num_grid_cells)])
         return np.mean(crps_per_cell)
+
+
 class TimeSeriesDataset(Dataset):
     def __init__(self, A, B, batch_size, time_step_A=3, time_step_B_ratio=3):
         """
@@ -490,3 +497,40 @@ class TimeSeriesDataset(Dataset):
         B_batches = torch.stack(B_batches, dim=0).squeeze(1)  # (batch_size, 4, 128, 128)
 
         return A_batches, B_batches
+
+
+class BuoySeriesDataset(Dataset):
+    def __init__(self, A, batch_size, time_step_A=3):
+        """
+        自定义数据集。
+
+        参数：
+        - A: torch.Tensor，形状为 (5, T, 4) 的时间序列 A。
+        - batch_size: int，批次大小。
+        - time_step_A: int，每次从 A 读取的时间步长。
+        """
+        self.A = A
+        self.batch_size = batch_size
+        self.time_step_A = time_step_A
+        self.num_samples = A.shape[1]  # A 的时间步数
+
+    def __len__(self):
+        # 计算总批次数
+        total_batches = (self.num_samples + self.time_step_A - 1) // self.time_step_A
+        return (total_batches + self.batch_size - 1) // self.batch_size
+
+    def __getitem__(self, idx):
+        # 每个批次包含的时间段索引范围
+        batch_start_idx = idx * self.batch_size * self.time_step_A
+        batch_end_idx = min((idx + 1) * self.batch_size * self.time_step_A, self.num_samples)
+
+        # 按时间步分段获取 A 和 B 的时间片
+        A_batches = []
+        for start_idx in range(batch_start_idx, batch_end_idx, self.time_step_A):
+            end_idx = min(start_idx + self.time_step_A, self.num_samples)
+            A_segment = self.A[:, start_idx:end_idx, :]  # (5, time_step_A, 4)
+            A_batches.append(A_segment)
+
+        # 合并为 batch 维度
+        A_batches = torch.stack(A_batches, dim=0)  # (batch_size, 5, time_step_A, 4)
+        return A_batches

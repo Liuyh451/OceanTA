@@ -90,11 +90,11 @@ def train_cvae_al(
             l_rec = loss.mse_loss(wave_field, reconstructed_wave_field)
             # KL损失
             l_kl = loss.kl_loss(z_mean, z_var)
-            #将原始波场中值为 0 的位置重建波场同样设置为 0,0在归一化之后是-1
+            # 将原始波场中值为 0 的位置重建波场同样设置为 0,0在归一化之后是-1
             mask = (wave_field == -1)
             wave_field_batch = reconstructed_wave_field.clone()
             wave_field_batch[mask] = -1
-            reconstructed_wave_field=wave_field_batch
+            reconstructed_wave_field = wave_field_batch
             fake_preds = discriminator(reconstructed_wave_field)  # 判别器对生成波场的判别
             l_adv_G = loss.bce_loss(fake_preds, torch.ones_like(fake_preds))  # 对抗损失（生成器）
 
@@ -129,8 +129,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("loading swan data and buoy data........")
 buoy_data = np.load('data/buoy_data_train.npy')
 buoy_data = torch.tensor(buoy_data)
-swan_data= wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2017,
-                                                           2019)
+swan_data = wave_filed_data_prepare.combine_monthly_data("/home/hy4080/met_waves/Swan_cropped/swanSula", 2017,
+                                                         2019)
 # 将双精度张量转为单精度
 swan_data = torch.tensor(swan_data).float()
 print(swan_data.dtype)  # 输出 torch.float32

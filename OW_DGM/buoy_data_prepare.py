@@ -1,9 +1,7 @@
 import netCDF4 as nc
 import os
 import pandas as pd
-import torch
 import numpy as np
-
 import wave_filed_data_prepare
 
 

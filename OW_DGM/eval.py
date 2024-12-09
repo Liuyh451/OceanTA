@@ -1,6 +1,3 @@
-import numpy as np
-
-
 def denormalize(value, max_value, min_value):
     """
     将归一化到[-1, 1]区间的数据还原到原始数据范围。
@@ -102,6 +99,8 @@ def rmse_all_features(predictions, ground_truths):
         save_path = "/home/hy4080/met_waves/result/exp12_" + str(i) + ".png"
         plt.savefig(save_path, dpi=300)
         print(f"图像已保存到: {save_path}")
+
+
 def restore_wave_directions_and_replace(predictions):
     """
     从预测数据中恢复波方向 (dirm)，
@@ -186,7 +185,7 @@ def calculate_rmse_per_time(predictions, ground_truths, channel):
     return np.array(time_rmse)
 
 
-def plot_rmse_over_time(i,predictions, ground_truths):
+def plot_rmse_over_time(i, predictions, ground_truths):
     # 预定义颜色列表
     colors = ['b', 'g', 'r']  # 蓝色、绿色、红色、青色
 
@@ -207,12 +206,16 @@ def plot_rmse_over_time(i,predictions, ground_truths):
         # 设置 y 轴从 0 开始
         axes[channel].set_ylim(0, np.max(time_rmse) + 0.1)  # +0.1 给 y 轴上限留点空白
     plt.tight_layout()  # 自动调整布局，防止子图重叠
-    save_path = "/home/hy4080/met_waves/result/exp" + str(i) + "_Time"  + ".png"
+    save_path = "/home/hy4080/met_waves/result/exp" + str(i) + "_Time" + ".png"
     plt.savefig(save_path, dpi=300)
     print(f"图像已保存到: {save_path}")
     plt.show()
+
+
 import warnings
 import numpy as np
+
+
 def plot_mean_hs(i, predictions, ground_truths, feature_name, channel_idx=0):
     """
     绘制预测和真实值的均值图以及它们的差异图。
@@ -277,12 +280,15 @@ def plot_mean_hs(i, predictions, ground_truths, feature_name, channel_idx=0):
     plt.savefig(save_path, dpi=300)
     print(f"图像已保存到: {save_path}")
     plt.show()
+
+
 def pt_rmse_all_features(predictions, ground_truths):
     for i in range(3):
         predicted_feature = predictions[:, i, :, :].reshape(predictions.shape[0], -1).mean(axis=-1)
         ground_truth_feature = ground_truths[:, i, :, :].reshape(ground_truths.shape[0], -1).mean(axis=-1)
         rmse = calculate_rmse(predicted_feature, ground_truth_feature)
         print(rmse)
+
 
 # 加载数据
 ground_truths = np.load("/home/hy4080/met_waves/data/wave_filed.npy")
@@ -299,9 +305,9 @@ predictions_ori = restore_wave_directions_and_replace(predictions)
 ground_truths_ori = restore_wave_directions_and_replace(ground_truths)
 predictions_day = average_by_groups(predictions_ori, 24)
 ground_truths_day = average_by_groups(ground_truths_ori, 24)
-num=15
-pt_rmse_all_features(predictions_day,ground_truths_day)
-plot_rmse_over_time(num,predictions_day, ground_truths_day)
-plot_mean_hs(num,predictions, ground_truths, feature_name="Hs", channel_idx=0)
-plot_mean_hs(num,predictions, ground_truths, feature_name="Tm", channel_idx=1)
-plot_mean_hs(num,predictions_day, ground_truths_day, feature_name="dirm", channel_idx=2)
+num = 15
+pt_rmse_all_features(predictions_day, ground_truths_day)
+plot_rmse_over_time(num, predictions_day, ground_truths_day)
+plot_mean_hs(num, predictions, ground_truths, feature_name="Hs", channel_idx=0)
+plot_mean_hs(num, predictions, ground_truths, feature_name="Tm", channel_idx=1)
+plot_mean_hs(num, predictions_day, ground_truths_day, feature_name="dirm", channel_idx=2)

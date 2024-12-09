@@ -1,12 +1,9 @@
 import numpy as np
 import torch
 import Utils
-import wave_filed_data_prepare
-
 # 实例化模型
 context_encoder = Utils.ContextualEncoder()
 decoder = Utils.WaveFieldDecoder()
-
 # 加载保存的参数
 context_encoder.load_state_dict(torch.load("net/context_encoder_params.pth"))
 decoder.load_state_dict(torch.load("net/decoder_params.pth"))
@@ -16,19 +13,15 @@ decoder.eval()
 all_generated_wave_fields = []
 # 定义设备
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print("loading swan data and buoy data........")
+print("loading buoy data........")
 buoy_data = np.load('data/buoy_data_test.npy')
 buoy_data = torch.tensor(buoy_data)
-# 加载数据
-swan_data = np.load("/home/hy4080/met_waves/data/wave_filed.npy")
-swan_data = torch.tensor(swan_data)
-print("swan data and buoy data shape", buoy_data.shape, swan_data.shape)
 # 初始化推理模块
 inference = Utils.Inference(context_encoder, decoder, device)
 # 创建数据集和数据加载器
-dataset = Utils.TimeSeriesDataset(buoy_data, swan_data, batch_size=128)
+dataset = Utils.BuoySeriesDataset(buoy_data, batch_size=128)
 dataloader = Utils.DataLoader(dataset, batch_size=None, shuffle=False)
-for batch_idx, (buoy_data, _) in enumerate(dataloader):
+for batch_idx, buoy_data in enumerate(dataloader):
     print(f"Processing batch {batch_idx + 1}/{len(dataloader)}...")
     generated_wave_fields = inference.generate_wave_field(buoy_data)
     all_generated_wave_fields.append(generated_wave_fields)
