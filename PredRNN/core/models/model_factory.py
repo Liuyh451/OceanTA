@@ -36,13 +36,31 @@ class Model(object):
         self.network.load_state_dict(stats['net_param'])
 
     def train(self, frames, mask):
+        """
+        训练模型的一个批次数据。
+
+        参数:
+        frames: 输入的帧数据，通常是一个序列，用于训练模型。
+        mask: 掩码数据，指示哪些部分需要预测。
+
+        返回值:
+        当前批次的损失值（loss），以 numpy 数组形式返回，用于评估模型性能。
+        """
+        # 将输入帧数据转换为张量并移动到指定设备（如 GPU）
         frames_tensor = torch.FloatTensor(frames).to(self.configs.device)
+        # 将掩码数据转换为张量并移动到指定设备
         mask_tensor = torch.FloatTensor(mask).to(self.configs.device)
+        # 清空优化器中的梯度信息，避免梯度累积
         self.optimizer.zero_grad()
+        # 将数据输入网络，得到预测帧和损失值
         next_frames, loss = self.network(frames_tensor, mask_tensor)
+        # 反向传播计算梯度
         loss.backward()
+        # 更新模型参数
         self.optimizer.step()
+        # 返回损失值的数值形式（从 GPU 转移到 CPU 并转换为 numpy 格式）
         return loss.detach().cpu().numpy()
+
 
     def test(self, frames, mask):
         frames_tensor = torch.FloatTensor(frames).to(self.configs.device)
