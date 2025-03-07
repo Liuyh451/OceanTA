@@ -1,15 +1,25 @@
-__author__ = 'yunbo'
-
 import torch
 import torch.nn as nn
 
 class SpatioTemporalLSTMCell(nn.Module):
+    """
+    初始化SpatioTemporalLSTMCell类。
+
+    参数:
+    - in_channel: 输入通道数。
+    - num_hidden: 隐藏层通道数。
+    - width: 输入的宽度。
+    - filter_size: 卷积核大小。
+    - stride: 步长。
+    - layer_norm: 是否应用层归一化。
+    """
     def __init__(self, in_channel, num_hidden, width, filter_size, stride, layer_norm):
         super(SpatioTemporalLSTMCell, self).__init__()
 
         self.num_hidden = num_hidden
         self.padding = filter_size // 2
         self._forget_bias = 1.0
+        # 根据是否需要层归一化来构建不同的卷积层
         if layer_norm:
             self.conv_x = nn.Sequential(
                 nn.Conv2d(in_channel, num_hidden * 7, kernel_size=filter_size, stride=stride, padding=self.padding, bias=False),
@@ -42,7 +52,22 @@ class SpatioTemporalLSTMCell(nn.Module):
             )
         self.conv_last = nn.Conv2d(num_hidden * 2, num_hidden, kernel_size=1, stride=1, padding=0, bias=False)
 
-
+    """
+    执行前向传播。
+    
+    参数:
+    - x_t: 当前时间步的输入。
+    - h_t: 当前时间步的隐藏状态。
+    - c_t: 当前时间步的细胞状态。
+    - m_t: 当前时间步的记忆状态。
+    
+    返回:
+    - h_new: 新的隐藏状态。
+    - c_new: 新的细胞状态。
+    - m_new: 新的记忆状态。
+    - delta_c: 细胞状态的变化量。
+    - delta_m: 记忆状态的变化量。
+    """
     def forward(self, x_t, h_t, c_t, m_t):
         x_concat = self.conv_x(x_t)
         h_concat = self.conv_h(h_t)
@@ -70,12 +95,3 @@ class SpatioTemporalLSTMCell(nn.Module):
         h_new = o_t * torch.tanh(self.conv_last(mem))
 
         return h_new, c_new, m_new, delta_c, delta_m
-
-
-
-
-
-
-
-
-
