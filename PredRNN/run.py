@@ -77,10 +77,10 @@ print(args)
 def reserve_schedule_sampling_exp(itr):
     """
     根据当前迭代次数计算逆向调度采样的概率，并生成相应的采样标志。
-    
+
     参数:
     itr (int): 当前迭代次数
-    
+
     返回:
     real_input_flag (np.ndarray): 采样标志数组
     """
@@ -147,11 +147,11 @@ def reserve_schedule_sampling_exp(itr):
 def schedule_sampling(eta, itr):
     """
     根据当前迭代次数和给定的eta值计算调度采样的概率，并生成相应的采样标志。
-    
+
     参数:
     eta (float): 当前的eta值
     itr (int): 当前迭代次数
-    
+
     返回:
     eta (float): 更新后的eta值
     real_input_flag (np.ndarray): 采样标志数组
@@ -197,7 +197,7 @@ def schedule_sampling(eta, itr):
 def train_wrapper(model):
     """
     包装训练过程，包括加载预训练模型、数据加载、训练和测试。
-    
+
     参数:
     model (Model): 训练模型实例
     """
@@ -248,23 +248,23 @@ def test_wrapper(model):
         seq_length=args.total_length, injection_action=args.injection_action, is_training=False)
     trainer.test(model, test_input_handle, args, 'test_result')
 
-# 检查并删除旧的保存目录
-if os.path.exists(args.save_dir):
-    shutil.rmtree(args.save_dir)
-os.makedirs(args.save_dir)
-# 创建新的保存目录
-if os.path.exists(args.gen_frm_dir):
-    shutil.rmtree(args.gen_frm_dir)
-os.makedirs(args.gen_frm_dir)
-
-# 打印初始化模型的信息
-print('Initializing models')
-
-# 创建模型实例
-model = Model(args)
-
-# 根据命令行参数决定是训练还是测试模型
-if args.is_training:
-    train_wrapper(model)
-else:
-    test_wrapper(model)
+# # 检查并删除旧的保存目录
+# if os.path.exists(args.save_dir):
+#     shutil.rmtree(args.save_dir)
+# os.makedirs(args.save_dir)
+# # 创建新的保存目录
+# if os.path.exists(args.gen_frm_dir):
+#     shutil.rmtree(args.gen_frm_dir)
+# os.makedirs(args.gen_frm_dir)
+#
+# # 打印初始化模型的信息
+# print('Initializing models')
+#
+# # 创建模型实例
+# model = Model(args)
+#
+# # 根据命令行参数决定是训练还是测试模型
+# if args.is_training:
+#     train_wrapper(model)
+# else:
+#     test_wrapper(model)

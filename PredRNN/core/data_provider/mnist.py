@@ -2,7 +2,20 @@ import numpy as np
 import random
 
 class InputHandle:
+    """
+    输入数据处理器
+
+    该类负责根据提供的参数加载数据，并对数据进行预处理，以便于后续的训练或测试使用
+    它支持从多个路径加载数据，并可以处理不同类型的输入和输出数据
+    """
+
     def __init__(self, input_param):
+        """
+        初始化输入处理器
+
+        参数:
+        - input_param: 字典，包含数据路径、名称、数据类型、minibatch大小等配置信息
+        """
         self.paths = input_param['paths']
         self.num_paths = len(input_param['paths'])
         self.name = input_param['name']
@@ -20,6 +33,12 @@ class InputHandle:
         self.load()
 
     def load(self):
+        """
+        加载数据
+
+        该方法从指定的路径中加载数据，并根据路径的数量决定如何合并数据
+        它还负责打印出加载的数据的关键字和形状，以便于调试和验证
+        """
         dat_1 = np.load(self.paths[0])
         for key in dat_1.keys():
             self.data[key] = dat_1[key]
@@ -38,9 +57,22 @@ class InputHandle:
             print(self.data[key].shape)
 
     def total(self):
+        """
+        获取数据集大小
+
+        返回:
+        - 数据集中样本的总数
+        """
         return self.data['clips'].shape[1]
 
     def begin(self, do_shuffle = True):
+        """
+        开始一个新的epoch
+
+        参数:
+        - do_shuffle: 布尔值，指示是否在开始之前打乱数据顺序
+        该方法准备数据集，包括创建索引和确定第一个minibatch的大小和内容
+        """
         self.indices = np.arange(self.total(),dtype="int32")
         if do_shuffle:
             random.shuffle(self.indices)
@@ -57,6 +89,12 @@ class InputHandle:
                                          in self.current_batch_indices)
 
     def next(self):
+        """
+        获取下一个minibatch的数据
+
+        该方法更新当前的位置，并确定下一个minibatch的大小和内容
+        如果没有更多的数据，则返回None
+        """
         self.current_position += self.current_batch_size
         if self.no_batch_left():
             return None
@@ -72,12 +110,24 @@ class InputHandle:
                                          in self.current_batch_indices)
 
     def no_batch_left(self):
+        """
+        检查是否还有剩余的minibatch
+
+        返回:
+        - 布尔值，如果不再有剩余的minibatch，则为True，否则为False
+        """
         if self.current_position >= self.total() - self.current_batch_size:
             return True
         else:
             return False
 
     def input_batch(self):
+        """
+        获取当前minibatch的输入数据
+
+        返回:
+        - 当前minibatch的输入数据数组，如果没有更多数据，则返回None
+        """
         if self.no_batch_left():
             return None
         input_batch = np.zeros(
@@ -96,6 +146,12 @@ class InputHandle:
         return input_batch
 
     def output_batch(self):
+        """
+        获取当前minibatch的输出数据
+
+        返回:
+        - 当前minibatch的输出数据数组，如果没有更多数据，则返回None
+        """
         if self.no_batch_left():
             return None
         if(2 ,3) == self.data['dims'].shape:
@@ -129,6 +185,12 @@ class InputHandle:
         return output_batch
 
     def get_batch(self):
+        """
+        获取当前minibatch的输入和输出数据
+
+        返回:
+        - 当前minibatch的数据数组，其中包括输入和输出数据，如果没有更多数据，则返回None
+        """
         input_seq = self.input_batch()
         output_seq = self.output_batch()
         batch = np.concatenate((input_seq, output_seq), axis=1)

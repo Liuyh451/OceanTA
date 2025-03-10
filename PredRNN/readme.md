@@ -47,7 +47,14 @@ self.frame_channel = 4 * 4 * 1 = 16
 >- 让模型更容易学习局部运动模式，而不仅仅是全局信息。
 >- 降低计算复杂度，提高训练效率。
 >- 使输入数据适配 RNN 变体的输入格式（通常是**固定长度的向量**）。
+## 1.2 数据载入
+### 1.方式一 按patch方式
+原作者是ims shape = (8, 20, 16, 16, 16)，这里形状为（batch，T，W，H，C）这里的C一般默认是1（灰色图），但是这里用了一个patch的方式进行了划分，见1.1部分的内容
+
+### 2.方式二 默认通道为1
+
 # 2.训练
+
 ## 2.1 RSS过程
 这一段代码用于 **遍历时间步，逐步生成预测帧**，并根据是否使用 **反向调度采样（Reverse Scheduled Sampling, RSS）** 选择当前时间步的输入帧。
 
@@ -252,13 +259,13 @@ else:
     - ST-LSTM **定义了两个输入门、两个遗忘门、两个更新门**：
     - **细胞状态 $c_t$的更新**
      $$\begin{array}{l}
-     i_t = \sigma(X_i + H_i) \quad \text{(输入门)} \\
-     f_t = \sigma(X_f + H_f + b) \quad \text{(遗忘门)} \\
-     g_t = \tanh(X_g + H_g) \quad \text{(候选状态)} \\
-     \Delta c = i_t \odot g_t \\
-     c_{t+1} = f_t \odot c_t + \Delta c
-     \end{array}$$
-   
+        i_t = \sigma(X_i + H_i) \quad \text{(输入门)} \\
+        f_t = \sigma(X_f + H_f + b) \quad \text{(遗忘门)} \\
+        g_t = \tanh(X_g + H_g) \quad \text{(候选状态)} \\
+        \Delta c = i_t \odot g_t \\
+        c_{t+1} = f_t \odot c_t + \Delta c
+        \end{array}$$
+      
    - **记忆状态 $m_t$的更新**
 $$
 \begin{array}{l}
