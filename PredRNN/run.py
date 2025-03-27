@@ -24,8 +24,8 @@ parser.add_argument('--save_dir', type=str, default='checkpoints/swan_predrnn_v2
 parser.add_argument('--gen_frm_dir', type=str, default='results/swan_predrnn_v2')
 parser.add_argument('--input_length', type=int, default=10)
 parser.add_argument('--total_length', type=int, default=20)
-parser.add_argument('--img_width', type=int, default=64)
-parser.add_argument('--img_channel', type=int, default=1)
+parser.add_argument('--img_width', type=int, default=128)
+parser.add_argument('--img_channel', type=int, default=3)
 
 # 添加模型相关的参数
 parser.add_argument('--model_name', type=str, default='predrnn_v2')
@@ -39,24 +39,26 @@ parser.add_argument('--decouple_beta', type=float, default=0.1)
 
 # 添加逆向调度采样相关的参数
 parser.add_argument('--reverse_scheduled_sampling', type=int, default=1)
-parser.add_argument('--r_sampling_step_1', type=float, default=25000)
-parser.add_argument('--r_sampling_step_2', type=int, default=50000)
-parser.add_argument('--r_exp_alpha', type=int, default=2500)
+parser.add_argument('--r_sampling_step_1', type=float, default=60)
+parser.add_argument('--r_sampling_step_2', type=int, default=110)
+parser.add_argument('--r_exp_alpha', type=int, default=500)
 # 添加调度采样相关的参数
 parser.add_argument('--scheduled_sampling', type=int, default=1)
-parser.add_argument('--sampling_stop_iter', type=int, default=50000)
+parser.add_argument('--sampling_stop_iter', type=int, default=110)
 parser.add_argument('--sampling_start_value', type=float, default=1.0)
-parser.add_argument('--sampling_changing_rate', type=float, default=0.00002)
+parser.add_argument('--sampling_changing_rate', type=float, default=0.0002)
 
 # 添加优化相关的参数
+#学习率
 parser.add_argument('--lr', type=float, default=0.0001)
 parser.add_argument('--reverse_input', type=int, default=1)
-parser.add_argument('--batch_size', type=int, default=8)
-parser.add_argument('--max_iterations', type=int, default=80000)
-parser.add_argument('--display_interval', type=int, default=100)
-parser.add_argument('--test_interval', type=int, default=5000)
-parser.add_argument('--snapshot_interval', type=int, default=5000)
-parser.add_argument('--num_save_samples', type=int, default=10)
+#批大小
+parser.add_argument('--batch_size', type=int, default=4)
+parser.add_argument('--max_iterations', type=int, default=200)#最大迭代次数
+parser.add_argument('--display_interval', type=int, default=10)#每X轮显示一次
+parser.add_argument('--test_interval', type=int, default=20)#每X轮测试一次
+parser.add_argument('--snapshot_interval', type=int, default=100)#每X轮保存一次模型
+parser.add_argument('--num_save_samples', type=int, default=5)#保存的样本数
 parser.add_argument('--n_gpu', type=int, default=1)
 
 # 添加可视化相关的参数
@@ -216,22 +218,30 @@ def train_wrapper(model):
             #重新开始数据迭代 (begin() 方法)，do_shuffle=True 表示重新洗牌数据，提高模型泛化能力
             train_input_handle.begin(do_shuffle=True)
         #读取一个批次的训练数据
+        # 获取训练数据批次
         ims = train_input_handle.get_batch()
+        # 对图像进行补丁重塑处理
         ims = preprocess.reshape_patch(ims, args.patch_size)
-
+        
+        # 根据参数决定是否使用反转调度采样
         if args.reverse_scheduled_sampling == 1:
             real_input_flag = reserve_schedule_sampling_exp(itr)
         else:
+            # 使用调度采样技术
             eta, real_input_flag = schedule_sampling(eta, itr)
-
+        
+        # 使用获取的数据训练模型
         trainer.train(model, ims, real_input_flag, args, itr)
-
+        
+        # 定期保存模型快照
         if itr % args.snapshot_interval == 0:
             model.save(itr)
-
+        
+        # 定期进行模型测试
         if itr % args.test_interval == 0:
             trainer.test(model, test_input_handle, args, itr)
-
+        
+        # 准备下一批训练数据
         train_input_handle.next()
 
 # 定义测试包装函数

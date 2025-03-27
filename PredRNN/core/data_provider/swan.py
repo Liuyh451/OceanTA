@@ -43,6 +43,13 @@ class InputHandle:
 
         # 合并成 3 通道数据 (T, W, H, C)
         self.data = np.stack([hs, tm02, theta0], axis=-1).astype(self.input_data_type)
+        # 替换 NaN 为 0
+        self.data = np.nan_to_num(self.data, nan=0.0)
+        # 方式二：归一化（Min-Max Scaling）
+        mins = np.min(self.data, axis=(0, 1, 2), keepdims=True)  # 各通道最小值
+        maxs = np.max(self.data, axis=(0, 1, 2), keepdims=True)  # 各通道最大值
+        self.data = (self.data - mins) / (maxs - mins + 1e-8)    # 缩放到 [0,1]
+
         self.T, self.W, self.H, self.C = self.data.shape
 
         print(f"数据加载完成，形状: {self.data.shape}")  # 输出 (T, W, H, 3)
@@ -54,15 +61,16 @@ class InputHandle:
         self.indices = []
         for i in range(0, self.T - self.N - self.M + 1, self.stride):
             self.indices.append(i)
-        random.shuffle(self.indices)  # 打乱数据顺序
         print(f"总样本数: {len(self.indices)}")
 
     def total(self):
         """返回数据集中可用的样本数"""
         return len(self.indices)
 
-    def begin(self):
+    def begin(self,do_shuffle = True):
         """初始化批次索引"""
+        if do_shuffle:
+            random.shuffle(self.indices)
         self.current_position = 0
         self.current_batch_size = min(self.minibatch_size, self.total())
         self.current_batch_indices = self.indices[:self.current_batch_size]
@@ -72,8 +80,18 @@ class InputHandle:
         self.current_position += self.current_batch_size
         if self.no_batch_left():
             return None
-        self.current_batch_size = min(self.minibatch_size, self.total() - self.current_position)
-        self.current_batch_indices = self.indices[self.current_position:self.current_position + self.current_batch_size]
+        remaining = self.total() - self.current_position
+        if remaining < self.minibatch_size:
+            # 计算需要补充的数量
+            needed = self.minibatch_size - remaining
+            # 组合剩余数据和前面的数据
+            self.current_batch_indices = self.indices[self.current_position:] + self.indices[:needed]
+            self.current_batch_size = self.minibatch_size
+        else:
+            self.current_batch_size = min(self.minibatch_size, remaining)
+            self.current_batch_indices = self.indices[
+                                         self.current_position:self.current_position + self.current_batch_size]
+        return self.current_batch_indices
 
     def no_batch_left(self):
         """检查是否还有剩余的 minibatch"""
@@ -111,4 +129,5 @@ class InputHandle:
         """获取当前minibatch的输入和输出数据"""
         input_seq = self.input_batch()
         output_seq = self.output_batch()
-        return input_seq, output_seq
+        batch = np.concatenate((input_seq, output_seq), axis=1)
+        return batch

@@ -126,6 +126,7 @@ class RNN(nn.Module):
                 if t < self.configs.input_length:
                     net = frames[:, t]  # 在输入长度内使用真实帧
                 else:
+
                     net = mask_true[:, t - self.configs.input_length] * frames[:, t] + \
                           (1 - mask_true[:, t - self.configs.input_length]) * x_gen
 
