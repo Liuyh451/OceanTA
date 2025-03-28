@@ -18,7 +18,7 @@ class InputHandle:
         self.minibatch_size = input_param['minibatch_size']  # batch size
         self.N = 10  # 输入时间步
         self.M = 10 # 预测时间步
-        self.stride = input_param.get('stride', 3)  # 滑动窗口步长
+        self.stride = input_param.get('stride', 10)  # 滑动窗口步长
         self.input_data_type = input_param.get('input_data_type', 'float32')
         self.output_data_type = input_param.get('output_data_type', 'float32')
 
@@ -130,4 +130,5 @@ class InputHandle:
         input_seq = self.input_batch()
         output_seq = self.output_batch()
         batch = np.concatenate((input_seq, output_seq), axis=1)
+        print(f"输入形状: {input_seq.shape}, 输出形状: {output_seq.shape}")
         return batch

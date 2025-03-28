@@ -13,7 +13,7 @@ import core.trainer as trainer
 parser = argparse.ArgumentParser(description='PyTorch video prediction model - PredRNN')
 
 # 添加训练/测试相关的参数
-parser.add_argument('--is_training', type=int, default=1)
+parser.add_argument('--is_training', type=int, default=0)
 parser.add_argument('--device', type=str, default='cuda')
 
 # 添加数据集相关的参数
@@ -29,7 +29,7 @@ parser.add_argument('--img_channel', type=int, default=3)
 
 # 添加模型相关的参数
 parser.add_argument('--model_name', type=str, default='predrnn_v2')
-parser.add_argument('--pretrained_model', type=str, default='')
+parser.add_argument('--pretrained_model', type=str, default='checkpoints/model.ckpt')
 parser.add_argument('--num_hidden', type=str, default='128,128,128,128')
 parser.add_argument('--filter_size', type=int, default=5)
 parser.add_argument('--stride', type=int, default=1)
@@ -206,6 +206,7 @@ def train_wrapper(model):
     if args.pretrained_model:
         model.load(args.pretrained_model)
     # 加载数据，args.injection_action：是否使用某种特定的数据增强或特性注入
+    #这个地方test_input_handle：实际上是验证集，下面的路径有写
     train_input_handle, test_input_handle = datasets_factory.data_provider(
         args.dataset_name, args.train_data_paths, args.valid_data_paths, args.batch_size, args.img_width,
         seq_length=args.total_length, injection_action=args.injection_action, is_training=True)
