@@ -17,7 +17,7 @@ class InputHandle:
         self.paths = input_param['paths']  # 数据路径
         self.minibatch_size = input_param['minibatch_size']  # batch size
         self.N = 10  # 输入时间步
-        self.M = 10 # 预测时间步
+        self.M = 10  # 预测时间步
         self.stride = input_param.get('stride', 10)  # 滑动窗口步长
         self.input_data_type = input_param.get('input_data_type', 'float32')
         self.output_data_type = input_param.get('output_data_type', 'float32')
@@ -48,7 +48,7 @@ class InputHandle:
         # 方式二：归一化（Min-Max Scaling）
         mins = np.min(self.data, axis=(0, 1, 2), keepdims=True)  # 各通道最小值
         maxs = np.max(self.data, axis=(0, 1, 2), keepdims=True)  # 各通道最大值
-        self.data = (self.data - mins) / (maxs - mins + 1e-8)    # 缩放到 [0,1]
+        self.data = (self.data - mins) / (maxs - mins + 1e-8)  # 缩放到 [0,1]
 
         self.T, self.W, self.H, self.C = self.data.shape
 
@@ -67,7 +67,7 @@ class InputHandle:
         """返回数据集中可用的样本数"""
         return len(self.indices)
 
-    def begin(self,do_shuffle = True):
+    def begin(self, do_shuffle=True):
         """初始化批次索引"""
         if do_shuffle:
             random.shuffle(self.indices)
@@ -105,30 +105,16 @@ class InputHandle:
             return None
 
         input_batch = np.zeros((self.current_batch_size, self.N, self.W, self.H, self.C), dtype=self.input_data_type)
-
-        for i, start_idx in enumerate(self.current_batch_indices):
-            input_batch[i] = self.data[start_idx:start_idx + self.N]  # 取 N 帧作为输入
-
-        return input_batch
-
-    def output_batch(self):
-        """
-        获取当前minibatch的输出数据，形状 (batch_size, M, W, H, C)
-        """
-        if self.no_batch_left():
-            return None
-
         output_batch = np.zeros((self.current_batch_size, self.M, self.W, self.H, self.C), dtype=self.output_data_type)
 
         for i, start_idx in enumerate(self.current_batch_indices):
+            input_batch[i] = self.data[start_idx:start_idx + self.N]  # 取 N 帧作为输入
             output_batch[i] = self.data[start_idx + self.N:start_idx + self.N + self.M]  # 取 M 帧作为预测目标
-
-        return output_batch
+        return input_batch, output_batch
 
     def get_batch(self):
         """获取当前minibatch的输入和输出数据"""
-        input_seq = self.input_batch()
-        output_seq = self.output_batch()
+        input_seq, output_seq = self.input_batch()
         batch = np.concatenate((input_seq, output_seq), axis=1)
         print(f"输入形状: {input_seq.shape}, 输出形状: {output_seq.shape}")
         return batch

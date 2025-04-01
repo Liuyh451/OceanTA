@@ -1,13 +1,54 @@
 import os.path
 import datetime
-import cv2
 import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
 from core.utils import preprocess, metrics
 import lpips
-import torch
 
+from core.utils.metrics import save_prediction_samples, calculate_lpips, plot_metrics, compute_metrics
+
+# 初始化 LPIPS 计算器
 loss_fn_alex = lpips.LPIPS(net='alex')
+
+
+def average_metrics(rmse_list, r2_list, window=10):
+    """
+    对形状为 (3, N) 的 RMSE 和 R² 列表按窗口大小进行滑动平均
+    参数:
+        rmse_list : np.ndarray, 形状 (3, N) - 各通道的 RMSE 值
+        r2_list   : np.ndarray, 形状 (3, N) - 各通道的 R² 值
+        window    : int - 分段窗口大小 (默认为10)
+    返回:
+        avg_rmse : np.ndarray, 形状 (3, M) - 分段平均后的 RMSE
+        avg_r2   : np.ndarray, 形状 (3, M) - 分段平均后的 R²
+    """
+    # 确保输入为 NumPy 数组
+    rmse_arr = np.array(rmse_list)
+    r2_arr = np.array(r2_list)
+
+    # 初始化结果容器
+    avg_rmse, avg_r2 = [], []
+
+    # 遍历每个通道 (3个)
+    for i in range(3):
+        # 提取当前通道数据
+        channel_rmse = rmse_arr[i]
+        channel_r2 = r2_arr[i]
+        n_samples = len(channel_rmse)
+
+        # 计算分段数
+        n_groups = np.ceil(n_samples / window).astype(int)
+
+        # 分段计算均值
+        rmse_avgs = [np.mean(channel_rmse[j * window: (j + 1) * window])
+                     for j in range(n_groups)]
+        r2_avgs = [np.mean(channel_r2[j * window: (j + 1) * window])
+                   for j in range(n_groups)]
+
+        avg_rmse.append(rmse_avgs)
+        avg_r2.append(r2_avgs)
+
+    return np.array(avg_rmse), np.array(avg_r2)
 
 
 def train(model, ims, real_input_flag, configs, itr):
@@ -42,33 +83,8 @@ def train(model, ims, real_input_flag, configs, itr):
         print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'itr: ' + str(itr))
         # 打印当前训练损失
         print('training loss: ' + str(cost))
-def compute_metrics(true_data, pred_data):
-    """
-    输入形状: [batch, channels, height, width]
-    返回:
-        rmse_list - 各通道RMSE列表
-        r2_list - 各通道R²列表
-    """
-    rmse_list = []
-    r2_list = []
 
-    for ch in range(true_data.shape[1]):
-        # 展平所有样本和空间维度
-        true_flat = true_data[:, ch, :, :].flatten()
-        pred_flat = pred_data[:, ch, :, :].flatten()
 
-        # 计算RMSE
-        mse = np.mean((true_flat - pred_flat) ** 2)
-        rmse = np.sqrt(mse)
-        rmse_list.append(rmse)
-
-        # 计算R²
-        ss_total = np.var(true_flat) * len(true_flat)
-        ss_res = np.sum((true_flat - pred_flat) ** 2)
-        r2 = 1 - (ss_res / ss_total) if ss_total != 0 else 0
-        r2_list.append(r2)
-
-    return rmse_list, r2_list
 def test(model, test_input_handle, configs, itr):
     """
     测试模型性能。
@@ -92,14 +108,14 @@ def test(model, test_input_handle, configs, itr):
     # 初始化批次计数器
     batch_id = 0
     # 初始化列表以存储评估指标
-    ssim, psnr,lp =  [],[],[]
+    ssim, psnr, lp = [], [], []
     # 初始化评估指标数据结构
     output_length = configs.total_length - configs.input_length
     num_channels = configs.img_channel  # 假设有3个通道（hs, tm02, theta0）
 
-    # 每个时间步的通道指标存储
-    channel_rmse = [[0.0 for _ in range(num_channels)] for _ in range(output_length)]  # [时间步][通道]
-    channel_r2 = [[0.0 for _ in range(num_channels)] for _ in range(output_length)]  # [时间步][通道]
+    # 初始化存储 RMSE 和 R² 的数组
+    channel_rmse = np.zeros((output_length * 10, num_channels))
+    channel_r2 = np.zeros((output_length * 10, num_channels))
     average_rmse = [0.0] * output_length  # 每个时间步的平均RMSE
 
     # 初始化每个帧的评估指标
@@ -127,7 +143,11 @@ def test(model, test_input_handle, configs, itr):
         real_input_flag[:, :configs.input_length - 1, :, :] = 1.0
 
     # 开始测试
+    # 用于存储所有批次的时间步展开数据
+    all_true = []
+    all_pred = []
     while not test_input_handle.no_batch_left():
+
         batch_id += 1
         # 获取一批测试数据
         test_ims = test_input_handle.get_batch()
@@ -141,104 +161,61 @@ def test(model, test_input_handle, configs, itr):
         img_gen = preprocess.reshape_patch_back(img_gen, configs.patch_size)
         output_length = configs.total_length - configs.input_length
         img_out = img_gen[:, -output_length:]
-        # 遍历每个预测时间步
+
+        # 遍历每个预测时间步，计算RMSE，LPIPS，PSNR，R2
         for i in range(output_length):
             # 获取真实值和预测值
-            x = test_ims[:, i + configs.input_length, :, :, :]  # [batch, C, H, W]
-            gx = img_out[:, i, :, :, :]  # [batch, C, H, W]
+            x = test_ims[:, i + configs.input_length, :, :, :]  # [batch,  H, W,C]
+            gx = img_out[:, i, :, :, :]  # [batch, H, W,C]
             gx = np.clip(gx, 0, 1)
-
-            # 计算指标（返回各通道的RMSE和R²）
-            rmse_list, r2_list = compute_metrics(x, gx)  # 假设返回两个长度为3的列表
-
-            # 存储通道级指标
-            for ch_idx in range(num_channels):
-                channel_rmse[i][ch_idx] = rmse_list[ch_idx]
-                channel_r2[i][ch_idx] = r2_list[ch_idx]
-
-            # 计算当前时间步的平均RMSE
-            average_rmse[i] = sum(rmse_list) / num_channels
-
-            # 打印当前时间步结果
-            print(f"\nTime Step {i + 1}/{output_length}:")
-            print(f"  Channel RMSE - HS: {rmse_list[0]:.4f}, TM02: {rmse_list[1]:.4f}, Theta0: {rmse_list[2]:.4f}")
-            print(f"  Average RMSE: {average_rmse[i]:.4f}")
-            print(f"  Channel R²   - HS: {r2_list[0]:.4f}, TM02: {r2_list[1]:.4f}, Theta0: {r2_list[2]:.4f}")
-
+            # 展开所有时间步
+            all_true.append(x)
+            all_pred.append(gx)
             # 计算 LPIPS
-            img_x = np.zeros([configs.batch_size, 3, configs.img_width, configs.img_width])
-            if configs.img_channel == 3:
-                img_x[:, 0, :, :] = x[:, :, :, 0]
-                img_x[:, 1, :, :] = x[:, :, :, 1]
-                img_x[:, 2, :, :] = x[:, :, :, 2]
-            else:
-                img_x[:, 0, :, :] = x[:, :, :, 0]
-                img_x[:, 1, :, :] = x[:, :, :, 0]
-                img_x[:, 2, :, :] = x[:, :, :, 0]
-            img_x = torch.FloatTensor(img_x)
-            img_gx = np.zeros([configs.batch_size, 3, configs.img_width, configs.img_width])
-            if configs.img_channel == 3:
-                img_gx[:, 0, :, :] = gx[:, :, :, 0]
-                img_gx[:, 1, :, :] = gx[:, :, :, 1]
-                img_gx[:, 2, :, :] = gx[:, :, :, 2]
-            else:
-                img_gx[:, 0, :, :] = gx[:, :, :, 0]
-                img_gx[:, 1, :, :] = gx[:, :, :, 0]
-                img_gx[:, 2, :, :] = gx[:, :, :, 0]
-            img_gx = torch.FloatTensor(img_gx)
-            lp_loss = loss_fn_alex(img_x, img_gx)
-            lp[i] += torch.mean(lp_loss).item()
-
+            lp[i] += calculate_lpips(loss_fn_alex, x, gx, configs)
+            # 计算 PSNR
             real_frm = np.uint8(x * 255)
             pred_frm = np.uint8(gx * 255)
-
             psnr[i] += metrics.batch_psnr(pred_frm, real_frm)
+            # 计算 SSIM
             for b in range(configs.batch_size):
-                score, _ = compare_ssim(pred_frm[b], real_frm[b], full=True,  channel_axis=-1, win_size=7)
+                score, _ = compare_ssim(pred_frm[b], real_frm[b], full=True, channel_axis=-1, win_size=7)
                 ssim[i] += score
 
-        # 保存预测示例
-        if batch_id <= configs.num_save_samples:
-            path = os.path.join(res_path, str(batch_id))
-            os.mkdir(path)
-            for i in range(configs.total_length):
-                name = 'gt' + str(i + 1) + '.png'
-                file_name = os.path.join(path, name)
-                img_gt = np.uint8(test_ims[0, i, :, :, :] * 255)
-                cv2.imwrite(file_name, img_gt)
-            for i in range(output_length):
-                name = 'pd' + str(i + 1 + configs.input_length) + '.png'
-                file_name = os.path.join(path, name)
-                img_pd = img_out[0, i, :, :, :]
-                img_pd = np.clip(img_pd, 0, 1)  # 确保预测值在 [0, 1] 范围内
-                img_pd = np.uint8(img_pd * 255)
-                cv2.imwrite(file_name, img_pd)
-        test_input_handle.next()
-
-    # 计算全局统计
-    # --------------------------------------------------
-    # 各通道在所有时间步的平均RMSE
-    global_channel_rmse = [
-        sum(channel_rmse[i][ch] for i in range(output_length)) / output_length
-        for ch in range(num_channels)
-    ]
-
-    # 所有时间步和通道的总平均RMSE
-    global_avg_rmse = sum(sum(channel_rmse[i]) for i in range(output_length)) / (output_length * num_channels)
-
-    # 各通道的全局平均R²
-    global_channel_r2 = [
-        sum(channel_r2[i][ch] for i in range(output_length)) / output_length
-        for ch in range(num_channels)
-    ]
+        # 保存预测结果
+        save_prediction_samples(batch_id, res_path, test_ims, img_out, configs)
+        test_input_handle.next()  # 继续下一个批次
+    # 拼接所有批次的时间步，形状变为 (batch*t, H, W, C)
+    all_true = np.concatenate(all_true, axis=0)
+    all_pred = np.concatenate(all_pred, axis=0)
+    print(all_true.shape)
+    rmse_list, r2_list = compute_metrics(all_true, all_pred)
+    plot_metrics(rmse_list, r2_list, output_length)
+    # 如果是测试阶段，计算平均 RMSE 和 R²
+    if configs.is_training == 0:
+        # 每10个样本分段平均
+        avg_rmse, avg_r2 = average_metrics(rmse_list, r2_list, window=10)
+        # 创建目录
+        save_dir = "./results/metrics"
+        os.makedirs(save_dir, exist_ok=True)
+        # 保存为 .npy
+        npy_path = os.path.join(save_dir, "rmse.npy")
+        np.save(npy_path, avg_rmse)
+        npy_path = os.path.join(save_dir, "r2.npy")
+        np.save(npy_path, avg_r2)
+        print("Metrics saved to:", save_dir)
+        save_dir = "./results/data"
+        os.makedirs(save_dir, exist_ok=True)
+        npy_path = os.path.join(save_dir, "true.npy")
+        np.save(npy_path, all_true)
+        npy_path = os.path.join(save_dir, "pred.npy")
+        np.save(npy_path, all_pred)
+        print("Data saved to:", save_dir)
 
     # 输出最终结果
     print("\n\n=== Final Statistics ===")
-    print(
-        f"Global Channel RMSE - HS: {global_channel_rmse[0]:.4f}, TM02: {global_channel_rmse[1]:.4f}, Theta0: {global_channel_rmse[2]:.4f}")
-    print(f"Global Average RMSE: {global_avg_rmse:.4f}")
-    print(
-        f"\nGlobal Channel R²   - HS: {global_channel_r2[0]:.4f}, TM02: {global_channel_r2[1]:.4f}, Theta0: {global_channel_r2[2]:.4f}")
+    # print(
+    #     f"\n当前样本平均 R²   - HS: {avg_r2[0]:.4f}, TM02: {avg_r2[1]:.4f}, Theta0: {avg_r2[2]:.4f}")
     # 计算并打印每帧的平均结构相似性指数（SSIM）
     ssim = np.asarray(ssim, dtype=np.float32) / (configs.batch_size * batch_id)
     print('ssim per frame ——>1: ' + str(np.mean(ssim)))

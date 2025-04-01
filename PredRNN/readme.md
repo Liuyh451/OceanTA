@@ -447,6 +447,48 @@ for t in range(self.configs.total_length - 1):
 
 如果你不确定，可以试着打印 `mask_true` 看看它的值，以及去掉这部分代码后模型是否还能稳定训练。
 
-# 4.流程图
+# 4.评估
+
+## 4.1 RMSE
+
+遇到一个bug，两个向量true和pred(160, N)在计算rmse = np.sqrt(mean_squared_error(true_flat, pred_flat))计算出来的rmse是一个标量
+
+这是因为 `mean_squared_error` 函数默认会对整个输入数组计算一个单一的均方误差值，然后使用 `np.sqrt` 对这个单一的均方误差值求平方根，所以最终得到的 `RMSE` 也只有一个值。 
+
+### 原因分析
+
+ `mean_squared_error` 函数在计算时，会把输入的两个数组 `true_flat` 和 `pred_flat` 视为整体，计算它们对应元素之间的平方误差，然后求平均值。在你的代码里，`true_flat` 和 `pred_flat` 的形状是 `(160, 16384)`，`mean_squared_error` 会计算这两个数组所有元素的均方误差，得到一个单一的数值，再经过 `np.sqrt` 运算后，结果仍然是一个单一的数值。
+
+ ### 解决方案 
+
+如果希望得到每个样本（共 160 个样本）的 `RMSE`，可以对每个样本单独计算均方误差，再求平方根。以下是修改后的代码示例：
+
+```python
+import numpy as np 
+from sklearn.metrics 
+import mean_squared_error 
+# 假设 true_flat 和 pred_flat 已经定义，形状为 (160, 16384) 
+num_samples = true_flat.shape[0] 
+rmse_values = [] 
+for i in range(num_samples):    
+    sample_true = true_flat[i]    
+    sample_pred = pred_flat[i]    
+    mse = mean_squared_error(sample_true, sample_pred)    
+    rmse = np.sqrt(mse)    
+    rmse_values.append(rmse) 
+rmse_values = np.array(rmse_values) 
+print("每个样本的 RMSE 形状:", rmse_values.shape)
+print("每个样本的 RMSE:", rmse_values) 
+```
+
+### 代码解释 
+
+1. **遍历每个样本**：通过 `for` 循环遍历 `true_flat` 和 `pred_flat` 中的每个样本。 
+1.  **计算每个样本的均方误差**：在每次循环中，取出当前样本的真实值和预测值，使用 `mean_squared_error` 函数计算均方误差。 
+1. **计算每个样本的 RMSE**：对每个样本的均方误差求平方根，得到该样本的 `RMSE`。 
+1. **存储结果**：将每个样本的 `RMSE` 存储在 `rmse_values` 列表中。 
+1. **转换为 `NumPy` 数组**：最后将 `rmse_values` 列表转换为 `NumPy` 数组，方便后续处理和分析。 通过这种方式，你就可以得到每个样本的 `RMSE`，结果的形状应该是 `(160,)`。 
+
+# 5.流程图
 
 ![image-20250328001948568](https://picbed-1313037164.cos.ap-nanjing.myqcloud.com/image-20250328001948568.png)
