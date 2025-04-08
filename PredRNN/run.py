@@ -6,7 +6,7 @@ import math
 from core.data_provider import datasets_factory
 from core.models.model_factory import Model
 from core.utils import preprocess
-import core.trainer as trainer
+from core import trainer as trainer
 
 # 创建命令行参数解析器
 parser = argparse.ArgumentParser(description='PyTorch video prediction model - PredRNN')
@@ -31,7 +31,7 @@ parser.add_argument('--img_channel', type=int, default=3)
 # 添加模型相关的参数
 parser.add_argument('--model_name', type=str, default='predrnn_v2')
 #checkpoints/model.ckpt
-parser.add_argument('--pretrained_model', type=str, default='')
+parser.add_argument('--pretrained_model', type=str, default='./checkpoints/model.ckpt-1600')
 parser.add_argument('--num_hidden', type=str, default='128,128,128,128')
 parser.add_argument('--filter_size', type=int, default=5)
 parser.add_argument('--stride', type=int, default=1)

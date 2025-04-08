@@ -7,7 +7,7 @@ import math
 from core.data_provider import datasets_factory
 from core.models.model_factory import Model
 from core.utils import preprocess
-import core.trainer as trainer
+from core import trainer as trainer
 
 # 创建命令行参数解析器
 parser = argparse.ArgumentParser(description='PyTorch video prediction model - PredRNN')
