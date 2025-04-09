@@ -7,7 +7,7 @@ datasets_map = {
 }
 
 def data_provider(dataset_name, train_data_paths, valid_data_paths, batch_size,
-                  img_width, seq_length, injection_action, is_training=True):
+                  input_length, seq_length, injection_action, is_training=True):
     """
     提供不同数据集的数据输入接口。
 
@@ -39,6 +39,8 @@ def data_provider(dataset_name, train_data_paths, valid_data_paths, batch_size,
             'input_data_type': 'float32',
             'is_output_sequence': True,
             'name': 'swan test iterator',
+            'input_length': input_length,
+            'pred_length': seq_length - input_length
         }
         test_input_handle = datasets_map['swan'].InputHandle(test_input_param)
         test_input_handle.begin(do_shuffle=False)  # 不打乱顺序开始测试数据迭代
@@ -51,6 +53,8 @@ def data_provider(dataset_name, train_data_paths, valid_data_paths, batch_size,
                 'input_data_type': 'float32',
                 'is_output_sequence': True,
                 'name': 'swan train iterator',
+                'input_length': input_length,
+                'pred_length':seq_length-input_length
             }
             train_input_handle = datasets_map['swan'].InputHandle(train_input_param)
             train_input_handle.begin(do_shuffle=True)  # 训练数据需要打乱

@@ -2,6 +2,8 @@ import os.path
 import datetime
 import numpy as np
 from skimage.metrics import structural_similarity as compare_ssim
+from torch import nn
+
 from core.utils import preprocess, metrics
 import lpips
 
@@ -107,8 +109,9 @@ def test(model, test_input_handle, configs, itr):
     os.mkdir(res_path)
     # 初始化批次计数器
     batch_id = 0
+    avg_mse = 0
     # 初始化列表以存储评估指标
-    ssim, psnr, lp = [], [], []
+    img_mse,ssim, psnr, lp = [], [], [],[]
     # 初始化评估指标数据结构
     output_length = configs.total_length - configs.input_length
     num_channels = configs.img_channel  # 假设有3个通道（hs, tm02, theta0）
@@ -120,6 +123,7 @@ def test(model, test_input_handle, configs, itr):
 
     # 初始化每个帧的评估指标
     for i in range(configs.total_length - configs.input_length):
+        img_mse.append(0)
         ssim.append(0)
         psnr.append(0)
         lp.append(0)
@@ -168,9 +172,14 @@ def test(model, test_input_handle, configs, itr):
             x = test_ims[:, i + configs.input_length, :, :, :]  # [batch,  H, W,C]
             gx = img_out[:, i, :, :, :]  # [batch, H, W,C]
             gx = np.clip(gx, 0, 1)
-            # 展开所有时间步
-            all_true.append(x)
-            all_pred.append(gx)
+            # 如果是测试阶段展开所有时间步
+            if configs.is_training == 0:
+                all_true.append(x)
+                all_pred.append(gx)
+            mse = np.square(x - gx).sum()
+            img_mse[i] += mse
+            avg_mse += mse
+            print(f"第{i}帧的MSE: {mse.item()}")
             # 计算 LPIPS
             lp[i] += calculate_lpips(loss_fn_alex, x, gx, configs)
             # 计算 PSNR
@@ -185,14 +194,13 @@ def test(model, test_input_handle, configs, itr):
         # 保存预测结果
         save_prediction_samples(batch_id, res_path, test_ims, img_out, configs)
         test_input_handle.next()  # 继续下一个批次
-    # 拼接所有批次的时间步，形状变为 (batch*t, H, W, C)
-    all_true = np.concatenate(all_true, axis=0)
-    all_pred = np.concatenate(all_pred, axis=0)
-    print(all_true.shape)
-    rmse_list, r2_list = compute_metrics(all_true, all_pred)
-    plot_metrics(rmse_list, r2_list, output_length)
     # 如果是测试阶段，计算平均 RMSE 和 R²
     if configs.is_training == 0:
+        # 拼接所有批次的时间步，形状变为 (batch*t, H, W, C)
+        all_true = np.concatenate(all_true, axis=0)
+        all_pred = np.concatenate(all_pred, axis=0)
+        print(all_true.shape)
+        rmse_list, r2_list = compute_metrics(all_true, all_pred)
         # 每10个样本分段平均
         avg_rmse, avg_r2 = average_metrics(rmse_list, r2_list, window=10)
         # 创建目录
@@ -214,6 +222,10 @@ def test(model, test_input_handle, configs, itr):
 
     # 输出最终结果
     print("\n\n=== Final Statistics ===")
+    avg_mse = avg_mse / (batch_id * configs.batch_size)
+    print('mse per seq: ' + str(avg_mse))
+    for i in range(configs.total_length - configs.input_length):
+        print(img_mse[i] / (batch_id * configs.batch_size))
     # print(
     #     f"\n当前样本平均 R²   - HS: {avg_r2[0]:.4f}, TM02: {avg_r2[1]:.4f}, Theta0: {avg_r2[2]:.4f}")
     # 计算并打印每帧的平均结构相似性指数（SSIM）

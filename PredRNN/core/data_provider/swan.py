@@ -16,9 +16,9 @@ class InputHandle:
         """
         self.paths = input_param['paths']  # 数据路径
         self.minibatch_size = input_param['minibatch_size']  # batch size
-        self.N = 10  # 输入时间步
-        self.M = 10  # 预测时间步
-        self.stride = input_param.get('stride', 10)  # 滑动窗口步长
+        self.N = input_param['input_length']  # 输入时间步
+        self.M = input_param['pred_length']# 预测时间步
+        self.stride = input_param.get('stride', self.N)  # 滑动窗口步长
         self.input_data_type = input_param.get('input_data_type', 'float32')
         self.output_data_type = input_param.get('output_data_type', 'float32')
 

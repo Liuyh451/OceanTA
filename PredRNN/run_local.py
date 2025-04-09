@@ -22,14 +22,14 @@ parser.add_argument('--train_data_paths', type=str, default='E:/Dataset/met_wave
 parser.add_argument('--valid_data_paths', type=str, default='E:/Dataset/met_waves/Swan4predRNN/val.npy')
 parser.add_argument('--save_dir', type=str, default='checkpoints/swan_predrnn_v2')
 parser.add_argument('--gen_frm_dir', type=str, default='results/swan_predrnn_v2')
-parser.add_argument('--input_length', type=int, default=10)
-parser.add_argument('--total_length', type=int, default=20)
+parser.add_argument('--input_length', type=int, default=5)
+parser.add_argument('--total_length', type=int, default=10)
 parser.add_argument('--img_width', type=int, default=128)
 parser.add_argument('--img_channel', type=int, default=3)
 
 # 添加模型相关的参数
 parser.add_argument('--model_name', type=str, default='predrnn_v2')
-parser.add_argument('--pretrained_model', type=str, default='checkpoints/model.ckpt')
+parser.add_argument('--pretrained_model', type=str, default='checkpoints/swan_predrnn_v2/model.ckpt-200')
 parser.add_argument('--num_hidden', type=str, default='128,128,128,128')
 parser.add_argument('--filter_size', type=int, default=5)
 parser.add_argument('--stride', type=int, default=1)
@@ -206,12 +206,13 @@ def train_wrapper(model):
     参数:
     model (Model): 训练模型实例
     """
+    print("strat training-------------")
     if args.pretrained_model:
         model.load(args.pretrained_model)
     # 加载数据，args.injection_action：是否使用某种特定的数据增强或特性注入
     # 这个地方test_input_handle：实际上是验证集，下面的路径有写
     train_input_handle, test_input_handle = datasets_factory.data_provider(
-        args.dataset_name, args.train_data_paths, args.valid_data_paths, args.batch_size, args.img_width,
+        args.dataset_name, args.train_data_paths, args.valid_data_paths, args.batch_size, args.input_length,
         seq_length=args.total_length, injection_action=args.injection_action, is_training=True)
 
     eta = args.sampling_start_value
@@ -257,30 +258,29 @@ def test_wrapper(model):
     参数:
     model (Model): 测试模型实例
     """
+    print("strat testing-------------")
     model.load(args.pretrained_model)
     test_input_handle = datasets_factory.data_provider(
-        args.dataset_name, args.train_data_paths, args.valid_data_paths, args.batch_size, args.img_width,
+        args.dataset_name, args.train_data_paths, args.valid_data_paths, args.batch_size, args.input_length,
         seq_length=args.total_length, injection_action=args.injection_action, is_training=False)
     trainer.test(model, test_input_handle, args, 'test_result')
 
 
-# 检查并删除旧的保存目录
-if os.path.exists(args.save_dir):
-    shutil.rmtree(args.save_dir)
-os.makedirs(args.save_dir)
+# 打印初始化模型的信息
+print('Initializing models')
+# 创建模型实例
+model = Model(args)
 # 创建新的保存目录
 if os.path.exists(args.gen_frm_dir):
     shutil.rmtree(args.gen_frm_dir)
 os.makedirs(args.gen_frm_dir)
-
-# 打印初始化模型的信息
-print('Initializing models')
-
-# 创建模型实例
-model = Model(args)
-
 # 根据命令行参数决定是训练还是测试模型
 if args.is_training:
+    # 检查并删除旧的保存目录
+    if os.path.exists(args.save_dir):
+        shutil.rmtree(args.save_dir)
+    os.makedirs(args.save_dir)
     train_wrapper(model)
 else:
+
     test_wrapper(model)
