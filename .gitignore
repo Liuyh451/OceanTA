@@ -1,3 +1,8 @@
 **/.idea/
 **/_pycache_/
+*.pyc
+*.npy
+*.pth
+*.log
+**/log/
 /LORS

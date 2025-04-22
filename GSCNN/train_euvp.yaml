@@ -1,0 +1,15 @@
+
+# dataset info
+dataset_name: "underwater_type5_mse"
+dataset_path1: "/home/eddy/GSCNN-master/datasets/leftImg8bit_trainvaltest/leftImg8bit/train"
+dataset_path2: "/home/eddy/GSCNN-master/datasets/gtFine_trainvaltest/gtFine/train"
+
+# image info
+chans: 1
+im_width: 101
+im_height: 120
+
+# other params
+val_interval: 1000 # steps
+ckpt_interval: 20  # epochs
+ 
